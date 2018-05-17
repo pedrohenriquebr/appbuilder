@@ -17,7 +17,8 @@ public class Metódo {
     private List<String> modNacesso = new ArrayList<String>(); // modificador de não-acesso. Ex: final, static, abstract 
     private String tipoRetorno; //tipo de retorno. Ex: int, String, void, char , ...
     private String nome;
-    private List<Parametro> parametros = new ArrayList<Parametro>(); // algumMetodo(String arg0, int arg1, byte arg2) 
+    private List<Parametro> parametros = new ArrayList<Parametro>(); // algumMetodo(String arg0, int arg1, byte arg2)
+    private String corpo;
 
     /**
      *
@@ -31,6 +32,7 @@ public class Metódo {
         this.modAcesso = modAcesso;
         this.tipoRetorno = tipoRetorno;
         this.nome = nome;
+        corpo = "";
     }
 
     //public static int nome()
@@ -45,8 +47,12 @@ public class Metódo {
         setParametros(parametros);
     }
 
-    public boolean adicionaParametro(Parametro param) {
+    public boolean addParametro(Parametro param) {
         return this.parametros.add(param);
+    }
+
+    public boolean addParametro(String tipo, String nome) {
+        return addParametro(new Parametro(tipo, nome));
     }
 
     public Parametro getParametro(int index) {
@@ -71,6 +77,14 @@ public class Metódo {
 
     public boolean addModNacesso(String mod) {
         return modNacesso.add(mod);
+    }
+
+    public String getCorpo() {
+        return this.corpo;
+    }
+
+    public void setCorpo(String codigo) {
+        this.corpo = codigo;
     }
 
     public String getTipoRetorno() {
@@ -125,6 +139,11 @@ public class Metódo {
         }
 
         codigo += "){ \n";
+
+        if (this.corpo.length() > 0) {
+            codigo += this.corpo;
+
+        }
 
         codigo += "} \n\n";
 

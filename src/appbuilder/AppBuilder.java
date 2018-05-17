@@ -19,25 +19,28 @@ public class AppBuilder {
      */
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
-        
+
         Scanner scan = new Scanner(System.in);
         System.out.println("Nome da classe: ");
-        String nome  = scan.nextLine();
+        String nome = scan.nextLine();
         System.out.println("Pacote: ");
         String pacote = scan.nextLine();
         System.out.println("Caminho do pacote: ");
         String caminho = scan.nextLine();
-        
-        Classe classe  = new Classe(nome,pacote,caminho);
-        classe.addConstrutor(new Construtor("public",nome));
-        classe.addMetódo(new Metódo("public","static","String","getName"));
-        classe.addAtributo(new Atributo("int","valor"));
-        
+
+        Classe classe = new Classe(nome, pacote, caminho);
+        Construtor mt = new Construtor("public", nome);
+        mt.setCorpo("System.out.println(\"Olá mundo !\");");
+        classe.addConstrutor(mt);
+        Metódo m = new Metódo("public", "static", "void", "main");
+        m.addParametro("String []", "args");
+        m.setCorpo("new "+classe.getNome()+"();");
+        classe.addMetódo(m);
+        classe.addAtributo(new Atributo("int", "valor"));
+
         ClassBuilder builder = new ClassBuilder("/home/psilva/Documentos/");
         builder.build(classe);
-        
-        
-        
+
     }
-    
+
 }

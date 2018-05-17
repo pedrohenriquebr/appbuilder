@@ -23,6 +23,7 @@ public class Variavel {
     public static final int REFERENCIAR = 2;
     //Variável tem exceção quanto toString()
     protected int estado = DECLARAR;
+    
 
     //foi declarada;
     public Variavel(String tipo, String nome) {
