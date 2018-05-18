@@ -1,9 +1,11 @@
+package appbuilder.util;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appbuilder;
+
 
 import java.util.*;
 
@@ -11,7 +13,7 @@ import java.util.*;
  *
  * @author aluno
  */
-public class Metódo {
+public class Método {
 
     private String modAcesso; //modificador de acesso. Ex: public, private , protected
     private List<String> modNacesso = new ArrayList<String>(); // modificador de não-acesso. Ex: final, static, abstract 
@@ -28,7 +30,7 @@ public class Metódo {
      * @param nome Ex: algumMetodo()
      */
     //public int nome()
-    public Metódo(String modAcesso, String tipoRetorno, String nome) {
+    public Método(String modAcesso, String tipoRetorno, String nome) {
         this.modAcesso = modAcesso;
         this.tipoRetorno = tipoRetorno;
         this.nome = nome;
@@ -36,13 +38,13 @@ public class Metódo {
     }
 
     //public static int nome()
-    public Metódo(String modAcesso, String modNacesso, String tipoRetorno, String nome) {
+    public Método(String modAcesso, String modNacesso, String tipoRetorno, String nome) {
         this(modAcesso, tipoRetorno, nome);
         addModNacesso(modNacesso);
     }
 
     //public static int nome(int arg0, int arg1,...)
-    public Metódo(String modAcesso, String modNacesso, String tipoRetorno, String nome, List<Parametro> parametros) {
+    public Método(String modAcesso, String modNacesso, String tipoRetorno, String nome, List<Parametro> parametros) {
         this(modAcesso, modNacesso, tipoRetorno, nome);
         setParametros(parametros);
     }

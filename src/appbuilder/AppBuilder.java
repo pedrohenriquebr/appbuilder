@@ -5,6 +5,8 @@
  */
 package appbuilder;
 
+import appbuilder.util.*;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -20,26 +22,15 @@ public class AppBuilder {
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
 
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Nome da classe: ");
-        String nome = scan.nextLine();
-        System.out.println("Pacote: ");
-        String pacote = scan.nextLine();
-        System.out.println("Caminho do pacote: ");
-        String caminho = scan.nextLine();
-
-        Classe classe = new Classe(nome, pacote, caminho);
-        Construtor mt = new Construtor("public", nome);
-        mt.setCorpo("System.out.println(\"Olá mundo !\");");
-        classe.addConstrutor(mt);
-        Metódo m = new Metódo("public", "static", "void", "main");
-        m.addParametro("String []", "args");
-        m.setCorpo("new "+classe.getNome()+"();");
-        classe.addMetódo(m);
-        classe.addAtributo(new Atributo("int", "valor"));
-
+        Classe classe = new Classe("Teste");
+        classe.addAtributo(new Atributo("public", "String", "nome", "pedro"));
+        classe.setPrincipal(true);
         ClassBuilder builder = new ClassBuilder("/home/psilva/Documentos/");
         builder.build(classe);
+
+        //javac principal/teste/pacotes/Teste.java
+        builder.compile();
+        builder.execute();
 
     }
 

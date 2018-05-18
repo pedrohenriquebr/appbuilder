@@ -1,10 +1,10 @@
+package appbuilder.util;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appbuilder;
-
 import java.util.*;
 
 /**
@@ -17,13 +17,6 @@ public class Variavel {
     protected String tipo;
     protected List<String> mods = new ArrayList<>();//modificadores
     protected String valor;
-
-    public static final int DECLARAR = 0;
-    public static final int ATRIBUIR = 1;
-    public static final int REFERENCIAR = 2;
-    //Variável tem exceção quanto toString()
-    protected int estado = DECLARAR;
-    
 
     //foi declarada;
     public Variavel(String tipo, String nome) {
@@ -40,14 +33,6 @@ public class Variavel {
     public Variavel(String tipo, String nome, String valor, String modificador) {
         this(tipo, nome, valor);
         addModificador(modificador);
-    }
-
-    public int getEstado() {
-        return estado;
-    }
-
-    public void setEstado(int estado) {
-        this.estado = estado;
     }
 
     public boolean addModificador(String mod) {
@@ -88,12 +73,8 @@ public class Variavel {
 
     public String toString() {
         String codigo = "";
-        switch (estado) {
-            case DECLARAR: {
-                codigo += tipo + " " + nome + ";\n";
-                break;
-            }
-        }
+
+        codigo += tipo + " " + nome + ";\n";
 
         return codigo;
 

@@ -1,10 +1,10 @@
+package appbuilder.util;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appbuilder;
-
 import java.util.*;
 
 /**
@@ -18,13 +18,24 @@ public class Classe {
     private String nome;
 
     private List<Atributo> atributos = new ArrayList<Atributo>();
-    private List<Metódo> metódos = new ArrayList<Metódo>();
+    private List<Método> métodos = new ArrayList<Método>();
     private List<Importação> importações = new ArrayList<Importação>();
+
+    //construtor principal
+    private Construtor construtorPrincipal;
+    //método principal
+    private Método métodoMain;
 
     public Classe(String nome) {
         this.nome = nome;
-        this.pacote = new Pacote("default");
+        this.pacote = null;
         this.modAcesso = "public";
+        this.pacote = new Pacote();
+
+        //adicionar um construtor padrão
+        construtorPrincipal = new Construtor("public", this.getNome());
+        addConstrutor(construtorPrincipal);
+
     }
 
     public Classe(String nome, String pacote) {
@@ -37,12 +48,41 @@ public class Classe {
         this.pacote = new Pacote(pacote, caminho);
     }
 
+    public boolean setPrincipal(boolean b) {
+        if (b) {
+            métodoMain = new Método("public", "static", "main");
+            métodoMain.addParametro("String[]", "args");
+            return addMetódo(métodoMain);
+        } else {
+            boolean rt = métodos.remove(métodoMain);
+            métodoMain = null;
+            return rt;
+
+        }
+    }
+
     public Pacote getPacote() {
         return this.pacote;
     }
 
     public void setPacote(Pacote pacote) {
         this.pacote = pacote;
+    }
+
+    public void setPacote(String pacote) {
+        this.pacote = new Pacote(pacote);
+    }
+
+    public Construtor getConstrutorPrincipal() {
+        return construtorPrincipal;
+    }
+
+    public void setConstrutorPrincipal(Construtor construtorPrincipal) {
+        this.construtorPrincipal = construtorPrincipal;
+    }
+
+    public String getNomeCompleto() {
+        return pacote.getCaminho() + "." + getNome();
     }
 
     public String toString() {
@@ -57,7 +97,7 @@ public class Classe {
             codigo += var;
         }
 
-        for (Metódo met : metódos) {
+        for (Método met : métodos) {
             codigo += met;
         }
 
@@ -65,17 +105,22 @@ public class Classe {
 
         return codigo;
     }
-    
-    public boolean addAtributo(Atributo atr ){
+
+    public boolean addAtributo(Atributo atr) {
+
         return this.atributos.add(atr);
     }
 
     public boolean addConstrutor(Construtor contrutor) {
-        return this.metódos.add(contrutor);
+        return this.métodos.add(contrutor);
     }
 
-    public boolean addMetódo(Metódo metodo) {
-        return this.metódos.add(metodo);
+    public boolean addMetódo(Método metodo) {
+        return this.métodos.add(metodo);
+    }
+
+    public boolean removeMétodo(Método metodo) {
+        return this.métodos.remove(metodo);
     }
 
     public String getModAcesso() {
@@ -102,12 +147,12 @@ public class Classe {
         this.atributos = atributos;
     }
 
-    public List<Metódo> getMetódos() {
-        return metódos;
+    public List<Método> getMetódos() {
+        return métodos;
     }
 
-    public void setMetódos(List<Metódo> metódos) {
-        this.metódos = metódos;
+    public void setMetódos(List<Método> metódos) {
+        this.métodos = metódos;
     }
 
     public List<Importação> getImportações() {

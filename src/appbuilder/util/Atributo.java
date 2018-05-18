@@ -1,10 +1,10 @@
+package appbuilder.util;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appbuilder;
-
 /**
  *
  * @author aluno
@@ -22,7 +22,7 @@ public class Atributo extends Variavel {
         this.valor = valor;
     }
 
-    public Atributo(String tipo, String nome, String valor, String modificador) {
+    public Atributo(String modificador,String tipo, String nome, String valor) {
         super(tipo, nome, valor);
         addModificador(modificador);
     }
@@ -30,17 +30,11 @@ public class Atributo extends Variavel {
     @Override
     public String toString() {
         String codigo = "";
-
-        switch (estado) {
-            case DECLARAR: {
-                for (String mod : mods) {
-                    codigo += mod + " ";
-                }
-
-                codigo += tipo + " " + nome + ";\n";
-                break;
-            }
+        for (String mod : mods) {
+            codigo += mod + " ";
         }
+
+        codigo += tipo + " " + nome + ";\n";
 
         return codigo;
     }
