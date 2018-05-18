@@ -25,6 +25,8 @@ public class AppBuilder {
         Classe classe = new Classe("Teste");
         classe.addAtributo(new Atributo("public", "String", "nome", "pedro"));
         classe.setPrincipal(true);
+        Método metodo = classe.getMain();
+        metodo.setCorpo("System.out.println(\"Eu sou Pedro\");");
         ClassBuilder builder = new ClassBuilder("/home/psilva/Documentos/");
         builder.build(classe);
 

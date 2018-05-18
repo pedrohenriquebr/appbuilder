@@ -60,6 +60,12 @@ public class ClassBuilder {
             System.out.println(scan.nextLine());
         }
 
+        scan = new Scanner(process.getErrorStream());
+
+        while (scan.hasNextLine()) {
+            System.err.println(scan.nextLine());
+        }
+
         scan.close();
     }
 
@@ -68,6 +74,12 @@ public class ClassBuilder {
         Process process = Runtime.getRuntime().exec("java -cp " + diretórioArvore.getAbsolutePath() + " " + classe.getNomeCompleto());
 
         Scanner scan = new Scanner(process.getInputStream());
+
+        while (scan.hasNextLine()) {
+            System.out.println(scan.nextLine());
+        }
+
+        scan = new Scanner(process.getErrorStream());
 
         while (scan.hasNextLine()) {
             System.out.println(scan.nextLine());
