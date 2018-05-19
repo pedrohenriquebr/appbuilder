@@ -32,7 +32,7 @@ public class AppBuilder {
         ClassBuilder builder = new ClassBuilder(caminhoPadrão);
         Modelo modelo = null;
         
-        Classe classe  = new Classe();
+        Classe classe  = new Classe("Aluno");
         
         
     }   
