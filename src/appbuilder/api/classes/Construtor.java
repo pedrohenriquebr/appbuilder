@@ -1,5 +1,6 @@
-package appbuilder.util.classes;
+package appbuilder.api.classes;
 
+import appbuilder.api.methods.Método;
 import appbuilder.util.*;
 
 /*

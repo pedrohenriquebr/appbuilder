@@ -1,5 +1,6 @@
-package appbuilder.util.classes;
+package appbuilder.api.vars;
 
+import appbuilder.api.vars.Variavel;
 import appbuilder.util.*;
 
 /*
@@ -23,12 +24,14 @@ public class Atributo extends Variavel {
         super(modificador, tipo, nome, "");
     }
 
+    @Override
     public String getReferencia() {
         return "this." + nome;
     }
 
+    @Override
     public String getInicialização(String valor) {
-        return "this." + nome + " =" + " " + valor + ";\n";
+        return getReferencia() + " = "  + valor + ";\n";
     }
 
     @Override

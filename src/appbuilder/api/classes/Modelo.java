@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appbuilder.util.classes;
+package appbuilder.api.classes;
 
-import appbuilder.util.classes.Atributo;
-import appbuilder.util.classes.Classe;
-import appbuilder.util.classes.Método;
-import appbuilder.util.classes.Parametro;
+import appbuilder.api.vars.Atributo;
+import appbuilder.api.classes.Classe;
+import appbuilder.api.methods.Método;
+import appbuilder.api.methods.Parametro;
 
 /**
  *

@@ -1,4 +1,4 @@
-package appbuilder.util.classes;
+package appbuilder.api.methods;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -49,7 +49,9 @@ public class Método {
         this(modAcesso, modNacesso, tipoRetorno, nome);
         setParametros(parametros);
     }
-
+    
+    
+    
     public boolean addParametro(Parametro param) {
         return this.parametros.add(param);
     }

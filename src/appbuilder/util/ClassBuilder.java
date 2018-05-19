@@ -5,7 +5,7 @@ package appbuilder.util;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import appbuilder.util.classes.Classe;
+import appbuilder.api.classes.Classe;
 import java.io.*;
 import java.util.Scanner;
 

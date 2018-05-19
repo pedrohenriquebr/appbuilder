@@ -1,10 +1,15 @@
-package appbuilder.util.classes;
+package appbuilder.api.classes;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import appbuilder.api.methods.Parametro;
+import appbuilder.api.methods.Método;
+import appbuilder.api.packages.Pacote;
+import appbuilder.api.packages.Importação;
+import appbuilder.api.vars.Atributo;
 import appbuilder.util.*;
 import java.util.*;
 
@@ -61,12 +66,12 @@ public class Classe {
     }
 
     //referente quanto na forma de objeto
-    public String getInstancia(String... parametros) {
+    public String getInstancia(String... argumentos) {
         String codigo = "";
         codigo += "new " + nome + "(";
 
         int contador = 1;
-        for (String arg : parametros) {
+        for (String arg : argumentos) {
             if (contador % 2 == 0) {
                 codigo += ",";
             }
@@ -134,6 +139,35 @@ public class Classe {
 
     public boolean addConstrutor(Construtor contrutor) {
         return this.métodos.add(contrutor);
+    }
+
+    //leva em consideração que pode ter vários parâmetros de tipos diferentes e o modificador pode ser genérico também, 
+    //adicionar construtor genérico
+    public Construtor addConstrutor(String modAcesso, Parametro... params) {
+        Construtor construtor = new Construtor(modAcesso, nome);
+        List<Parametro> lista = new ArrayList<>();
+
+        for (Parametro param : params) {
+            lista.add(param);
+        }
+
+        construtor.setParametros(lista);
+
+        if (addConstrutor(construtor)) {
+            return construtor;
+        } else {
+            return null;
+        }
+    }
+
+    //especializa o método acima, para adicionar construtores públicos para reaproveitamento de código
+    public Construtor addConstrutorPúblico(Parametro... params) {
+        return addConstrutor("public", params);
+    }
+
+    //construtor privado
+    public Construtor addConstrutorPrivado(Parametro... params) {
+        return addConstrutor("private", params);
     }
 
     public boolean addMétodo(Método metodo) {
