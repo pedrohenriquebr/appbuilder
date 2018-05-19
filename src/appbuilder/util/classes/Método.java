@@ -1,4 +1,4 @@
-package appbuilder.util;
+package appbuilder.util.classes;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -7,6 +7,7 @@ package appbuilder.util;
  */
 
 
+import appbuilder.util.*;
 import java.util.*;
 
 /**
@@ -132,7 +133,7 @@ public class Método {
         codigo += nome + "(";
 
         if (parametros.size() > 0) {
-            codigo += " " + parametros.get(i);
+            codigo += "" + parametros.get(i);
 
             for (i = 1; i < parametros.size(); i++) {
                 codigo += " ," + parametros.get(i);

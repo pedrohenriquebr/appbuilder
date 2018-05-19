@@ -5,6 +5,7 @@ package appbuilder.util;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import appbuilder.util.classes.Classe;
 import java.io.*;
 import java.util.Scanner;
 
@@ -15,17 +16,14 @@ import java.util.Scanner;
 public class ClassBuilder {
 
     private String caminho;
-    private File arquivo;
-    private File diretórioArvore;//o diretórioArvore que contém toda a árvore de diretórios da classe 
-    private Classe classe;
+    private File diretórioArvore;
 
     public ClassBuilder(String caminho) {
         this.caminho = caminho;
     }
 
-    public void build(Classe classe) throws FileNotFoundException, IOException {
+    public File build(Classe classe) throws FileNotFoundException, IOException {
         String path = "";
-        this.classe = classe;
         String pathPrincipal = classe.getPacote().getCaminho().replace(".", "/");
         if (caminho.endsWith("/")) {
             path = this.caminho + pathPrincipal;
@@ -33,17 +31,15 @@ public class ClassBuilder {
             path = this.caminho + "/" + pathPrincipal;
         }
 
-        arquivo = new File(path + "/" + classe.getNome() + ".java");
+        File arquivo = new File(path + "/" + classe.getNome() + ".java");
         diretórioArvore = new File(caminho);
         new File(path).mkdirs();
         FileWriter fw = new FileWriter(arquivo);
         fw.write(classe.toString());
 
         fw.close();
-    }
 
-    public File getArquivo() {
-        return this.arquivo;
+        return arquivo;
     }
 
     public File getDiretório() {
@@ -51,9 +47,9 @@ public class ClassBuilder {
         return this.diretórioArvore;
     }
 
-    public void compile() throws IOException {
-        System.out.println("Executando : " + "javac " + this.arquivo.getAbsolutePath());
-        Process process = Runtime.getRuntime().exec("javac " + this.arquivo.getAbsolutePath());
+    public void compile(File arquivo) throws IOException {
+        System.out.println("Executando : " + "javac " + arquivo.getAbsolutePath());
+        Process process = Runtime.getRuntime().exec("javac " + arquivo.getAbsolutePath());
         Scanner scan = new Scanner(process.getInputStream());
 
         while (scan.hasNextLine()) {
@@ -69,7 +65,7 @@ public class ClassBuilder {
         scan.close();
     }
 
-    public void execute() throws IOException {
+    public void execute(Classe classe) throws IOException {
         System.out.println("Executando: " + "java -cp " + diretórioArvore.getAbsolutePath() + " " + classe.getNomeCompleto());
         Process process = Runtime.getRuntime().exec("java -cp " + diretórioArvore.getAbsolutePath() + " " + classe.getNomeCompleto());
 

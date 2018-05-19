@@ -1,4 +1,6 @@
-package appbuilder.util;
+package appbuilder.util.classes;
+
+import appbuilder.util.*;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -17,18 +19,20 @@ public class Atributo extends Variavel {
         addModificador("public");
     }
 
-    public Atributo(String tipo, String nome, String valor) {
-        super(tipo, nome);
-        this.valor = valor;
+    public Atributo(String modificador, String tipo, String nome) {
+        super(modificador, tipo, nome, "");
     }
 
-    public Atributo(String modificador,String tipo, String nome, String valor) {
-        super(tipo, nome, valor);
-        addModificador(modificador);
+    public String getReferencia() {
+        return "this." + nome;
+    }
+
+    public String getInicialização(String valor) {
+        return "this." + nome + " =" + " " + valor + ";\n";
     }
 
     @Override
-    public String toString() {
+    public String getDeclaração() {
         String codigo = "";
         for (String mod : mods) {
             codigo += mod + " ";
@@ -37,6 +41,11 @@ public class Atributo extends Variavel {
         codigo += tipo + " " + nome + ";\n";
 
         return codigo;
+    }
+
+    @Override
+    public String toString() {
+        return getDeclaração();
     }
 
 }

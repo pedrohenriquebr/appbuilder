@@ -1,10 +1,11 @@
-package appbuilder.util;
+package appbuilder.util.classes;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import appbuilder.util.*;
 import java.util.*;
 
 /**
@@ -30,7 +31,7 @@ public class Variavel {
         setValor(valor);
     }
 
-    public Variavel(String tipo, String nome, String valor, String modificador) {
+    public Variavel(String modificador, String tipo, String nome, String valor) {
         this(tipo, nome, valor);
         addModificador(modificador);
     }
@@ -71,12 +72,16 @@ public class Variavel {
         this.tipo = tipo;
     }
 
-    public String toString() {
+    public String getDeclaração() {
         String codigo = "";
 
         codigo += tipo + " " + nome + ";\n";
 
         return codigo;
+    }
 
+    //ele retorna a declaração
+    public String toString() {
+        return getDeclaração();
     }
 }

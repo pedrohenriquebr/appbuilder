@@ -5,7 +5,11 @@
  */
 package appbuilder;
 
+import appbuilder.util.classes.Modelo;
 import appbuilder.util.*;
+import appbuilder.util.classes.Classe;
+import appbuilder.util.classes.Método;
+import java.io.File;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,21 +23,19 @@ public class AppBuilder {
     /**
      * @param args the command line arguments
      */
+    
+
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
 
-        Classe classe = new Classe("Teste");
-        classe.addAtributo(new Atributo("public", "String", "nome", "pedro"));
-        classe.setPrincipal(true);
-        Método metodo = classe.getMain();
-        metodo.setCorpo("System.out.println(\"Eu sou Pedro\");");
-        ClassBuilder builder = new ClassBuilder("/home/psilva/Documentos/");
-        builder.build(classe);
-
-        //javac principal/teste/pacotes/Teste.java
-        builder.compile();
-        builder.execute();
-
-    }
+        String caminhoPadrão = "/home/psilva/Documentos/";
+        ClassBuilder builder = new ClassBuilder(caminhoPadrão);
+        Modelo modelo = null;
+        
+        Classe classe  = new Classe();
+        
+        
+    }   
+    //builder.execute();
 
 }

@@ -1,4 +1,6 @@
-package appbuilder.util;
+package appbuilder.util.classes;
+
+import appbuilder.util.*;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
