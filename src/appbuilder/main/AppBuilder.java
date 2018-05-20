@@ -21,12 +21,9 @@ public class AppBuilder {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Modelo modelo = new Modelo("Carro");
-        modelo.addStrings("placa", "marca", "modelo");
-        Objeto obj = modelo.getInstancia();
-        Variavel var = new Variavel(modelo.getNome(), "meuCarro");
-        System.out.println(var.getDeclaração(modelo.getInstancia().toString()));
-        System.out.println(var.getReferencia() + "." + modelo.getAtributo("placa").getNome());
+        Variavel var = new Variavel("String", "meuCarro");
+        Objeto obj = var.getObjeto();
+        System.out.println(var.getDeclaração(obj.getInstancia()));
 
     }
 }

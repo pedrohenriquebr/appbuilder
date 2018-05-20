@@ -5,6 +5,7 @@ package appbuilder.api.vars;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import appbuilder.api.classes.Classe;
 import appbuilder.util.*;
 import java.util.*;
 
@@ -188,6 +189,16 @@ public class Variavel {
      */
     public String getReferencia() {
         return this.nome;
+    }
+
+    /**
+     * Retorna a instância de um objeto
+     *
+     * @param args
+     * @return
+     */
+    public Objeto getObjeto(String... args) {
+        return Classe.get(this.getTipo(), args);
     }
 
     /**

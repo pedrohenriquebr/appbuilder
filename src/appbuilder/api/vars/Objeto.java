@@ -81,6 +81,10 @@ public class Objeto {
         return this.instancia;
     }
 
+    public String getTipo() {
+        return this.classe.getNome();
+    }
+
     @Override
     public String toString() {
         return getInstancia();
