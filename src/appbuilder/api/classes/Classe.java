@@ -303,6 +303,14 @@ public class Classe {
     }
 
     public static Classe addClasse(Classe classe) {
-        return classes.put(classe.getNome(), classe);
+        return classes.put(classe.getNomeCompleto(), classe);
+    }
+
+    public static Classe getClasse(String nome) {
+        return classes.get(nome);
+    }
+
+    public Método callStatic(String método, String... args) {
+        return getMétodo(nome);
     }
 }

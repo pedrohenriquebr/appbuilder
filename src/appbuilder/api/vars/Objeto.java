@@ -85,6 +85,10 @@ public class Objeto {
         return this.classe.getNome();
     }
 
+    public static Objeto instancia(String nome, String... args) {
+        return Classe.get(nome, args);
+    }
+
     @Override
     public String toString() {
         return getInstancia();

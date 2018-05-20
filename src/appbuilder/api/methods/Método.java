@@ -17,12 +17,12 @@ import java.util.*;
  */
 public class Método {
 
-    private String modAcesso; //modificador de acesso. Ex: public, private , protected
-    private List<String> modNacesso = new ArrayList<String>(); // modificador de não-acesso. Ex: final, static, abstract 
-    private String tipoRetorno; //tipo de retorno. Ex: int, String, void, char , ...
-    private String nome;
-    private List<Parametro> parametros = new ArrayList<Parametro>(); // algumMetodo(String arg0, int arg1, byte arg2)
-    private String corpo;
+    protected String modAcesso; //modificador de acesso. Ex: public, private , protected
+    protected List<String> modNacesso = new ArrayList<String>(); // modificador de não-acesso. Ex: final, static, abstract 
+    protected String tipoRetorno; //tipo de retorno. Ex: int, String, void, char , ...
+    protected String nome;
+    protected List<Parametro> parametros = new ArrayList<Parametro>(); // algumMetodo(String arg0, int arg1, byte arg2)
+    protected String corpo;
 
     /**
      *

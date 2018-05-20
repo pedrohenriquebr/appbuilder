@@ -24,8 +24,14 @@ public class Modelo extends Classe {
     public Modelo(String nome) {
         super(nome);
     }
-    
-    
+
+    public Modelo(String nome, String pacote) {
+        super(nome, pacote);
+    }
+
+    public Modelo(String carro, String pacote, String caminho) {
+        super(carro, pacote, caminho);
+    }
 
     private String camelCase(final String line) {
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
@@ -40,9 +46,7 @@ public class Modelo extends Classe {
      * @return
      */
     public boolean addAtributo(String tipo, String nome) {
-        Atributo atr
-                = new Atributo("private", tipo, nome,
-                        Classe.get(tipo).toString());
+        Atributo atr = new Atributo("private", tipo, nome);
         boolean b = super.addAtributo(atr);
 
         if (b) {
@@ -62,31 +66,58 @@ public class Modelo extends Classe {
             if (!c || !d) {
                 return false;
             }
-
             return true;
         } else {
             return false;
         }
     }
 
-    //só recebem um parâmetro
+    /**
+     * Adiciona um atributo com seus getter e setter do tipo int
+     *
+     * @param nome
+     * @return
+     */
     public boolean addInteiro(String nome) {
         return addAtributo("int", nome);
     }
 
+    /**
+     * Adiciona um atributo com seus getter e setter do tipo String
+     *
+     * @param nome
+     * @return
+     */
     public boolean addString(String nome) {
         return addAtributo("String", nome);
     }
 
+    /**
+     * Adiciona um atributo com seus getter e setter do tipo float
+     *
+     * @param nome
+     * @return
+     */
     public boolean addFloat(String nome) {
         return addAtributo("float", nome);
     }
 
+    /**
+     * Adiciona um atributo com seus getter e setter do tipo double
+     *
+     * @param nome
+     * @return
+     */
     public boolean addDouble(String nome) {
         return addAtributo("double", nome);
     }
 
-    //recebem mais de um parâmetro
+    /**
+     * Adiciona vários atributos com seus getters e setters do tipo int
+     *
+     * @param nomes
+     * @return
+     */
     public int addInteiros(String... nomes) {
         //conta quantos atributos do tipo inteiro foram adicionados com sucesso
         int sucesso = 0;
@@ -102,6 +133,12 @@ public class Modelo extends Classe {
         return sucesso;
     }
 
+    /**
+     * Adiciona vários atributos com seus getters e setters do tipo String
+     *
+     * @param nomes
+     * @return
+     */
     public int addStrings(String... nomes) {
         //conta quantos atributos do tipo inteiro foram adicionados com sucesso
         int sucesso = 0;
@@ -117,6 +154,12 @@ public class Modelo extends Classe {
         return sucesso;
     }
 
+    /**
+     * Adiciona vários atributos com seus getters e setters do tipo float
+     *
+     * @param nomes
+     * @return
+     */
     public int addFloats(String... nomes) {
         //conta quantos atributos do tipo inteiro foram adicionados com sucesso
         int sucesso = 0;
@@ -132,6 +175,12 @@ public class Modelo extends Classe {
         return sucesso;
     }
 
+    /**
+     * Adiciona vários atributos com seus getters e setters do tipo double
+     *
+     * @param nomes
+     * @return
+     */
     public int addDoubles(String... nomes) {
         //conta quantos atributos do tipo inteiro foram adicionados com sucesso
         int sucesso = 0;
@@ -146,10 +195,8 @@ public class Modelo extends Classe {
 
         return sucesso;
     }
-    
-    //adicionar construtores associados a atributos
-    
 
+    //adicionar construtores associados a atributos
     /**
      * Pegar um getter associado a um atributo
      *
@@ -173,4 +220,17 @@ public class Modelo extends Classe {
         return método;
     }
 
+    public static Modelo addModelo(Modelo modelo) {
+        return (Modelo) Classe.addClasse(modelo);
+    }
+
+    public static Modelo getModelo(String nome) {
+        Classe c = Classe.getClasse(nome);
+
+        if (c instanceof Modelo) {
+            return (Modelo) c;
+        } else {
+            return null;
+        }
+    }
 }

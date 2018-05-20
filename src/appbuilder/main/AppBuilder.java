@@ -21,9 +21,21 @@ public class AppBuilder {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Variavel var = new Variavel("String", "meuCarro");
-        Objeto obj = var.getObjeto();
-        System.out.println(var.getDeclaração(obj.getInstancia()));
+
+        Classe factory = new Classe("ConnectionFactory", "app", "dao");
+        Método metodo = new Método("public", "static", "Connection", "getConnection");
+        metodo.addCorpo("return DriverManager.getConnection(\"jdbc:mysql://localhost/mydb\",\"root\",\"root\");");
+        factory.addMétodo(metodo);
+        Classe.addClasse(factory);
+
+        Classe dao = new Classe("AlunoDAO");
+        Método adicionar = new Método("public", "void", "adicionar");
+        dao.addMétodo(adicionar);
+
+        Variavel var = new Variavel("PreparedStatement", "stmt");
+        adicionar.addCorpo(var.getDeclaração(Classe.getClasse(factory.getNomeCompleto()).getMétodo("")));
+        adicionar.addParametro("Aluno", "aluno");
+        System.out.println(dao);
 
     }
 }

@@ -192,13 +192,13 @@ public class Variavel {
     }
 
     /**
-     * Retorna a instância de um objeto
+     * Retorna um objeto do mesmo tipo da variável
      *
-     * @param args
-     * @return
+     * @param args argumentos passados para o construtor
+     * @return objeto da instância da classe ou tipo da variável
      */
-    public Objeto getObjeto(String... args) {
-        return Classe.get(this.getTipo(), args);
+    public Objeto instancia(String... args) {
+        return Objeto.instancia(this.tipo, args);
     }
 
     /**
