@@ -25,6 +25,10 @@ public class Atributo extends Variavel {
     public Atributo(String modificador, String tipo, String nome) {
         super(modificador, tipo, nome, "");
     }
+    
+    public Atributo(String modificador, String tipo, String nome, String valor){
+        super(modificador,tipo,nome,valor);
+    }
 
     @Override
     public String getReferencia() {

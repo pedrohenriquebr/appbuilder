@@ -8,6 +8,7 @@ package appbuilder.api.vars;
 import appbuilder.api.classes.Classe;
 import appbuilder.api.methods.*;
 import appbuilder.api.vars.*;
+import java.util.*;
 
 /**
  * Define a classe Objeto como se fosse uma variável local
@@ -32,12 +33,25 @@ public class Objeto {
         return this.classe;
     }
 
-    public String chamarMétodo(String nome, String... args) {
+    /**
+     * Chamar um método
+     *
+     * @param nome
+     * @param args
+     * @return
+     */
+    public String call(String nome, String... args) {
         return nome + "." + classe.getMétodo(nome).getChamada(args);
     }
 
-    public String acessarAtributo(String nome) {
-        return nome + "." + classe.getAtributo(nome).getReferencia();
+    /**
+     * Acessar um método
+     *
+     * @param nome
+     * @return
+     */
+    public String get(String nome) {
+        return "." + classe.getAtributo(nome).getNome();
     }
 
     /**

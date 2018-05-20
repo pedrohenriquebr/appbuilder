@@ -22,9 +22,9 @@ import java.util.logging.Logger;
  */
 public class Classe {
 
-    private Pacote pacote;
-    private String modAcesso;//modificador de acesso ,Ex: public, private 
-    private String nome;
+    protected Pacote pacote;
+    protected String modAcesso;//modificador de acesso ,Ex: public, private 
+    protected String nome;
 
     private List<Atributo> atributos = new ArrayList<Atributo>();
     private List<Método> métodos = new ArrayList<Método>();
@@ -36,7 +36,7 @@ public class Classe {
     private Método métodoMain;
 
     //classes prontas, usando api de reflection
-    private static Map<String, Classe> classes = new HashMap<>();
+    protected static Map<String, Classe> classes = new HashMap<>();
 
     //deixo classes prontas, já predefinidas
     static {
@@ -44,7 +44,7 @@ public class Classe {
             addClasse("String", "lang", "java");
             addClasse("Integer", "lang", "java");
             addClasse("Object", "lang", "java");
-            addClasse("ArrayList","util","java");
+            addClasse("ArrayList", "util", "java");
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);
@@ -299,7 +299,10 @@ public class Classe {
             classe.addMétodo(metodo);
         }
 
-        return classes.put(nome, classe);
+        return addClasse(classe);
     }
 
+    public static Classe addClasse(Classe classe) {
+        return classes.put(classe.getNome(), classe);
+    }
 }

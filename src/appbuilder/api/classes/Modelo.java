@@ -25,6 +25,8 @@ public class Modelo extends Classe {
         super(nome);
     }
     
+    
+
     private String camelCase(final String line) {
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
@@ -38,7 +40,9 @@ public class Modelo extends Classe {
      * @return
      */
     public boolean addAtributo(String tipo, String nome) {
-        Atributo atr = new Atributo("private", tipo, nome);
+        Atributo atr
+                = new Atributo("private", tipo, nome,
+                        Classe.get(tipo).toString());
         boolean b = super.addAtributo(atr);
 
         if (b) {
@@ -64,7 +68,7 @@ public class Modelo extends Classe {
             return false;
         }
     }
-    
+
     //só recebem um parâmetro
     public boolean addInteiro(String nome) {
         return addAtributo("int", nome);
@@ -143,11 +147,14 @@ public class Modelo extends Classe {
         return sucesso;
     }
     
+    //adicionar construtores associados a atributos
     
+
     /**
      * Pegar um getter associado a um atributo
+     *
      * @param atributo nome do atributo já declarado no modelo
-     * @return 
+     * @return
      */
     public Método getGetter(String atributo) {
         Método método = null;

@@ -21,13 +21,12 @@ public class AppBuilder {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        Modelo modelo = new Modelo("Carro");
+        modelo.addStrings("placa", "marca", "modelo");
+        Objeto obj = modelo.getInstancia();
+        Variavel var = new Variavel(modelo.getNome(), "meuCarro");
+        System.out.println(var.getDeclaração(modelo.getInstancia().toString()));
+        System.out.println(var.getReferencia() + "." + modelo.getAtributo("placa").getNome());
 
-        Modelo modelo = new Modelo("Aluno");
-        modelo.addAtributo(
-                new Atributo("String", "nome",
-                        Classe.get("String").toString()));
-        
-        
-        System.out.println(modelo);
     }
 }
