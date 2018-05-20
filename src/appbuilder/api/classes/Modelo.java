@@ -12,7 +12,7 @@ import appbuilder.api.methods.Parametro;
 
 /**
  *
- * @author psilva
+ * @author Pedro Henrique Braga da Silva
  */
 /**
  * Classe responsável por construir outra classe Modelo dentro do MVC
@@ -24,8 +24,8 @@ public class Modelo extends Classe {
     public Modelo(String nome) {
         super(nome);
     }
-
-    private String capitalize(final String line) {
+    
+    private String camelCase(final String line) {
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
@@ -44,10 +44,10 @@ public class Modelo extends Classe {
         if (b) {
 
             //adicionar getter e setter (JavaBeans)
-            Método getter = new Método("public", tipo, "get" + capitalize(nome));
+            Método getter = new Método("public", tipo, "get" + camelCase(nome));
             getter.setCorpo("return " + atr.getReferencia() + ";\n");
 
-            Método setter = new Método("public", "void", "set" + capitalize(nome));
+            Método setter = new Método("public", "void", "set" + camelCase(nome));
             Parametro param = new Parametro(tipo, nome);
             setter.addParametro(param);
             setter.setCorpo(atr.getInicialização(nome));
@@ -64,8 +64,6 @@ public class Modelo extends Classe {
             return false;
         }
     }
-    
-    
     
     //só recebem um parâmetro
     public boolean addInteiro(String nome) {
@@ -146,10 +144,14 @@ public class Modelo extends Classe {
     }
     
     
-    //retorna o getter com base no nome do atributo associado
+    /**
+     * Pegar um getter associado a um atributo
+     * @param atributo nome do atributo já declarado no modelo
+     * @return 
+     */
     public Método getGetter(String atributo) {
         Método método = null;
-        String camelCase = "get" + capitalize(atributo);
+        String camelCase = "get" + camelCase(atributo);
         método = super.getMétodo(camelCase);
 
         return método;
@@ -158,7 +160,7 @@ public class Modelo extends Classe {
     //retorna o setter com base no nome do atributo associado
     public Método getSetter(String atributo) {
         Método método = null;
-        String camelCase = "set" + capitalize(atributo);
+        String camelCase = "set" + camelCase(atributo);
         método = super.getMétodo(camelCase);
 
         return método;

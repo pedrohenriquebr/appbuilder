@@ -7,6 +7,7 @@ package appbuilder.main;
 
 import appbuilder.api.classes.Modelo;
 import appbuilder.api.classes.Construtor;
+import appbuilder.api.classes.Objeto;
 import appbuilder.api.methods.Método;
 import appbuilder.api.vars.Variavel;
 import appbuilder.util.*;
@@ -30,20 +31,14 @@ public class AppBuilder {
 
         String caminhoPadrão = "/home/psilva/Documentos/";
         ClassBuilder builder = new ClassBuilder(caminhoPadrão);
-        Modelo modelo = null;
-
-        Modelo classe = new Modelo("Aluno");
-        classe.addString("nome");
-        Construtor construtor = new Construtor("public", classe.getNome());
-        construtor.addParametro("String", "nome");
-        classe.addConstrutor(construtor);
-        classe.setPrincipal(true);
-        Método main = classe.getMain();
-        construtor.setCorpo(classe.getAtributo("nome").getInicialização("nome"));
-        Variavel var = new Variavel(classe.getNome(),"meuAluno");
-        main.setCorpo(var.getDeclaração()+""+var.getInicialização(classe.getInstancia("\"Pedro Henrique\"")));
-        System.out.println(classe.toString());
-        
+        Modelo modelo = new Modelo("Pessoa");
+        modelo.addStrings("nome", "telefone");
+        Objeto obj = modelo.getInstancia("obj");
+        modelo.setPrincipal(true);
+        Método metodo = modelo.getMain();
+        metodo.addCorpo("System.out.println(\"Eu sou pedro\")");
+        metodo.addCorpo(obj.getDeclaração(obj.getInstancia()));
+        System.out.println(modelo);
 
     }
     //builder.execute();

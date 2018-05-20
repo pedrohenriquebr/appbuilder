@@ -10,7 +10,7 @@ import appbuilder.util.*;
  */
 /**
  *
- * @author psilva
+ * @author Pedro Henrique Braga da Silva
  */
 public class Parametro extends Variavel {
 
@@ -25,7 +25,7 @@ public class Parametro extends Variavel {
 
     @Override
     public String toString() {
-        return getReferencia();
+        return tipo+" "+getReferencia();
     }
 
 }

@@ -12,7 +12,7 @@ import appbuilder.util.*;
 
 /**
  *
- * @author psilva
+ * @author Pedro Henrique Braga da Silva
  */
 public class Construtor extends Método{
     

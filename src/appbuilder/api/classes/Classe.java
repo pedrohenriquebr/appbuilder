@@ -15,7 +15,7 @@ import java.util.*;
 
 /**
  *
- * @author aluno
+ * @author Pedro Henrique Braga da Silva
  */
 public class Classe {
 
@@ -52,6 +52,13 @@ public class Classe {
         this.pacote = new Pacote(pacote, caminho);
     }
 
+    /**
+     * Define se essa classe é principal ou não, ou seja, se tem "public static
+     * voi main(String [] args )"
+     *
+     * @param b
+     * @return
+     */
     public boolean setPrincipal(boolean b) {
         if (b) {
             métodoMain = new Método("public", "static", "void", "main");
@@ -66,21 +73,12 @@ public class Classe {
     }
 
     //referente quanto na forma de objeto
-    public String getInstancia(String... argumentos) {
-        String codigo = "";
-        codigo += "new " + nome + "(";
-
-        int contador = 1;
-        for (String arg : argumentos) {
-            if (contador % 2 == 0) {
-                codigo += ",";
-            }
-
-            codigo += arg;
-        }
-
-        codigo += ")";
-        return codigo;
+    public Objeto getInstancia(String nome, String... argumentos) {
+        //defino o tipo do objeto e nome da variável dele
+        Objeto obj = new Objeto(getNome(), nome);
+        obj.setClasse(this);//passo as informações da classe
+        obj.setInstancia(argumentos);//defino os argumentos da instância dele
+        return obj;//devolvo ele
     }
 
     public Pacote getPacote() {
