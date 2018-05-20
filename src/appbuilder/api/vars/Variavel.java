@@ -9,6 +9,7 @@ import appbuilder.util.*;
 import java.util.*;
 
 /**
+ * Deve ficar subentendido que essa variável é local
  *
  * @author psilva
  */
@@ -175,6 +176,7 @@ public class Variavel {
      */
     public String getInicialização(String valor) {
 
+        this.valor = valor;
         return getReferencia() + " = " + valor + " ;\n";
 
     }

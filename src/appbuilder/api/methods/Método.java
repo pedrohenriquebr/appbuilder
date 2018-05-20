@@ -55,7 +55,8 @@ public class Método {
      * Retorna a chamada ao método
      *
      * @param params os parametros para o método
-     * @return retorna uma String contendo o código de chamada ao método. nome(arg0,arg1,...)
+     * @return retorna uma String contendo o código de chamada ao método.
+     * nome(arg0,arg1,...)
      */
     public String getChamada(String... params) {
         String codigo = "";
@@ -279,9 +280,11 @@ public class Método {
             //toda vez que chegar no próximo parâmetro, colocar uma vírgula
             if (contador % 2 == 0) {
                 codigo += ", ";
+                contador = 1;
             }
             //coloca o parâmetro
             codigo += param;
+            contador++;
         }
 
         codigo += "){ \n";

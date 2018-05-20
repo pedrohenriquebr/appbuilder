@@ -3,22 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appbuilder.api.classes;
+package appbuilder.api.vars;
 
-import appbuilder.api.methods.Método;
-import appbuilder.api.vars.Variavel;
+import appbuilder.api.classes.Classe;
+import appbuilder.api.methods.*;
+import appbuilder.api.vars.*;
 
 /**
+ * Define a classe Objeto como se fosse uma variável local
  *
  * @author psilva
  */
-public class Objeto extends Variavel {
+public class Objeto {
 
     private Classe classe;
     private String instancia;
 
-    public Objeto(String tipo, String nome) {
-        super(tipo, nome);
+    public Objeto(Classe classe) {
+        setClasse(classe);
+        instancia = "";
     }
 
     public void setClasse(Classe classe) {
@@ -37,6 +40,11 @@ public class Objeto extends Variavel {
         return nome + "." + classe.getAtributo(nome).getReferencia();
     }
 
+    /**
+     * Define os argumentos para o objeto
+     *
+     * @param args
+     */
     public void setInstancia(String... args) {
         String codigo = "";
         codigo += "new " + classe.getNome() + "(";
@@ -51,7 +59,8 @@ public class Objeto extends Variavel {
         }
 
         codigo += ")";
-        this.instancia = codigo;
+
+        instancia = codigo;
     }
 
     public String getInstancia() {

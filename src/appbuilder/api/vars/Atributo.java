@@ -1,5 +1,6 @@
 package appbuilder.api.vars;
 
+import appbuilder.api.classes.*;
 import appbuilder.api.vars.Variavel;
 import appbuilder.util.*;
 
@@ -9,6 +10,7 @@ import appbuilder.util.*;
  * and open the template in the editor.
  */
 /**
+ * Atributo é sinônimo de variável de instância
  *
  * @author aluno
  */
@@ -31,7 +33,7 @@ public class Atributo extends Variavel {
 
     @Override
     public String getInicialização(String valor) {
-        return getReferencia() + " = "  + valor + ";\n";
+        return getReferencia() + " = " + valor + ";\n";
     }
 
     @Override

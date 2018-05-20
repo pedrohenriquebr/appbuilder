@@ -5,13 +5,16 @@ package appbuilder.api.classes;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import appbuilder.api.methods.Parametro;
-import appbuilder.api.methods.Método;
-import appbuilder.api.packages.Pacote;
-import appbuilder.api.packages.Importação;
-import appbuilder.api.vars.Atributo;
+import appbuilder.api.vars.Objeto;
+import appbuilder.api.methods.*;
+import appbuilder.api.packages.*;
+import appbuilder.api.vars.*;
 import appbuilder.util.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,6 +34,23 @@ public class Classe {
     private Construtor construtorPrincipal;
     //método principal
     private Método métodoMain;
+
+    //classes prontas, usando api de reflection
+    private static Map<String, Classe> classes = new HashMap<>();
+
+    //deixo classes prontas, já predefinidas
+    static {
+        try {
+            addClasse("String", "lang", "java");
+            addClasse("Integer", "lang", "java");
+            addClasse("Object", "lang", "java");
+            addClasse("ArrayList","util","java");
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Não foi possível carregar as classes");
+        }
+    }
 
     public Classe(String nome) {
         this.nome = nome;
@@ -73,12 +93,24 @@ public class Classe {
     }
 
     //referente quanto na forma de objeto
-    public Objeto getInstancia(String nome, String... argumentos) {
-        //defino o tipo do objeto e nome da variável dele
-        Objeto obj = new Objeto(getNome(), nome);
-        obj.setClasse(this);//passo as informações da classe
-        obj.setInstancia(argumentos);//defino os argumentos da instância dele
-        return obj;//devolvo ele
+    public Objeto getInstancia(String... argumentos) {
+        //defino o tipo do objeto, que é instância da classe 
+        Objeto obj = new Objeto(this);
+        obj.setInstancia(argumentos); //defino os argumentos da instância dele
+        return obj;
+
+        //devolvo ele
+    }
+
+    /**
+     * Retorna uma instância de uma classe já predefinida
+     *
+     * @param nome
+     * @param argumentos
+     * @return
+     */
+    public static Objeto get(String nome, String... argumentos) {
+        return classes.get(nome).getInstancia(argumentos);
     }
 
     public Pacote getPacote() {
@@ -118,7 +150,7 @@ public class Classe {
         codigo += this.modAcesso + " class " + this.nome + " { \n\n";
 
         for (Atributo var : atributos) {
-            codigo += var;
+            codigo += var.getDeclaração();
         }
 
         for (Método met : métodos) {
@@ -244,6 +276,30 @@ public class Classe {
         }
 
         return método;
+    }
+
+    //cria uma classe a partir de uma já predefinida
+    public static Classe addClasse(String nome, String pacote, String caminho) throws ClassNotFoundException {
+        Classe classe = new Classe(nome, pacote, caminho);
+        Class predefinida = Class.forName(classe.getNomeCompleto());
+
+        for (Method method : predefinida.getDeclaredMethods()) {
+            String name = method.getName();
+            String retType = method.getReturnType().getSimpleName();
+            Parameter[] params = method.getParameters();
+            Método metodo = new Método("public", retType, name);
+
+            for (Parameter param : params) {
+                Class cl = param.getType();
+
+                metodo.addParametro(cl.getSimpleName(), param.getName());
+
+            }
+
+            classe.addMétodo(metodo);
+        }
+
+        return classes.put(nome, classe);
     }
 
 }
