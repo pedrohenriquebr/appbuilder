@@ -45,6 +45,7 @@ public class Classe {
             addClasse("Integer", "lang", "java");
             addClasse("Object", "lang", "java");
             addClasse("ArrayList", "util", "java");
+            addClasse("Connection", "sql", "java");
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);

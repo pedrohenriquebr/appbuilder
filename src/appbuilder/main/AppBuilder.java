@@ -10,6 +10,7 @@ import appbuilder.api.methods.*;
 import appbuilder.api.vars.*;
 import appbuilder.util.*;
 import java.lang.reflect.*;
+import java.sql.Connection;
 
 /**
  *
@@ -18,9 +19,9 @@ import java.lang.reflect.*;
 public class AppBuilder {
 
     /**
-     * @param args the command line arguments
+     * @param args the command line argumentss
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException {
 
         Classe factory = new Classe("ConnectionFactory", "app", "dao");
         Método metodo = new Método("public", "static", "Connection", "getConnection");
@@ -33,7 +34,19 @@ public class AppBuilder {
         dao.addMétodo(adicionar);
 
         Variavel var = new Variavel("PreparedStatement", "stmt");
-        adicionar.addCorpo(var.getDeclaração(Classe.getClasse(factory.getNomeCompleto()).getMétodo("")));
+
+        dao.addAtributo(new Atributo("private", "Connection", "con",
+                Classe.getClasse(factory.getNomeCompleto()).
+                        getMétodo("getConnection").
+                        getChamadaEstática(factory.getNome())));
+
+        Objeto obj = Objeto.instancia("java.sql.Connection");
+        adicionar.addCorpo(var.getDeclaração(
+                dao.getAtributo("con").getReferencia() + obj.call("prepareStatement", "\"INSERT INTO aluno VALUES(?,?,?)\"")));
+
+        Class con = Class.forName("java.sql.Connection");
+        System.out.println(con.getName());
+
         adicionar.addParametro("Aluno", "aluno");
         System.out.println(dao);
 

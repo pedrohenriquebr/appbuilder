@@ -41,7 +41,7 @@ public class Objeto {
      * @return
      */
     public String call(String nome, String... args) {
-        return nome + "." + classe.getMétodo(nome).getChamada(args);
+        return "." + classe.getMétodo(nome).getChamada(args);
     }
 
     /**

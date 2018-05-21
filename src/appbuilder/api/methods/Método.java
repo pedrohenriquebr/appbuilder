@@ -64,18 +64,24 @@ public class Método {
         codigo += nome + "(";
 
         //conta a posição do parâmetro
-        int conta = 0;
+        int conta = 1;
         for (String param : params) {
             if (conta % 2 == 0) {
                 codigo += ", ";
+                conta = 1;
             }
 
             codigo += param;
+            conta++;
         }
 
         codigo += ")";
 
         return codigo;
+    }
+
+    public String getChamadaEstática(String classe, String... params) {
+        return classe + "." + getChamada(params);
     }
 
     /**
