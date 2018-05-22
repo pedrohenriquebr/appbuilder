@@ -25,14 +25,29 @@ public class Atributo extends Variavel {
     public Atributo(String modificador, String tipo, String nome) {
         super(modificador, tipo, nome, "");
     }
-    
-    public Atributo(String modificador, String tipo, String nome, String valor){
-        super(modificador,tipo,nome,valor);
+
+    public Atributo(String modificador, String tipo, String nome, String valor) {
+        super(modificador, tipo, nome, valor);
     }
 
     @Override
     public String getReferencia() {
         return "this." + nome;
+    }
+    
+    
+    /**
+     * Considera que o atributo é um objeto e que contém métodos e atributos 
+     * a serem chamados
+     * @param método
+     * @param args
+     * @return 
+     */
+    public String call(String método, String... args) {
+        Classe classe = Classe.getClasseEstática(this.getTipo());
+        Objeto obj = new Objeto(classe);
+
+        return getReferencia() + obj.call(método,args);
     }
 
     @Override

@@ -36,7 +36,11 @@ public class Classe {
     private Método métodoMain;
 
     //classes prontas, usando api de reflection
-    protected static Map<String, Classe> classes = new HashMap<>();
+    //nome totalmente qualificado com o objeto da classe pronta
+    public static Map<String, Classe> classes = new HashMap<>();
+
+    //Associa nome da classe com o nome totalmente qualificado
+    public Map<String, String> nomesCompletos = new HashMap<>();
 
     //deixo classes prontas, já predefinidas
     static {
@@ -45,7 +49,6 @@ public class Classe {
             addClasse("Integer", "lang", "java");
             addClasse("Object", "lang", "java");
             addClasse("ArrayList", "util", "java");
-            addClasse("Connection", "sql", "java");
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);
@@ -147,6 +150,11 @@ public class Classe {
 
         //pacote
         codigo += this.pacote + ";\n\n";
+        //importações
+
+        for (Importação importação : importações) {
+            codigo += importação + ";\n\n";
+        }
         //classe
         codigo += this.modAcesso + " class " + this.nome + " { \n\n";
 
@@ -164,6 +172,8 @@ public class Classe {
     }
 
     public boolean addAtributo(Atributo atr) {
+        //pega o tipo de atributo
+        String tipo = atr.getTipo();
 
         return this.atributos.add(atr);
     }
@@ -303,15 +313,53 @@ public class Classe {
         return addClasse(classe);
     }
 
+    //
     public static Classe addClasse(Classe classe) {
         return classes.put(classe.getNomeCompleto(), classe);
     }
 
-    public static Classe getClasse(String nome) {
+    /**
+     * Adiciona o nome da classe com o nome totalmente qualificado dela
+     *
+     * @param nome
+     * @param classe
+     * @return o caminhoCompleto
+     */
+    public String addNomeCompleto(String nome, String nomeCompleto) {
+
+        return this.nomesCompletos.put(nome, nomeCompleto);
+    }
+
+    public String getNomeCompleto(String nome) {
+        return this.nomesCompletos.get(nome);
+    }
+
+    public static Classe getClasseEstática(String nome) {
         return classes.get(nome);
+    }
+
+    public Classe getClasse(String nome) {
+        return classes.get(nomesCompletos.get(nome));
     }
 
     public Método callStatic(String método, String... args) {
         return getMétodo(nome);
+    }
+
+    public boolean addImportação(Classe classe) {
+        addNomeCompleto(classe.getNome(), classe.getNomeCompleto());
+        return this.importações.add(new Importação(classe.getNome(), classe.getPacote().getCaminho()));
+    }
+
+    public String getImportação(String classe) {
+        String caminho = "";
+        for (Importação importa : importações) {
+            if (importa.getClasse().equals(classe)) {
+
+                caminho = importa.getCaminho();
+            }
+        }
+
+        return caminho;
     }
 }

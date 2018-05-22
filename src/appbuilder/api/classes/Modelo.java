@@ -225,7 +225,7 @@ public class Modelo extends Classe {
     }
 
     public static Modelo getModelo(String nome) {
-        Classe c = Classe.getClasse(nome);
+        Classe c = Classe.getClasseEstática(nome);
 
         if (c instanceof Modelo) {
             return (Modelo) c;

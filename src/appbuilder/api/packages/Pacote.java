@@ -22,7 +22,7 @@ public class Pacote {
      */
     public Pacote(String nome) {
         this.nome = nome.toLowerCase();
-        this.caminho = this.nome;
+        this.caminho = nome.toLowerCase();
     }
 
     public Pacote() {
@@ -35,7 +35,7 @@ public class Pacote {
      * @param caminho caminho completo do pacote. Ex: java.io, java.sql
      */
     public Pacote(String nome, String caminho) {
-        this(nome);
+        this.nome = nome;
         if (!caminho.equals("")) {
             this.caminho = caminho + "." + nome;
 

@@ -7,31 +7,42 @@ import appbuilder.util.*;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 /**
  *
  * @author Pedro Henrique Braga da Silva
  */
 public class Importação {
-    
-    private String caminho;
-    
-    public Importação(String caminho ){
-        this.caminho  = caminho;
+
+    private Pacote caminho;
+    private String classe;
+
+    public Importação(String classe, String caminho) {
+        this.caminho = new Pacote(caminho);
+        this.classe = classe;
     }
 
     public String getCaminho() {
-        return caminho;
+        return caminho.getCaminho();
     }
 
     public void setCaminho(String caminho) {
-        this.caminho = caminho;
+        if (caminho.contains(".")) {
+            String[] pacotes = caminho.split("\\.");
+            String pacote = pacotes[pacotes.length - 1];
+            caminho = caminho.replace("." + pacote, "");
+            this.caminho = new Pacote(pacote, caminho);
+        } else {
+            this.caminho = new Pacote(caminho);
+        }
+
     }
-    
-    
-    public String toString(){
-        return "import "+caminho + ";";
+
+    public String getClasse() {
+        return this.classe;
     }
-    
+
+    public String toString() {
+        return "import " + caminho.getCaminho() + "." + classe;
+    }
+
 }

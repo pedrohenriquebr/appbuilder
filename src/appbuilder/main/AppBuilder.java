@@ -28,26 +28,28 @@ public class AppBuilder {
         metodo.addCorpo("return DriverManager.getConnection(\"jdbc:mysql://localhost/mydb\",\"root\",\"root\");");
         factory.addMétodo(metodo);
         Classe.addClasse(factory);
-
+        Classe.addClasse("Connection","sql","java");
         Classe dao = new Classe("AlunoDAO");
         Método adicionar = new Método("public", "void", "adicionar");
         dao.addMétodo(adicionar);
-
+        dao.addImportação(Classe.addClasse(factory));
+        dao.addImportação(Classe.addClasse("Connection","sql","java"));
+        
+       
+        
+      
+//        dao.addImportação(factory.getPacote().getCaminho);
         Variavel var = new Variavel("PreparedStatement", "stmt");
 
         dao.addAtributo(new Atributo("private", "Connection", "con",
-                Classe.getClasse(factory.getNomeCompleto()).
+                (dao.getClasse("ConnectionFactory")).
                         getMétodo("getConnection").
                         getChamadaEstática(factory.getNome())));
-
-        Objeto obj = Objeto.instancia("java.sql.Connection");
         adicionar.addCorpo(var.getDeclaração(
-                dao.getAtributo("con").getReferencia() + obj.call("prepareStatement", "\"INSERT INTO aluno VALUES(?,?,?)\"")));
-
-        Class con = Class.forName("java.sql.Connection");
-        System.out.println(con.getName());
+                dao.getAtributo("con").call("prepareStatement", "\"INSERT INTO Aluno VALUES(?,?,?,?)\"")));
 
         adicionar.addParametro("Aluno", "aluno");
+        
         System.out.println(dao);
 
     }
