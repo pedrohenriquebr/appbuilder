@@ -35,6 +35,15 @@ public class Variavel {
      *
      */
     protected String valor;
+    
+    /**
+     * A classe em que a variável está sendo usada
+     */
+    
+    protected Classe classe;
+
+    
+    
 
     /**
      * Constrói a variável com seu atributos básicos, o mínimo para ter uma
@@ -199,6 +208,14 @@ public class Variavel {
      */
     public Objeto instancia(String... args) {
         return Objeto.instancia(this.tipo, args);
+    }
+    
+    public Classe getClasse() {
+        return classe;
+    }
+
+    public void setClasse(Classe classe) {
+        this.classe = classe;
     }
 
     /**

@@ -171,9 +171,17 @@ public class Classe {
         return codigo;
     }
 
+    /**
+     * Adiciona um atributo à classe. Todo atributo tem uma classe na qual 
+     * ele pertenc, então é passado para setClasse a classe que está adicionando 
+     * o atributo
+     * @param atr atributo 
+     * @return true ou false se a operação foi realizada com sucesso
+     */
     public boolean addAtributo(Atributo atr) {
         //pega o tipo de atributo
         String tipo = atr.getTipo();
+        atr.setClasse(this);
 
         return this.atributos.add(atr);
     }
@@ -313,7 +321,7 @@ public class Classe {
         return addClasse(classe);
     }
 
-    //
+   
     public static Classe addClasse(Classe classe) {
         return classes.put(classe.getNomeCompleto(), classe);
     }
@@ -337,7 +345,8 @@ public class Classe {
     public static Classe getClasseEstática(String nome) {
         return classes.get(nome);
     }
-
+    
+    //acessar uma classe importada
     public Classe getClasse(String nome) {
         return classes.get(nomesCompletos.get(nome));
     }

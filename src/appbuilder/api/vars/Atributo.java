@@ -15,6 +15,7 @@ import appbuilder.util.*;
  * @author aluno
  */
 public class Atributo extends Variavel {
+    
 
     public Atributo(String tipo, String nome) {
         super(tipo, nome);
@@ -24,10 +25,12 @@ public class Atributo extends Variavel {
 
     public Atributo(String modificador, String tipo, String nome) {
         super(modificador, tipo, nome, "");
+        
     }
 
     public Atributo(String modificador, String tipo, String nome, String valor) {
         super(modificador, tipo, nome, valor);
+        this.classe = Classe.getClasseEstática(tipo);
     }
 
     @Override
@@ -44,7 +47,8 @@ public class Atributo extends Variavel {
      * @return 
      */
     public String call(String método, String... args) {
-        Classe classe = Classe.getClasseEstática(this.getTipo());
+        //no caso aqui é como se fosse acessar uma classe que foi importada
+        Classe classe = this.classe.getClasse(getTipo());
         Objeto obj = new Objeto(classe);
 
         return getReferencia() + obj.call(método,args);
