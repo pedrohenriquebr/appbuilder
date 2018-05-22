@@ -24,6 +24,9 @@ public class AppBuilder {
      * @param args the command line argumentss
      */
     public static void main(String[] args) throws ClassNotFoundException, IOException {
+        Classe.addClasse("Interface","interfaces","appbuilder.api");
+        System.out.println(Classe.getClasseEstática("appbuilder.api.interfaces.Interface"));
+        System.exit(0);
         
         Classe factory = new Classe("ConnectionFactory", "app", "dao");
         Método metodo = new Método("public", "static", "Connection", "getConnection");

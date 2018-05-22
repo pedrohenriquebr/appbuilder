@@ -11,6 +11,7 @@ import appbuilder.api.packages.*;
 import appbuilder.api.vars.*;
 import appbuilder.util.*;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.*;
 import java.util.logging.Level;
@@ -25,6 +26,7 @@ public class Classe {
     protected Pacote pacote;
     protected String modAcesso;//modificador de acesso ,Ex: public, private 
     protected String nome;
+    private boolean éInterface;
 
     private List<Atributo> atributos = new ArrayList<Atributo>();
     private List<Método> métodos = new ArrayList<Método>();
@@ -44,7 +46,7 @@ public class Classe {
 
     //deixo classes prontas, já predefinidas
     static {
-        try {
+        /*  try {
             addClasse("String", "lang", "java");
             addClasse("Integer", "lang", "java");
             addClasse("Object", "lang", "java");
@@ -54,7 +56,10 @@ public class Classe {
             Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Não foi possível carregar as classes");
         }
+        
+         */
     }
+    private List<String> modsNAcesso;
 
     public Classe(String nome) {
         this.nome = nome;
@@ -74,6 +79,15 @@ public class Classe {
     public Classe(String nome, String pacote, String caminho) {
         this(nome);
         this.pacote = new Pacote(pacote, caminho);
+    }
+    
+   
+    public void setInterface(boolean b ){
+        this.éInterface = true;
+    }
+    
+    public boolean éInterface(){
+        return this.éInterface;
     }
 
     /**
@@ -156,7 +170,30 @@ public class Classe {
             codigo += importação + ";\n\n";
         }
         //classe
-        codigo += this.modAcesso + " class " + this.nome + " { \n\n";
+        codigo += this.modAcesso;
+
+        //indica se é uma interface ou não
+        String tipo
+                = this.modsNAcesso.indexOf("interface") >= 0
+                ? /* se verdadeiro, então é interface*/ "interface"
+                : /*caso contrário, é uma classe */ "class";
+
+        //pegar os modificadores de não-acesso
+        for (String mod : modsNAcesso) {
+            //pula modificador de interface, pra não repetir
+            if (mod.equals("interface")) {
+                continue;
+            }
+
+            //se é uma interface, então não precisa colocar o abstract
+            if (tipo.equals("interface") && mod.equals("abstract")) {
+                continue;
+            }
+
+            codigo += " " + mod + " ";
+        }
+
+        codigo += " " + tipo + " " + this.nome + " { \n\n";
 
         for (Atributo var : atributos) {
             codigo += var.getDeclaração();
@@ -172,10 +209,11 @@ public class Classe {
     }
 
     /**
-     * Adiciona um atributo à classe. Todo atributo tem uma classe na qual 
-     * ele pertenc, então é passado para setClasse a classe que está adicionando 
-     * o atributo
-     * @param atr atributo 
+     * Adiciona um atributo à classe. Todo atributo tem uma classe na qual ele
+     * pertenc, então é passado para setClasse a classe que está adicionando o
+     * atributo
+     *
+     * @param atr atributo
      * @return true ou false se a operação foi realizada com sucesso
      */
     public boolean addAtributo(Atributo atr) {
@@ -297,22 +335,53 @@ public class Classe {
         return método;
     }
 
-    //cria uma classe a partir de uma já predefinida
+    //cria uma classe a partir de uma já predefinida, classes prontas da linguagem Java
     public static Classe addClasse(String nome, String pacote, String caminho) throws ClassNotFoundException {
         Classe classe = new Classe(nome, pacote, caminho);
         Class predefinida = Class.forName(classe.getNomeCompleto());
+        List<String> modifiers = modifiersFromInt(predefinida.getModifiers());
+
+        //coloca o modificador de acesso
+        classe.setModAcesso(modifiers.get(0));
+
+        //modificadores de não-acesso
+        List<String> mnacesso = new ArrayList<>();
+
+        for (int k = 1; k < modifiers.size(); k++) {
+            String mod = modifiers.get(k);
+            mnacesso.add(mod);
+
+        }
+
+        //coloca os modificadores de não-acesso
+        classe.setModNAcesso(mnacesso);
 
         for (Method method : predefinida.getDeclaredMethods()) {
             String name = method.getName();
             String retType = method.getReturnType().getSimpleName();
             Parameter[] params = method.getParameters();
+
+            List<String> mods = modifiersFromInt(method.getModifiers());
+            //por padrão o modificador de acesso é public
             Método metodo = new Método("public", retType, name);
+
+            //em teoria o primeiro modificador é de acesso
+            metodo.setModAcesso(mods.get(0));
+
+            List<String> modsnacesso = new ArrayList<>();
+
+            //começando a partir do segundo modificador
+            for (int j = 1; j < mods.size(); j++) {
+                modsnacesso.add(mods.get(j));
+            }
+
+            //coloca todos os mdificadores de não-acesso 
+            metodo.setModNacesso(modsnacesso);
 
             for (Parameter param : params) {
                 Class cl = param.getType();
 
                 metodo.addParametro(cl.getSimpleName(), param.getName());
-
             }
 
             classe.addMétodo(metodo);
@@ -321,7 +390,32 @@ public class Classe {
         return addClasse(classe);
     }
 
-   
+    private static int modifierFromString(String s) {
+        int m = 0x0;
+        if ("public".equals(s)) {
+            m |= Modifier.PUBLIC;
+        } else if ("protected".equals(s)) {
+            m |= Modifier.PROTECTED;
+        } else if ("private".equals(s)) {
+            m |= Modifier.PRIVATE;
+        } else if ("static".equals(s)) {
+            m |= Modifier.STATIC;
+        } else if ("final".equals(s)) {
+            m |= Modifier.FINAL;
+        } else if ("transient".equals(s)) {
+            m |= Modifier.TRANSIENT;
+        } else if ("volatile".equals(s)) {
+            m |= Modifier.VOLATILE;
+        }
+        return m;
+    }
+
+    private static List<String> modifiersFromInt(int modifiers) {
+        List<String> modNames = Arrays.asList(Modifier.toString(modifiers).split("\\s"));
+        return modNames;
+    }
+
+    //adicionar uma classe criada pelo usuário
     public static Classe addClasse(Classe classe) {
         return classes.put(classe.getNomeCompleto(), classe);
     }
@@ -345,7 +439,7 @@ public class Classe {
     public static Classe getClasseEstática(String nome) {
         return classes.get(nome);
     }
-    
+
     //acessar uma classe importada
     public Classe getClasse(String nome) {
         return classes.get(nomesCompletos.get(nome));
@@ -371,4 +465,15 @@ public class Classe {
 
         return caminho;
     }
+
+    public void setModNAcesso(List<String> modsnacesso) {
+        this.modsNAcesso = modsnacesso;
+    }
+    
+    
+    public List<String> getModNAcesso() {
+
+        return this.modsNAcesso;
+    }
+
 }
