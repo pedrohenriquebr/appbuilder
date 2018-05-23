@@ -27,7 +27,7 @@ public class AppBuilder {
     public static void main(String[] args) throws ClassNotFoundException, IOException {
        
         
-        Classe.getClasseEstática("String");
+        System.out.println(Classe.getClasseEstática("java.util.ArrayList"));
         System.exit(0);
 
         Classe factory = new Classe("ConnectionFactory", "app", "dao");

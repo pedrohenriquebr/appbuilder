@@ -210,7 +210,17 @@ public class Classe {
             codigo += " " + mod + " ";
         }
 
-        codigo += " " + tipo + " " + this.nome + " { \n\n";
+        //tipo indentifica se é interface ou classe 
+        codigo += " " + tipo + " " + this.nome;
+
+        //coloca o extends caso tenha uma superclasse
+        if (superClasse != null) {
+            if (!superClasse.getNome().equals("Object")) {
+                codigo += " extends " + superClasse.getNome();
+            }
+        }
+
+        codigo += " { \n\n";
 
         for (Atributo var : atributos) {
             codigo += var.getDeclaração();
@@ -355,7 +365,7 @@ public class Classe {
     //cria uma classe a partir de uma já predefinida, classes prontas da linguagem Java
     public static Classe addClasse(String nome, String pacote, String caminho) throws ClassNotFoundException {
         Classe classe = new Classe(nome, pacote, caminho);
-        
+
         Log.debug(Classe.class, "adicionando classe " + classe.getNomeCompleto());
         //Verifico se já não está 
         Classe teste = classes.get(classe.getNomeCompleto());
@@ -380,7 +390,7 @@ public class Classe {
             String[] classeSplitted = classeQualificada.split("\\.");
 
             Log.debug(Classe.class, classe.getNomeCompleto() + " tem superclasse " + superClasse.getName());
-           
+
             /**
              * superClasse.getName() retorna o nome totalmente qualificado:
              * java.lang.String superClasse.getPackage().getName() retorna o
@@ -447,8 +457,7 @@ public class Classe {
         }
 
         addClasse(classe);
-        
-        
+
         return classe;
     }
 
