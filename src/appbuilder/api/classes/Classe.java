@@ -41,23 +41,33 @@ public class Classe {
     //nome totalmente qualificado com o objeto da classe pronta
     public static Map<String, Classe> classes = new HashMap<>();
 
-    //Associa nome da classe com o nome totalmente qualificado
+    /**
+     * Associa nome da classe com o nome totalmente qualificado Uma espécie de
+     * apelido, Ex: String -> java.lang.String
+     */
     public Map<String, String> nomesCompletos = new HashMap<>();
+
+    /**
+     * A superclasse
+     */
+    private Classe superClasse;
 
     //deixo classes prontas, já predefinidas
     static {
-        /*  try {
+
+        try {
+
             addClasse("String", "lang", "java");
             addClasse("Integer", "lang", "java");
             addClasse("Object", "lang", "java");
             addClasse("ArrayList", "util", "java");
+            addClasse("Interface", "interfaces", "appbuilder.api");
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Não foi possível carregar as classes");
         }
-        
-         */
+
     }
     private List<String> modsNAcesso;
 
@@ -80,13 +90,20 @@ public class Classe {
         this(nome);
         this.pacote = new Pacote(pacote, caminho);
     }
-    
-   
-    public void setInterface(boolean b ){
+
+    public void setSuperClasse(Classe superClasse) {
+        this.superClasse = superClasse;
+    }
+
+    public Classe getSuperClasse() {
+        return this.superClasse;
+    }
+
+    public void setInterface(boolean b) {
         this.éInterface = true;
     }
-    
-    public boolean éInterface(){
+
+    public boolean éInterface() {
         return this.éInterface;
     }
 
@@ -338,8 +355,46 @@ public class Classe {
     //cria uma classe a partir de uma já predefinida, classes prontas da linguagem Java
     public static Classe addClasse(String nome, String pacote, String caminho) throws ClassNotFoundException {
         Classe classe = new Classe(nome, pacote, caminho);
+        
+        Log.debug(Classe.class, "adicionando classe " + classe.getNomeCompleto());
+        //Verifico se já não está 
+        Classe teste = classes.get(classe.getNomeCompleto());
+
+        if (teste != null) {
+            //a classe já está inserida
+            Log.debug(Classe.class, "A classe " + teste.getNomeCompleto() + " já está salva !");
+            return teste;
+        }
+
+        //caso contrário, continua 
         Class predefinida = Class.forName(classe.getNomeCompleto());
         List<String> modifiers = modifiersFromInt(predefinida.getModifiers());
+        Class superClasse = predefinida.getSuperclass();
+
+        if (superClasse != null) {
+            //defino a superclasse para minha metaclasse
+            //infelizmente teve recursividade
+            String pacoteQualificado = superClasse.getPackage().getName();
+            String classeQualificada = superClasse.getName();
+            String[] pacoteSplitted = pacoteQualificado.split("\\.");
+            String[] classeSplitted = classeQualificada.split("\\.");
+
+            Log.debug(Classe.class, classe.getNomeCompleto() + " tem superclasse " + superClasse.getName());
+           
+            /**
+             * superClasse.getName() retorna o nome totalmente qualificado:
+             * java.lang.String superClasse.getPackage().getName() retorna o
+             * nome totalmente qualificado: java.lang O nome da classe é a
+             * última palavra, então eu precisei dividir por "." E precisei
+             * fazer recursividade
+             */
+            classe.setSuperClasse(
+                    Classe.addClasse(
+                            classeSplitted[classeSplitted.length - 1],
+                            pacoteSplitted[pacoteSplitted.length - 1],
+                            superClasse.getPackage().getName().
+                                    replace("." + pacoteSplitted[pacoteSplitted.length - 1], "")));
+        }
 
         //coloca o modificador de acesso
         classe.setModAcesso(modifiers.get(0));
@@ -355,6 +410,10 @@ public class Classe {
 
         //coloca os modificadores de não-acesso
         classe.setModNAcesso(mnacesso);
+
+        if (mnacesso.contains("interface")) {
+            classe.setInterface(true);
+        }
 
         for (Method method : predefinida.getDeclaredMethods()) {
             String name = method.getName();
@@ -387,7 +446,15 @@ public class Classe {
             classe.addMétodo(metodo);
         }
 
-        return addClasse(classe);
+        addClasse(classe);
+        
+        
+        return classe;
+    }
+
+    //adicionar uma classe criada pelo usuário
+    public static Classe addClasse(Classe classe) {
+        return classes.put(classe.getNomeCompleto(), classe);
     }
 
     private static int modifierFromString(String s) {
@@ -413,11 +480,6 @@ public class Classe {
     private static List<String> modifiersFromInt(int modifiers) {
         List<String> modNames = Arrays.asList(Modifier.toString(modifiers).split("\\s"));
         return modNames;
-    }
-
-    //adicionar uma classe criada pelo usuário
-    public static Classe addClasse(Classe classe) {
-        return classes.put(classe.getNomeCompleto(), classe);
     }
 
     /**
@@ -469,8 +531,7 @@ public class Classe {
     public void setModNAcesso(List<String> modsnacesso) {
         this.modsNAcesso = modsnacesso;
     }
-    
-    
+
     public List<String> getModNAcesso() {
 
         return this.modsNAcesso;
