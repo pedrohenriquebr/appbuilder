@@ -32,6 +32,9 @@ public class Classe {
     private List<Método> métodos = new ArrayList<Método>();
     private List<Importação> importações = new ArrayList<Importação>();
 
+    //modificadores de não-acesso
+    private List<String> modsNAcesso = new ArrayList<>();
+
     //construtor principal
     private Construtor construtorPrincipal;
     //método principal
@@ -54,7 +57,7 @@ public class Classe {
 
     //deixo classes prontas, já predefinidas
     static {
-
+        Log.debug("Classe.static", "começo: adicionando classes");
         try {
 
             addClasse("String", "lang", "java");
@@ -67,9 +70,8 @@ public class Classe {
             Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Não foi possível carregar as classes");
         }
-
+        Log.debug("Classe.static", "fim: adicionando classes");
     }
-    private List<String> modsNAcesso;
 
     public Classe(String nome) {
         this.nome = nome;
@@ -91,8 +93,30 @@ public class Classe {
         this.pacote = new Pacote(pacote, caminho);
     }
 
+    /**
+     * Define a superclasse com base nos pacotes ou classes já importadas Não
+     * pode ter uma super classe que não esteja dentro das importações
+     *
+     * @param nomeClasse
+     * @param superClasse
+     */
+    public void setSuperClasse(String nomeClasse) {
+        Classe classe = getClasse(nomeClasse);
+        
+        Log.debug("Superclasse definida: " + classe.getNome());
+        try {
+
+            setSuperClasse(classe);
+
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();;
+            Log.debug(Classe.class, "superclasse nula!");
+        }
+    }
+
     public void setSuperClasse(Classe superClasse) {
         this.superClasse = superClasse;
+
     }
 
     public Classe getSuperClasse() {
@@ -212,9 +236,10 @@ public class Classe {
 
         //tipo indentifica se é interface ou classe 
         codigo += " " + tipo + " " + this.nome;
-
+        Log.debug(Classe.class, "exibir nome da superclasse");
         //coloca o extends caso tenha uma superclasse
         if (superClasse != null) {
+            Log.debug("exibindo superclasse ", "superclasse existe");
             if (!superClasse.getNome().equals("Object")) {
                 codigo += " extends " + superClasse.getNome();
             }
@@ -463,6 +488,7 @@ public class Classe {
 
     //adicionar uma classe criada pelo usuário
     public static Classe addClasse(Classe classe) {
+        Log.debug(Classe.class, "adicionado metaclasse " + classe.getNome());
         return classes.put(classe.getNomeCompleto(), classe);
     }
 
@@ -513,7 +539,10 @@ public class Classe {
 
     //acessar uma classe importada
     public Classe getClasse(String nome) {
-        return classes.get(nomesCompletos.get(nome));
+        Classe cl = classes.get(nomesCompletos.get(nome));
+        Log.debug(Classe.class, "convertendo nome simples em nome completo: " + nome + "=" + nomesCompletos.get(nome));
+        Log.debug(Classe.class, "classe reconhecida: " + cl.getNomeCompleto());
+        return cl;
     }
 
     public Método callStatic(String método, String... args) {

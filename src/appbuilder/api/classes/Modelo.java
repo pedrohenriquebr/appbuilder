@@ -45,6 +45,7 @@ public class Modelo extends Classe {
      * @param nome
      * @return
      */
+    
     public boolean addAtributo(String tipo, String nome) {
         Atributo atr = new Atributo("private", tipo, nome);
         boolean b = super.addAtributo(atr);
