@@ -40,8 +40,10 @@ public class Classe {
     //método principal
     private Método métodoMain;
 
-    //classes prontas, usando api de reflection
-    //nome totalmente qualificado com o objeto da classe pronta
+    /**
+     * classes prontas, usando api de reflection /*nome totalmente qualificado
+     * com a classe pronta
+     */
     public static Map<String, Classe> classes = new HashMap<>();
 
     /**
@@ -102,7 +104,7 @@ public class Classe {
      */
     public void setSuperClasse(String nomeClasse) {
         Classe classe = getClasse(nomeClasse);
-        
+
         Log.debug("Superclasse definida: " + classe.getNome());
         try {
 
@@ -123,8 +125,19 @@ public class Classe {
         return this.superClasse;
     }
 
+    /**
+     * Quando true, ele adiciona automaticamente o modificador interface
+     * Quando false, ele remove automaticamenteo o modificador interface
+     * @param b
+     */
     public void setInterface(boolean b) {
-        this.éInterface = true;
+        this.éInterface = b;
+
+        if (b) {
+            addModNAcesso("interface");
+        } else {
+            removeModNAcesso("interface");
+        }
     }
 
     public boolean éInterface() {
@@ -210,14 +223,14 @@ public class Classe {
         for (Importação importação : importações) {
             codigo += importação + ";\n\n";
         }
-        //classe
+
         codigo += this.modAcesso;
 
         //indica se é uma interface ou não
         String tipo
-                = this.modsNAcesso.indexOf("interface") >= 0
-                ? /* se verdadeiro, então é interface*/ "interface"
-                : /*caso contrário, é uma classe */ "class";
+                = éInterface == true
+                        ? /* se verdadeiro, então é interface*/ "interface"
+                        : /*caso contrário, é uma classe */ "class";
 
         //pegar os modificadores de não-acesso
         for (String mod : modsNAcesso) {
@@ -486,7 +499,7 @@ public class Classe {
         return classe;
     }
 
-    //adicionar uma classe criada pelo usuário
+    //adicionar uma metaclasse criada pelo usuário
     public static Classe addClasse(Classe classe) {
         Log.debug(Classe.class, "adicionado metaclasse " + classe.getNome());
         return classes.put(classe.getNomeCompleto(), classe);
@@ -568,6 +581,20 @@ public class Classe {
 
     public void setModNAcesso(List<String> modsnacesso) {
         this.modsNAcesso = modsnacesso;
+    }
+
+    /**
+     * Adiciona um modificador de não-acesso
+     *
+     * @param mod
+     * @return
+     */
+    public boolean addModNAcesso(String mod) {
+        return this.modsNAcesso.add(mod);
+    }
+
+    public boolean removeModNAcesso(String mod) {
+        return this.modsNAcesso.remove(mod);
     }
 
     public List<String> getModNAcesso() {
