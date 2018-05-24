@@ -26,17 +26,8 @@ public class AppBuilder {
      */
     public static void main(String[] args) throws ClassNotFoundException, IOException {
         //classe Pai ou superclasse
-        Classe cl1 = new Classe("Pai", "pais", "familia");
-        Atributo atr = new Atributo("public", "String", "nomeCompleto", "Luciano da Silva Santos");
-        cl1.addAtributo(atr);
-
-        //classe filha ou subclasse
-        Classe cl2 = new Classe("Filha", "filhos", "familia");
-        Classe.addClasse(cl1);
-        cl2.addImportação(cl1);
-        cl2.setSuperClasse(cl1);
-
-        System.out.println(cl2);
+        
+        System.out.println(Classe.getClasseEstática("java.sql.Connection"));
         System.exit(0);
 
         Classe factory = new Classe("ConnectionFactory", "app", "dao");
@@ -47,6 +38,7 @@ public class AppBuilder {
         Classe.addClasse("Connection", "sql", "java");
 
         Classe dao = new Classe("AlunoDAO");
+        
         Método adicionar = new Método("public", "void", "adicionar");
         dao.addMétodo(adicionar);
         dao.addImportação(Classe.addClasse(factory));

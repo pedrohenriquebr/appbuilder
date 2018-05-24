@@ -31,6 +31,7 @@ public class Classe {
     private List<Atributo> atributos = new ArrayList<Atributo>();
     private List<Método> métodos = new ArrayList<Método>();
     private List<Importação> importações = new ArrayList<Importação>();
+    private List<Interface> interfaces = new ArrayList<Interface>();
 
     //modificadores de não-acesso
     private List<String> modsNAcesso = new ArrayList<>();
@@ -66,6 +67,8 @@ public class Classe {
             addClasse("Integer", "lang", "java");
             addClasse("Object", "lang", "java");
             addClasse("ArrayList", "util", "java");
+            addClasse("Connection","sql","java");
+            addClasse("List","util","java");
             addClasse("Interface", "interfaces", "appbuilder.api");
 
         } catch (ClassNotFoundException ex) {
@@ -126,8 +129,9 @@ public class Classe {
     }
 
     /**
-     * Quando true, ele adiciona automaticamente o modificador interface
-     * Quando false, ele remove automaticamenteo o modificador interface
+     * Quando true, ele adiciona automaticamente o modificador interface Quando
+     * false, ele remove automaticamenteo o modificador interface
+     *
      * @param b
      */
     public void setInterface(boolean b) {
@@ -142,6 +146,27 @@ public class Classe {
 
     public boolean éInterface() {
         return this.éInterface;
+    }
+
+    public boolean addInterface(Interface in) {
+
+        for (Método met : in.getMétodos()) {
+            //remove aquele flag de ser método de uma interface 
+            //e implementa 
+            try {
+                Método metodo = (Método) met.clone();
+                metodo.setDeInterface(false);
+                addMétodo(metodo);
+            } catch (CloneNotSupportedException c) {
+                c.printStackTrace();;
+            }
+        }
+
+        return this.interfaces.add(in);
+    }
+
+    public boolean removeInterface(Interface in) {
+        return this.interfaces.remove(in);
     }
 
     /**
@@ -258,6 +283,23 @@ public class Classe {
             }
         }
 
+        Log.debug(Classe.class, "Verificando se implementa alguma interface");
+
+        if (interfaces.size() > 0) {
+            codigo += " implements ";
+
+            int contador = 1;
+            for (Interface in : interfaces) {
+                if (contador % 2 == 0) {
+                    contador = 1;
+                    codigo += ", ";
+                }
+                codigo += in.getNome();
+                contador++;
+            }
+
+        }
+
         codigo += " { \n\n";
 
         for (Atributo var : atributos) {
@@ -289,8 +331,12 @@ public class Classe {
         return this.atributos.add(atr);
     }
 
-    public boolean addConstrutor(Construtor contrutor) {
-        return this.métodos.add(contrutor);
+    public boolean addConstrutor(Construtor construtor) {
+        return this.métodos.add(construtor);
+    }
+
+    public boolean removeConstrutor(Construtor construtor) {
+        return this.métodos.remove(construtor);
     }
 
     //leva em consideração que pode ter vários parâmetros de tipos diferentes e o modificador pode ser genérico também, 
@@ -461,6 +507,7 @@ public class Classe {
 
         if (mnacesso.contains("interface")) {
             classe.setInterface(true);
+            classe.removeConstrutor(classe.getConstrutorPrincipal());
         }
 
         for (Method method : predefinida.getDeclaredMethods()) {
@@ -491,7 +538,12 @@ public class Classe {
                 metodo.addParametro(cl.getSimpleName(), param.getName());
             }
 
-            classe.addMétodo(metodo);
+            if (classe.éInterface) {
+                metodo.setDeInterface(true);
+                Log.debug(Classe.class, classe.getNome() + " é interface ");
+            } 
+            
+             classe.addMétodo(metodo);
         }
 
         addClasse(classe);

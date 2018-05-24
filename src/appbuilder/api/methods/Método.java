@@ -15,7 +15,7 @@ import java.util.*;
  *
  * @author Pedro Henrique Braga da Silva
  */
-public class Método {
+public class Método implements Cloneable {
 
     protected String modAcesso; //modificador de acesso. Ex: public, private , protected
     protected List<String> modNacesso = new ArrayList<String>(); // modificador de não-acesso. Ex: final, static, abstract 
@@ -23,6 +23,7 @@ public class Método {
     protected String nome;
     protected List<Parametro> parametros = new ArrayList<Parametro>(); // algumMetodo(String arg0, int arg1, byte arg2)
     protected String corpo;
+    protected boolean deInterface;
 
     /**
      *
@@ -49,6 +50,18 @@ public class Método {
     public Método(String modAcesso, String modNacesso, String tipoRetorno, String nome, List<Parametro> parametros) {
         this(modAcesso, modNacesso, tipoRetorno, nome);
         setParametros(parametros);
+    }
+
+    public void setDeInterface(boolean b) {
+        this.deInterface = b;
+
+        if (b) {
+            corpo = "";
+        }
+    }
+
+    public boolean éDeInterface() {
+        return this.deInterface;
     }
 
     /**
@@ -293,16 +306,26 @@ public class Método {
             contador++;
         }
 
-        codigo += "){ \n";
+        codigo += ")";
+        // se fôr de interface, não tem corpo
+        if (deInterface) {
+            codigo += ";\n\n";
+        } else {
 
-        if (this.corpo.length() > 0) {
-            codigo += this.corpo;
+            codigo += "{ \n";
+            if (this.corpo.length() > 0) {
+                codigo += this.corpo;
 
+            }
+
+            codigo += "} \n\n";
         }
-
-        codigo += "} \n\n";
-
         return codigo;
+    }
+
+    public Object clone() throws
+            CloneNotSupportedException {
+        return super.clone();
     }
 
 }
