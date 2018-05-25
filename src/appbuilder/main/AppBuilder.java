@@ -26,13 +26,9 @@ public class AppBuilder {
     public static void main(String[] args) throws ClassNotFoundException, IOException {
         //classe Pai ou superclasse
         Log.setEstado(true);
-        Modelo modelo = new Modelo("Pessoa");
-        modelo.addStrings("nome","telefone","endereço");
-        
-        Modelo modelo2  = new Modelo("Pedro");
-        modelo2.setSuperClasse(modelo);
-        
-        System.out.println(modelo2);
+        Classe cl = Classe.addClasse("Exception", "lang", "java");
+
+        System.out.println(cl);
 
     }
 }

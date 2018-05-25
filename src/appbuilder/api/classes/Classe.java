@@ -138,12 +138,28 @@ public class Classe {
 
     public void setSuperClasse(Classe superClasse) {
         this.superClasse = superClasse;
-        
-        for(Atributo atr : this.superClasse){
-            List<String> nomesAtributos  = new ArrayList<>();
-            
-            for(Atributo superAtr : this.superClasse.getAtributos()){
-                nomes = superAtr.getNome();
+
+        List<String> meusAtributos = new ArrayList<>();
+
+        for (Atributo atr : this.getAtributos()) {
+            meusAtributos.add(atr.getNome());
+        }
+
+        for (Atributo atr : superClasse.getAtributos()) {
+            if (!meusAtributos.contains(atr.getNome())) {
+                addAtributo(atr);
+            }
+        }
+
+        List<String> meusMétodos = new ArrayList<>();
+
+        for (Método met : this.getMétodos()) {
+            meusMétodos.add(met.getNome());
+        }
+
+        for (Método met : superClasse.getMétodos()) {
+            if (!meusMétodos.contains(met.getNome())) {
+                addMétodo(met);
             }
         }
 
@@ -353,19 +369,24 @@ public class Classe {
          * ATRIBUTOS
          */
         for (Atributo var : atributos) {
-            codigo += var.getDeclaração();
+
+            if (superClasse != null) {
+
+                if (!superClasse.temAtributo(var.getNome())) {
+                    codigo += var.getDeclaração();
+                }
+            }
         }
         /**
          * MÉTODOS
          */
         for (Método met : métodos) {
-            
+
             //verifica se a superclasse não tem esse método
             //se tiver, não precisa exibir
-            
-            if(superClasse !=null){
-                
-                if(!superClasse.temMétodo(met)){
+            if (superClasse != null) {
+
+                if (!superClasse.temMétodo(met)) {
                     codigo += met;
                 }
             }
@@ -535,7 +556,11 @@ public class Classe {
     }
 
     public boolean temAtributo(String nome) {
-        return this.atributos.contains(nome);
+        return temAtributo(getAtributo(nome));
+    }
+
+    public boolean temAtributo(Atributo atributo) {
+        return this.atributos.contains(atributo);
     }
 
     //retorna o método com base no nome
@@ -657,7 +682,7 @@ public class Classe {
             classe.addMétodo(metodo);
         }
 
-        //construtores
+        //construtores declarados
         for (Constructor<?> constructor : predefinida.getDeclaredConstructors()) {
             List<String> mods = modifiersFromInt(constructor.getModifiers());
 
