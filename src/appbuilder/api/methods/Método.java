@@ -22,7 +22,8 @@ public class Método implements Cloneable {
     protected String tipoRetorno; //tipo de retorno. Ex: int, String, void, char , ...
     protected String nome;
     protected List<Parametro> parametros = new ArrayList<Parametro>(); // algumMetodo(String arg0, int arg1, byte arg2)
-    protected String corpo;
+    protected String corpo = "";
+    protected String retorno = "";
     protected boolean deInterface;
 
     /**
@@ -276,10 +277,15 @@ public class Método implements Cloneable {
     /**
      * Define o retorno do método
      *
+     * @param valor
      * @return
      */
     public void setRetorno(String valor) {
-        addCorpo("return " + valor + ";");
+        this.retorno = valor;
+    }
+
+    public String getRetorno() {
+        return this.retorno;
     }
 
     @Override
@@ -322,9 +328,13 @@ public class Método implements Cloneable {
         } else {
 
             codigo += "{ \n";
-            if (this.corpo.length() > 0) {
+            if (!this.corpo.isEmpty()) {
                 codigo += this.corpo;
 
+            }
+
+            if (!this.retorno.isEmpty()) {
+                codigo += formatar("return " + this.retorno + ";\n");
             }
 
             codigo += "} \n\n";
@@ -332,6 +342,7 @@ public class Método implements Cloneable {
         return codigo;
     }
 
+    @Override
     public Object clone() throws
             CloneNotSupportedException {
         return super.clone();

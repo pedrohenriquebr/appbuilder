@@ -10,6 +10,7 @@ import appbuilder.api.methods.*;
 import appbuilder.api.packages.*;
 import appbuilder.api.vars.*;
 import appbuilder.util.*;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
  * @author Pedro Henrique Braga da Silva
  */
 public class Classe {
-    
+
     protected Pacote pacote;
     protected String modAcesso;//modificador de acesso ,Ex: public, private 
     protected String nome;
@@ -45,13 +46,13 @@ public class Classe {
      * classes prontas, usando api de reflection /*nome totalmente qualificado
      * com a classe pronta
      */
-    public static Map<String, Classe> classes = new HashMap<>();
+    private static Map<String, Classe> classes = new HashMap<>();
 
     /**
      * Associa nome da classe com o nome totalmente qualificado Uma espécie de
      * apelido, Ex: String -> java.lang.String
      */
-    public Map<String, String> nomesCompletos = new HashMap<>();
+    private Map<String, String> nomesCompletos = new HashMap<>();
 
     /**
      * A superclasse
@@ -65,19 +66,21 @@ public class Classe {
     static {
         Log.debug("Classe.static", "começo: adicionando classes");
         CONTEXTO_ESTÁTICO = true;
-        try {
+        //try {
+        /**
+         * São classes que já existem ou que foram declaradas em java
+         */
+        //  addClasse("String", "lang", "java");
+        //  addClasse("Integer", "lang", "java");
+        //  addClasse("Object", "lang", "java");
+        //  addClasse("ArrayList", "util", "java");
+        //  addClasse("Connection", "sql", "java");
+        //  addClasse("List", "util", "java");
 
-            addClasse("String", "lang", "java");
-            addClasse("Integer", "lang", "java");
-            addClasse("Object", "lang", "java");
-            addClasse("ArrayList", "util", "java");
-            addClasse("Connection", "sql", "java");
-            addClasse("List", "util", "java");
-
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Não foi possível carregar as classes");
-        }
+        //} catch (ClassNotFoundException ex) {
+        //  Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);
+        // System.out.println("Não foi possível carregar as classes");
+        //}
         Log.debug("Classe.static", "fim: adicionando classes");
 
         CONTEXTO_ESTÁTICO = false;
@@ -93,7 +96,7 @@ public class Classe {
         addConstrutor(construtorPrincipal);
 
         if (!CONTEXTO_ESTÁTICO) {
-            this.addImportação(Classe.getClasseEstática("java.lang.String"));
+            //addImportação(Classe.getClasseEstática("java.lang.String"));
         }
 
     }
@@ -106,6 +109,10 @@ public class Classe {
     public Classe(String nome, String pacote, String caminho) {
         this(nome);
         this.pacote = new Pacote(pacote, caminho);
+    }
+
+    private String camelCase(final String line) {
+        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
     /**
@@ -131,6 +138,14 @@ public class Classe {
 
     public void setSuperClasse(Classe superClasse) {
         this.superClasse = superClasse;
+        
+        for(Atributo atr : this.superClasse){
+            List<String> nomesAtributos  = new ArrayList<>();
+            
+            for(Atributo superAtr : this.superClasse.getAtributos()){
+                nomes = superAtr.getNome();
+            }
+        }
 
     }
 
@@ -260,7 +275,7 @@ public class Classe {
          */
         for (Importação importação : importações) {
             //não exibir, por padrão já vem importado 
-            if(!importação.getCaminho().equals("java.lang")){
+            if (!importação.getCaminho().equals("java.lang")) {
                 codigo += importação + ";\n\n";
             }
         }
@@ -333,7 +348,7 @@ public class Classe {
         }
 
         codigo += " { \n\n";
-        
+
         /**
          * ATRIBUTOS
          */
@@ -344,7 +359,16 @@ public class Classe {
          * MÉTODOS
          */
         for (Método met : métodos) {
-            codigo += met;
+            
+            //verifica se a superclasse não tem esse método
+            //se tiver, não precisa exibir
+            
+            if(superClasse !=null){
+                
+                if(!superClasse.temMétodo(met)){
+                    codigo += met;
+                }
+            }
         }
 
         codigo += "} \n\n";
@@ -413,6 +437,45 @@ public class Classe {
         return this.métodos.remove(metodo);
     }
 
+    public boolean addGetter(Atributo atributo) {
+        Método getter = new Método("public", atributo.getTipo(), "get" + camelCase(atributo.getNome()));
+        getter.setRetorno(atributo.getReferencia());
+
+        return addMétodo(getter);
+    }
+
+    public boolean addSetter(Atributo atributo) {
+        Método setter = new Método("public", "void", "set" + camelCase(atributo.getNome()));
+        setter.addParametro(atributo.getTipo(), atributo.getNome());
+        setter.setCorpo(atributo.getInicialização(atributo.getNome()));
+
+        return addMétodo(setter);
+    }
+
+    //adicionar construtores associados a atributos
+    /**
+     * Pegar um getter associado a um atributo
+     *
+     * @param atributo nome do atributo já declarado no modelo
+     * @return
+     */
+    public Método getGetter(String atributo) {
+        Método método = null;
+        String camelCase = "get" + camelCase(atributo);
+        método = getMétodo(camelCase);
+
+        return método;
+    }
+
+    //retorna o setter com base no nome do atributo associado
+    public Método getSetter(String atributo) {
+        Método método = null;
+        String camelCase = "set" + camelCase(atributo);
+        método = getMétodo(camelCase);
+
+        return método;
+    }
+
     public String getModAcesso() {
         return modAcesso;
     }
@@ -467,7 +530,12 @@ public class Classe {
                 atributo = atr;
             }
         }
+
         return atributo;
+    }
+
+    public boolean temAtributo(String nome) {
+        return this.atributos.contains(nome);
     }
 
     //retorna o método com base no nome
@@ -481,6 +549,10 @@ public class Classe {
         }
 
         return método;
+    }
+
+    public boolean temMétodo(Método metodo) {
+        return this.métodos.contains(metodo);
     }
 
     //cria uma classe a partir de uma já predefinida, classes prontas da linguagem Java
@@ -498,9 +570,9 @@ public class Classe {
         }
 
         //caso contrário, continua 
-        Class predefinida = Class.forName(classe.getNomeCompleto());
+        Class<?> predefinida = Class.forName(classe.getNomeCompleto());
         List<String> modifiers = modifiersFromInt(predefinida.getModifiers());
-        Class superClasse = predefinida.getSuperclass();
+        Class<?> superClasse = predefinida.getSuperclass();
 
         if (superClasse != null) {
             //defino a superclasse para minha metaclasse
@@ -547,6 +619,7 @@ public class Classe {
             classe.removeConstrutor(classe.getConstrutorPrincipal());
         }
 
+        //pega os métodos declarados
         for (Method method : predefinida.getDeclaredMethods()) {
             String name = method.getName();
             String retType = method.getReturnType().getSimpleName();
@@ -555,6 +628,7 @@ public class Classe {
             List<String> mods = modifiersFromInt(method.getModifiers());
             //por padrão o modificador de acesso é public
             Método metodo = new Método("public", retType, name);
+            Log.debug(Classe.class, "adicionado método: " + name);
 
             //em teoria o primeiro modificador é de acesso
             metodo.setModAcesso(mods.get(0));
@@ -583,14 +657,32 @@ public class Classe {
             classe.addMétodo(metodo);
         }
 
+        //construtores
+        for (Constructor<?> constructor : predefinida.getDeclaredConstructors()) {
+            List<String> mods = modifiersFromInt(constructor.getModifiers());
+
+            Construtor c = new Construtor(mods.get(0), classe.getNome());
+            Parameter[] params = constructor.getParameters();
+
+            for (Parameter p : params) {
+                c.addParametro(new Parametro(p.getType().getSimpleName(), p.getName()));
+            }
+
+            for (int h = 1; h < mods.size(); h++) {
+                c.addModNacesso(mods.get(h));
+            }
+            classe.addConstrutor(c);
+        }
+
         addClasse(classe);
 
         return classe;
     }
 
-    //adicionar uma metaclasse criada pelo usuário
+//adicionar uma metaclasse criada pelo usuário
     public static Classe addClasse(Classe classe) {
-        Log.debug(Classe.class, "adicionado metaclasse " + classe.getNome());
+        Log.debug(Classe.class,
+                "adicionado metaclasse " + classe.getNome());
         return classes.put(classe.getNomeCompleto(), classe);
     }
 
@@ -642,8 +734,12 @@ public class Classe {
     //acessar uma classe importada
     public Classe getClasse(String nome) {
         Classe cl = classes.get(nomesCompletos.get(nome));
-        Log.debug(Classe.class, "convertendo nome simples em nome completo: " + nome + "=" + nomesCompletos.get(nome));
-        Log.debug(Classe.class, "classe reconhecida: " + cl.getNomeCompleto());
+        Log
+                .debug(Classe.class,
+                        "convertendo nome simples em nome completo: " + nome + "=" + nomesCompletos.get(nome));
+        Log
+                .debug(Classe.class,
+                        "classe reconhecida: " + cl.getNomeCompleto());
         return cl;
     }
 

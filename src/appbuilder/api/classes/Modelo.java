@@ -33,10 +33,6 @@ public class Modelo extends Classe {
         super(carro, pacote, caminho);
     }
 
-    private String camelCase(final String line) {
-        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
-    }
-
     /**
      * Método para criar um atributo, que estará associado com seus devidos
      * getter e setter
@@ -45,33 +41,28 @@ public class Modelo extends Classe {
      * @param nome
      * @return
      */
-    
     public boolean addAtributo(String tipo, String nome) {
+
+        if (nome.isEmpty()) {
+            return false;
+        }
+
         Atributo atr = new Atributo("private", tipo, nome);
         boolean b = super.addAtributo(atr);
 
         if (b) {
 
             //adicionar getter e setter (JavaBeans)
-            Método getter = new Método("public", tipo, "get" + camelCase(nome));
-            getter.setCorpo("return " + atr.getReferencia() + ";\n");
+            boolean c = super.addGetter(atr);
+            boolean d = super.addSetter(atr);
 
-            Método setter = new Método("public", "void", "set" + camelCase(nome));
-            Parametro param = new Parametro(tipo, nome);
-            setter.addParametro(param);
-            setter.setCorpo(atr.getInicialização(nome));
-
-            boolean c = super.addMétodo(getter);
-            boolean d = super.addMétodo(setter);
-
-            if (!c || !d) {
-                return false;
-            }
-            return true;
+            return !(!c || !d);
         } else {
             return false;
         }
     }
+
+    
 
     /**
      * Adiciona um atributo com seus getter e setter do tipo int
@@ -197,28 +188,28 @@ public class Modelo extends Classe {
         return sucesso;
     }
 
-    //adicionar construtores associados a atributos
     /**
-     * Pegar um getter associado a um atributo
+     * Adiciona um construtor para os atributos passados
      *
-     * @param atributo nome do atributo já declarado no modelo
+     * @param atributos lista de atributos
      * @return
      */
-    public Método getGetter(String atributo) {
-        Método método = null;
-        String camelCase = "get" + camelCase(atributo);
-        método = super.getMétodo(camelCase);
+    public boolean addConstrutorPara(String... atributos) {
+        Construtor construtor = new Construtor("public", getNome());
+        /**
+         * Para cada nome de atributo passado, eu pego o objeto Atributo
+         * associado a ele. Em seguida, pego um setter associado ao atributo e
+         * coloco dentro o corpo do construtor
+         */
+        for (String atr : atributos) {
+            Atributo at = getAtributo(atr);
+            construtor.addParametro(at.getTipo(), at.getNome());
+            Método setter = getSetter(atr);
 
-        return método;
-    }
+            construtor.addCorpo(setter.getChamada(atr));
+        }
 
-    //retorna o setter com base no nome do atributo associado
-    public Método getSetter(String atributo) {
-        Método método = null;
-        String camelCase = "set" + camelCase(atributo);
-        método = super.getMétodo(camelCase);
-
-        return método;
+        return super.addConstrutor(construtor);
     }
 
     public static Modelo addModelo(Modelo modelo) {

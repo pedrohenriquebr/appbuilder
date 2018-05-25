@@ -41,10 +41,7 @@ public class Variavel {
      */
     
     protected Classe classe;
-
     
-    
-
     /**
      * Constrói a variável com seu atributos básicos, o mínimo para ter uma
      * variável é o seu tipo e nome.Valor da variável por padrão é "null".

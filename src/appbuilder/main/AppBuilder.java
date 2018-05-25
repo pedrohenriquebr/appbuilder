@@ -6,7 +6,6 @@
 package appbuilder.main;
 
 import appbuilder.api.classes.*;
-import static appbuilder.api.classes.Classe.classes;
 import appbuilder.api.methods.*;
 import appbuilder.api.vars.*;
 import appbuilder.util.*;
@@ -26,21 +25,14 @@ public class AppBuilder {
      */
     public static void main(String[] args) throws ClassNotFoundException, IOException {
         //classe Pai ou superclasse
-
-        Log.setEstado(false);
-
-        Modelo pessoa = new Modelo("Pessoa");
-        pessoa.addStrings("rg", "nomeCompleto", "endereço", "dataNascimento");
-
-        Método verificar = new Método("public", "boolean", "verificar");
-        Variavel var = new Variavel("String", "codigo");
-        verificar.addCorpo(var.getDeclaração());
-        verificar.addCorpo(var.getInicialização(pessoa.getAtributo("rg").call("length")));
-        verificar.setRetorno("true");
-
-        pessoa.addMétodo(verificar);
-
-        System.out.println(pessoa);
+        Log.setEstado(true);
+        Modelo modelo = new Modelo("Pessoa");
+        modelo.addStrings("nome","telefone","endereço");
+        
+        Modelo modelo2  = new Modelo("Pedro");
+        modelo2.setSuperClasse(modelo);
+        
+        System.out.println(modelo2);
 
     }
 }
