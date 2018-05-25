@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * @author Pedro Henrique Braga da Silva
  */
 public class Classe {
-
+    
     protected Pacote pacote;
     protected String modAcesso;//modificador de acesso ,Ex: public, private 
     protected String nome;
@@ -58,24 +58,29 @@ public class Classe {
      */
     private Classe superClasse;
 
+    //serve para indicar se está executando o trecho estático de adição de classes
+    private static boolean CONTEXTO_ESTÁTICO = false;
+
     //deixo classes prontas, já predefinidas
     static {
         Log.debug("Classe.static", "começo: adicionando classes");
+        CONTEXTO_ESTÁTICO = true;
         try {
 
             addClasse("String", "lang", "java");
             addClasse("Integer", "lang", "java");
             addClasse("Object", "lang", "java");
             addClasse("ArrayList", "util", "java");
-            addClasse("Connection","sql","java");
-            addClasse("List","util","java");
-            addClasse("Interface", "interfaces", "appbuilder.api");
+            addClasse("Connection", "sql", "java");
+            addClasse("List", "util", "java");
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Não foi possível carregar as classes");
         }
         Log.debug("Classe.static", "fim: adicionando classes");
+
+        CONTEXTO_ESTÁTICO = false;
     }
 
     public Classe(String nome) {
@@ -86,6 +91,11 @@ public class Classe {
         //adicionar um construtor padrão
         construtorPrincipal = new Construtor("public", this.getNome());
         addConstrutor(construtorPrincipal);
+
+        if (!CONTEXTO_ESTÁTICO) {
+            this.addImportação(Classe.getClasseEstática("java.lang.String"));
+        }
+
     }
 
     public Classe(String nome, String pacote) {
@@ -241,23 +251,37 @@ public class Classe {
     public String toString() {
         String codigo = "";
 
-        //pacote
+        /**
+         * PACOTE
+         */
         codigo += this.pacote + ";\n\n";
-        //importações
-
+        /**
+         * IMPORTAÇÕES
+         */
         for (Importação importação : importações) {
-            codigo += importação + ";\n\n";
+            //não exibir, por padrão já vem importado 
+            if(!importação.getCaminho().equals("java.lang")){
+                codigo += importação + ";\n\n";
+            }
         }
 
+        /**
+         * MODIFICADOR DE ACESSO
+         */
         codigo += this.modAcesso;
 
+        /**
+         * INTERFACE
+         */
         //indica se é uma interface ou não
         String tipo
                 = éInterface == true
                         ? /* se verdadeiro, então é interface*/ "interface"
                         : /*caso contrário, é uma classe */ "class";
 
-        //pegar os modificadores de não-acesso
+        /**
+         * MODIFICADORES DE NÃO-ACESSO
+         */
         for (String mod : modsNAcesso) {
             //pula modificador de interface, pra não repetir
             if (mod.equals("interface")) {
@@ -272,10 +296,16 @@ public class Classe {
             codigo += " " + mod + " ";
         }
 
+        /**
+         * TIPO DE CLASSE
+         */
         //tipo indentifica se é interface ou classe 
         codigo += " " + tipo + " " + this.nome;
         Log.debug(Classe.class, "exibir nome da superclasse");
         //coloca o extends caso tenha uma superclasse
+        /**
+         * SUPERCLASSE
+         */
         if (superClasse != null) {
             Log.debug("exibindo superclasse ", "superclasse existe");
             if (!superClasse.getNome().equals("Object")) {
@@ -284,7 +314,9 @@ public class Classe {
         }
 
         Log.debug(Classe.class, "Verificando se implementa alguma interface");
-
+        /**
+         * INTERFACES
+         */
         if (interfaces.size() > 0) {
             codigo += " implements ";
 
@@ -301,11 +333,16 @@ public class Classe {
         }
 
         codigo += " { \n\n";
-
+        
+        /**
+         * ATRIBUTOS
+         */
         for (Atributo var : atributos) {
             codigo += var.getDeclaração();
         }
-
+        /**
+         * MÉTODOS
+         */
         for (Método met : métodos) {
             codigo += met;
         }
@@ -541,9 +578,9 @@ public class Classe {
             if (classe.éInterface) {
                 metodo.setDeInterface(true);
                 Log.debug(Classe.class, classe.getNome() + " é interface ");
-            } 
-            
-             classe.addMétodo(metodo);
+            }
+
+            classe.addMétodo(metodo);
         }
 
         addClasse(classe);

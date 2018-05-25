@@ -34,9 +34,9 @@ public class Método implements Cloneable {
      */
     //public int nome()
     public Método(String modAcesso, String tipoRetorno, String nome) {
-        this.modAcesso = modAcesso;
-        this.tipoRetorno = tipoRetorno;
-        this.nome = nome;
+        this.modAcesso = modAcesso.trim();
+        this.tipoRetorno = tipoRetorno.trim();
+        this.nome = nome.trim();
         corpo = "\n";//padrão o corpo é apenas uma quebra linha
     }
 
@@ -191,7 +191,7 @@ public class Método implements Cloneable {
         for (String linha : linhas) {
             //colocar ; de volta
             formatado += "\t";
-            if (!linha.endsWith(";\n")) {
+            if (!linha.endsWith(";\n") || !linha.endsWith(";")) {
                 formatado += linha + ";\n";
             } else {
                 formatado += linha;
@@ -271,6 +271,15 @@ public class Método implements Cloneable {
      */
     public void setParametros(List<Parametro> parametros) {
         this.parametros = parametros;
+    }
+
+    /**
+     * Define o retorno do método
+     *
+     * @return
+     */
+    public void setRetorno(String valor) {
+        addCorpo("return " + valor + ";");
     }
 
     @Override

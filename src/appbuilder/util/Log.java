@@ -11,30 +11,48 @@ package appbuilder.util;
  * @author pedrohenrique
  */
 import java.io.*;
+import java.util.*;
 
 public final class Log {
 
+    private static boolean ativado = true;
+
+    public static void setEstado(boolean estado) {
+        ativado = estado;
+    }
+
+    public static boolean getEstado() {
+        return ativado;
+    }
+
     public static PrintStream out = new PrintStream(System.out);
 
+    /**
+     * Todos os outros métodos de depuração, usam esse método para exibir.
+     *
+     * @param message
+     */
     public static void debug(String message) {
-        out.println("[DEBUG]" + message);
+        //Verifica se o estado está ativado
+        if (ativado) {
+            out.println("[DEBUG]" + message);
+        }
     }
 
     public static void debug(String message, Object var) {
         debug(message + "(" + var + ")");
     }
-    
-    public static void debug(String tag, String message){
-        debug("["+tag+"]"+message);
+
+    public static void debug(String tag, String message) {
+        debug("[" + tag + "]" + message);
     }
-    
-    public static void debug(Class context, String message){
-        debug(context.getSimpleName(),message);
+
+    public static void debug(Class context, String message) {
+        debug(context.getSimpleName(), message);
     }
-    
-    public static void debug(Class context, String message, Object var){
-        debug(context,message+"("+var+")");
+
+    public static void debug(Class context, String message, Object var) {
+        debug(context, message + "(" + var + ")");
     }
-    
-    
+
 }

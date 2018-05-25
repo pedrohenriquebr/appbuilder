@@ -26,35 +26,21 @@ public class AppBuilder {
      */
     public static void main(String[] args) throws ClassNotFoundException, IOException {
         //classe Pai ou superclasse
-        
-        System.out.println(Classe.getClasseEstática("java.sql.Connection"));
-        System.exit(0);
 
-        Classe factory = new Classe("ConnectionFactory", "app", "dao");
-        Método metodo = new Método("public", "static", "Connection", "getConnection");
-        metodo.addCorpo("return DriverManager.getConnection(\"jdbc:mysql://localhost/mydb\",\"root\",\"root\");");
-        factory.addMétodo(metodo);
-        Classe.addClasse(factory);
-        Classe.addClasse("Connection", "sql", "java");
+        Log.setEstado(false);
 
-        Classe dao = new Classe("AlunoDAO");
-        
-        Método adicionar = new Método("public", "void", "adicionar");
-        dao.addMétodo(adicionar);
-        dao.addImportação(Classe.addClasse(factory));
-        dao.addImportação(Classe.addClasse("Connection", "sql", "java"));
+        Modelo pessoa = new Modelo("Pessoa");
+        pessoa.addStrings("rg", "nomeCompleto", "endereço", "dataNascimento");
 
-        dao.addAtributo(new Atributo("private", "Connection", "con",
-                (dao.getClasse("ConnectionFactory")).
-                        getMétodo("getConnection").
-                        getChamadaEstática(factory.getNome())));
-        Variavel var = new Variavel("PreparedStatement", "stmt");
+        Método verificar = new Método("public", "boolean", "verificar");
+        Variavel var = new Variavel("String", "codigo");
+        verificar.addCorpo(var.getDeclaração());
+        verificar.addCorpo(var.getInicialização(pessoa.getAtributo("rg").call("length")));
+        verificar.setRetorno("true");
 
-        adicionar.addParametro("Aluno", "aluno");
-        adicionar.addCorpo(var.getDeclaração(
-                dao.getAtributo("con").call("prepareStatement", "\"INSERT INTO Aluno VALUES(?,?,?,?)\"")));
+        pessoa.addMétodo(verificar);
 
-        System.out.println(dao);
+        System.out.println(pessoa);
 
     }
 }

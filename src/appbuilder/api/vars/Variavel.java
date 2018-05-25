@@ -187,7 +187,7 @@ public class Variavel {
     public String getInicialização(String valor) {
 
         this.valor = valor;
-        return getReferencia() + " = " + valor + " ;\n";
+        return getReferencia() + " = " + valor + ";\n";
 
     }
 

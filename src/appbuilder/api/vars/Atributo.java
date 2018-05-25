@@ -15,7 +15,6 @@ import appbuilder.util.*;
  * @author aluno
  */
 public class Atributo extends Variavel {
-    
 
     public Atributo(String tipo, String nome) {
         super(tipo, nome);
@@ -25,7 +24,7 @@ public class Atributo extends Variavel {
 
     public Atributo(String modificador, String tipo, String nome) {
         super(modificador, tipo, nome, "");
-        
+
     }
 
     public Atributo(String modificador, String tipo, String nome, String valor) {
@@ -37,21 +36,35 @@ public class Atributo extends Variavel {
     public String getReferencia() {
         return "this." + nome;
     }
-    
-    
+
     /**
-     * Considera que o atributo é um objeto e que contém métodos e atributos 
-     * a serem chamados
+     * Considera que o atributo é um objeto e que contém métodos e atributos a
+     * serem chamados. Call serve para chamar algum método.
+     *
      * @param método
      * @param args
-     * @return 
+     * @return
      */
     public String call(String método, String... args) {
         //no caso aqui é como se fosse acessar uma classe que foi importada
-        Classe classe = this.classe.getClasse(getTipo());
-        Objeto obj = new Objeto(classe);
+        Classe cl = this.classe.getClasse(getTipo());
+        //instância dela 
+        Objeto obj = new Objeto(cl);
 
-        return getReferencia() + obj.call(método,args);
+        return getReferencia() + obj.call(método, args);
+    }
+    
+    /**
+     * Considera que o atributo é um objeto e que contém métodos e atributos a
+     * serem chamados. Get serve para acessar um atributo.
+     * @param atr
+     * @return 
+     */
+    public String get(String atr) {
+        Classe cl = this.classe.getClasse(getTipo());
+        Objeto obj = new Objeto(cl);
+
+        return getReferencia() + obj.get(atr);
     }
 
     @Override
