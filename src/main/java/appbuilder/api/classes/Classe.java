@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import appbuilder.api.methods.Método;
 import appbuilder.api.methods.Parametro;
@@ -71,21 +73,17 @@ public class Classe {
     static {
         Log.debug("Classe.static", "começo: adicionando classes");
         CONTEXTO_ESTÁTICO = true;
-        // try {
-        /**
-         * São classes que já existem ou que foram declaradas em java
-         */
-        // addClasse("String", "lang", "java");
-        // addClasse("Integer", "lang", "java");
-        // addClasse("Object", "lang", "java");
-        // addClasse("ArrayList", "util", "java");
-        // addClasse("Connection", "sql", "java");
-        // addClasse("List", "util", "java");
+        try {
+            /**
+             * São classes que já existem ou que foram declaradas em java
+             */
+            addClasse("Exception", "lang", "java");
+            addClasse("String", "lang", "java");
 
-        // } catch (ClassNotFoundException ex) {
-        // Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);
-        // System.out.println("Não foi possível carregar as classes");
-        // }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Não foi possível carregar as classes");
+        }
         Log.debug("Classe.static", "fim: adicionando classes");
 
         CONTEXTO_ESTÁTICO = false;
@@ -101,7 +99,7 @@ public class Classe {
         addConstrutor(construtorPrincipal);
 
         if (!CONTEXTO_ESTÁTICO) {
-            // addImportação(Classe.getClasseEstática("java.lang.String"));
+             addImportação(Classe.getClasseEstática("java.lang.String"));
         }
 
     }

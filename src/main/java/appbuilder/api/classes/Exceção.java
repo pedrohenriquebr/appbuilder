@@ -13,7 +13,8 @@ public class Exceção extends Classe {
 
     public Exceção(String nome) {
         super(nome);
-        setSuperClasse(nome);
+        addImportação(Classe.getClasseEstática("java.lang.Exception"));
+        setSuperClasse("Exception");
     }
 
 }

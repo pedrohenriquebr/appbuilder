@@ -5,14 +5,12 @@
  */
 package appbuilder.main;
 
-import appbuilder.api.classes.*;
-import appbuilder.api.methods.*;
-import appbuilder.api.vars.*;
-import appbuilder.util.*;
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.*;
-import java.sql.Connection;
+
+import appbuilder.api.classes.Classe;
+import appbuilder.api.classes.Exceção;
+import appbuilder.api.methods.Método;
+import appbuilder.util.Log;
 
 /**
  *
@@ -25,11 +23,10 @@ public class AppBuilder {
      */
     public static void main(String[] args) throws ClassNotFoundException, IOException {
         // classe Pai ou superclasse
-        Log.setEstado(true);
-        Classe exp = Classe.addClasse("Exception", "lang", "java");
-        
-        for(Método metodo : exp.getMétodos()){
-            System.out.println("Método: "+metodo.getNome());
-        }
+        Log.setEstado(false);
+        Exceção exp = new Exceção("MinhaException");
+
+        System.out.println(exp);
+
     }
 }
