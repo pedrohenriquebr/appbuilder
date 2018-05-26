@@ -24,11 +24,12 @@ public class AppBuilder {
      * @param args the command line argumentss
      */
     public static void main(String[] args) throws ClassNotFoundException, IOException {
-        //classe Pai ou superclasse
+        // classe Pai ou superclasse
         Log.setEstado(true);
-        Classe cl = Classe.addClasse("Exception", "lang", "java");
-
-        System.out.println(cl);
-
+        Classe exp = Classe.addClasse("Exception", "lang", "java");
+        
+        for(Método metodo : exp.getMétodos()){
+            System.out.println("Método: "+metodo.getNome());
+        }
     }
 }

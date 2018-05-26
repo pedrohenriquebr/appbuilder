@@ -1,7 +1,6 @@
 package appbuilder.api.classes;
 
 import appbuilder.api.methods.Método;
-import appbuilder.util.*;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

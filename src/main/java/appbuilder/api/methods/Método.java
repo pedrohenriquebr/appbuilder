@@ -1,12 +1,7 @@
 package appbuilder.api.methods;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-import appbuilder.util.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Essa classe representa toda a estrutura de um método, declaração e chamada
@@ -17,9 +12,10 @@ import java.util.*;
  */
 public class Método implements Cloneable {
 
-    protected String modAcesso; //modificador de acesso. Ex: public, private , protected
-    protected List<String> modNacesso = new ArrayList<String>(); // modificador de não-acesso. Ex: final, static, abstract 
-    protected String tipoRetorno; //tipo de retorno. Ex: int, String, void, char , ...
+    protected String modAcesso; // modificador de acesso. Ex: public, private , protected
+    protected List<String> modNacesso = new ArrayList<String>(); // modificador de não-acesso. Ex: final, static,
+                                                                 // abstract
+    protected String tipoRetorno; // tipo de retorno. Ex: int, String, void, char , ...
     protected String nome;
     protected List<Parametro> parametros = new ArrayList<Parametro>(); // algumMetodo(String arg0, int arg1, byte arg2)
     protected String corpo = "";
@@ -28,26 +24,26 @@ public class Método implements Cloneable {
 
     /**
      *
-     * @param modAcesso Ex: public, private e protected
-     * @param modNacesso Ex: final, static
+     * @param modAcesso   Ex: public, private e protected
+     * @param modNacesso  Ex: final, static
      * @param tipoRetorno Ex: int, String, void, char
-     * @param nome Ex: algumMetodo()
+     * @param nome        Ex: algumMetodo()
      */
-    //public int nome()
+    // public int nome()
     public Método(String modAcesso, String tipoRetorno, String nome) {
         this.modAcesso = modAcesso.trim();
         this.tipoRetorno = tipoRetorno.trim();
         this.nome = nome.trim();
-        corpo = "\n";//padrão o corpo é apenas uma quebra linha
+        corpo = "\n";// padrão o corpo é apenas uma quebra linha
     }
 
-    //public static int nome()
+    // public static int nome()
     public Método(String modAcesso, String modNacesso, String tipoRetorno, String nome) {
         this(modAcesso, tipoRetorno, nome);
         addModNacesso(modNacesso);
     }
 
-    //public static int nome(int arg0, int arg1,...)
+    // public static int nome(int arg0, int arg1,...)
     public Método(String modAcesso, String modNacesso, String tipoRetorno, String nome, List<Parametro> parametros) {
         this(modAcesso, modNacesso, tipoRetorno, nome);
         setParametros(parametros);
@@ -70,14 +66,14 @@ public class Método implements Cloneable {
      *
      * @param params os parametros para o método
      * @return retorna uma String contendo o código de chamada ao método.
-     * nome(arg0,arg1,...)
+     *         nome(arg0,arg1,...)
      */
     public String getChamada(String... params) {
         String codigo = "";
 
         codigo += nome + "(";
 
-        //conta a posição do parâmetro
+        // conta a posição do parâmetro
         int conta = 1;
         for (String param : params) {
             if (conta % 2 == 0) {
@@ -136,8 +132,7 @@ public class Método implements Cloneable {
                 param = par;
             }
         }
-
-        return null;
+        return param;
     }
 
     /**
@@ -190,7 +185,7 @@ public class Método implements Cloneable {
         String[] linhas = codigo.split(";\n");
         String formatado = "";
         for (String linha : linhas) {
-            //colocar ; de volta
+            // colocar ; de volta
             formatado += "\t";
             if (!linha.endsWith(";\n") || !linha.endsWith(";")) {
                 formatado += linha + ";\n";
@@ -293,8 +288,6 @@ public class Método implements Cloneable {
         String codigo = "";
 
         codigo += modAcesso + " ";
-        int i = 0;
-
         if (modNacesso.size() > 0) {
             for (String mod : modNacesso) {
                 codigo += mod + " ";
@@ -307,16 +300,16 @@ public class Método implements Cloneable {
 
         codigo += nome + "(";
 
-        //indica a posição do parâmetro
+        // indica a posição do parâmetro
         int contador = 1;
 
         for (Parametro param : parametros) {
-            //toda vez que chegar no próximo parâmetro, colocar uma vírgula
+            // toda vez que chegar no próximo parâmetro, colocar uma vírgula
             if (contador % 2 == 0) {
                 codigo += ", ";
                 contador = 1;
             }
-            //coloca o parâmetro
+            // coloca o parâmetro
             codigo += param;
             contador++;
         }
@@ -343,8 +336,7 @@ public class Método implements Cloneable {
     }
 
     @Override
-    public Object clone() throws
-            CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 

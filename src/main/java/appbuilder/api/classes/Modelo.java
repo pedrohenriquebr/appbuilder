@@ -5,10 +5,8 @@
  */
 package appbuilder.api.classes;
 
-import appbuilder.api.vars.Atributo;
-import appbuilder.api.classes.Classe;
 import appbuilder.api.methods.Método;
-import appbuilder.api.methods.Parametro;
+import appbuilder.api.vars.Atributo;
 
 /**
  *
@@ -29,8 +27,8 @@ public class Modelo extends Classe {
         super(nome, pacote);
     }
 
-    public Modelo(String carro, String pacote, String caminho) {
-        super(carro, pacote, caminho);
+    public Modelo(String nome, String pacote, String caminho) {
+        super(nome, pacote, caminho);
     }
 
     /**
@@ -61,8 +59,6 @@ public class Modelo extends Classe {
             return false;
         }
     }
-
-    
 
     /**
      * Adiciona um atributo com seus getter e setter do tipo int
@@ -103,7 +99,6 @@ public class Modelo extends Classe {
     public boolean addDouble(String nome) {
         return addAtributo("double", nome);
     }
-
     /**
      * Adiciona vários atributos com seus getters e setters do tipo int
      *
@@ -129,7 +124,7 @@ public class Modelo extends Classe {
      * Adiciona vários atributos com seus getters e setters do tipo String
      *
      * @param nomes
-     * @return
+     * @return quantos atributos foram adicionados com sucesso
      */
     public int addStrings(String... nomes) {
         //conta quantos atributos do tipo inteiro foram adicionados com sucesso
