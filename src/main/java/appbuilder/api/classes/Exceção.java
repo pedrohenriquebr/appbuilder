@@ -15,6 +15,12 @@ public class Exceção extends Classe {
         super(nome);
         addImportação(Classe.getClasseEstática("java.lang.Exception"));
         setSuperClasse("Exception");
+        // substitui o construtor principal
+        Construtor principal = getConstrutorPrincipal();
+        principal.addParametro("String", "message");
+        principal.addCorpo("super(" + principal.getParametro("message").getReferencia() + ")");
     }
+    
+    
 
 }

@@ -1,5 +1,7 @@
 package appbuilder.api.classes;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -70,6 +72,7 @@ public class Classe {
     private static boolean CONTEXTO_ESTÁTICO = false;
 
     // deixo classes prontas, já predefinidas
+
     static {
         Log.debug("Classe.static", "começo: adicionando classes");
         CONTEXTO_ESTÁTICO = true;
@@ -94,12 +97,8 @@ public class Classe {
         this.modAcesso = "public";
         this.pacote = new Pacote(nome.toLowerCase());
 
-        // adicionar um construtor padrão
-        construtorPrincipal = new Construtor("public", this.getNome());
-        addConstrutor(construtorPrincipal);
-
         if (!CONTEXTO_ESTÁTICO) {
-             addImportação(Classe.getClasseEstática("java.lang.String"));
+            addImportação(Classe.getClasseEstática("java.lang.String"));
         }
 
     }
@@ -137,10 +136,13 @@ public class Classe {
             ex.printStackTrace();
             ;
             Log.debug(Classe.class, "superclasse nula!");
+        } catch (CloneNotSupportedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
-    public void setSuperClasse(Classe superClasse) {
+    public void setSuperClasse(Classe superClasse) throws CloneNotSupportedException {
         this.superClasse = superClasse;
 
         List<String> meusAtributos = new ArrayList<>();
@@ -163,7 +165,12 @@ public class Classe {
 
         for (Método met : superClasse.getMétodos()) {
             if (!meusMétodos.contains(met.getNome())) {
-                addMétodo(met);
+                Log.debug("Adicionando método : " + met.getNome());
+                if (met instanceof Construtor) {
+                    Log.debug(Classe.class, "construtor encontrado: " + met.getAssinatura());
+                } else {
+                    addMétodo(met);
+                }
             }
         }
 
@@ -383,6 +390,8 @@ public class Classe {
                 codigo += var.getDeclaração();
             }
         }
+
+        Log.debug(Classe.class, "exibir métodos");
         /**
          * MÉTODOS
          */
@@ -394,6 +403,9 @@ public class Classe {
 
                 if (!superClasse.temMétodo(met)) {
                     codigo += met;
+                    Log.debug(Classe.class, "superclasse não tem " + met.getAssinatura());
+                } else {
+                    Log.debug(Classe.class, "superclasse tem " + met.getAssinatura());
                 }
             } else {
                 codigo += met;
@@ -544,7 +556,7 @@ public class Classe {
         this.importações = importações;
     }
 
-    void setConstrutorPrincipal(String apublic, String nome) {
+    public void setConstrutorPrincipal(String apublic, String nome) {
         setConstrutorPrincipal(new Construtor(apublic, nome));
     }
 
@@ -628,9 +640,14 @@ public class Classe {
              * java.lang O nome da classe é a última palavra, então eu precisei dividir por
              * "." E precisei fazer recursividade
              */
-            classe.setSuperClasse(Classe.addClasse(classeSplitted[classeSplitted.length - 1],
-                    pacoteSplitted[pacoteSplitted.length - 1],
-                    superClasse.getPackage().getName().replace("." + pacoteSplitted[pacoteSplitted.length - 1], "")));
+            try {
+
+                classe.setSuperClasse(Classe.addClasse(classeSplitted[classeSplitted.length - 1],
+                        pacoteSplitted[pacoteSplitted.length - 1], superClasse.getPackage().getName()
+                                .replace("." + pacoteSplitted[pacoteSplitted.length - 1], "")));
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
         }
 
         // coloca o modificador de acesso
@@ -653,11 +670,18 @@ public class Classe {
             classe.removeConstrutor(classe.getConstrutorPrincipal());
         }
 
+        Log.debug(Classe.class,"adicionando métodos");
         // pega os métodos declarados
         for (Method method : predefinida.getDeclaredMethods()) {
             String name = method.getName();
             String retType = method.getReturnType().getSimpleName();
             Parameter[] params = method.getParameters();
+            Annotation [] anots  = method.getAnnotations();
+
+            for(Annotation anot : anots ){
+                Class<? extends Annotation> t = anot.annotationType();
+                Log.debug("Anotações",anot.toString());
+            }
 
             List<String> mods = modifiersFromInt(method.getModifiers());
             // por padrão o modificador de acesso é public
@@ -691,6 +715,7 @@ public class Classe {
             classe.addMétodo(metodo);
         }
 
+        int contador = 0;
         // construtores declarados
         for (Constructor<?> constructor : predefinida.getDeclaredConstructors()) {
             List<String> mods = modifiersFromInt(constructor.getModifiers());
@@ -705,6 +730,12 @@ public class Classe {
             for (int h = 1; h < mods.size(); h++) {
                 c.addModNacesso(mods.get(h));
             }
+            contador++;
+
+            if (contador == 1) {
+                Log.debug(Classe.class, "primeiro construtor encontrado: " + c.getAssinatura());
+            }
+
             classe.addConstrutor(c);
         }
 

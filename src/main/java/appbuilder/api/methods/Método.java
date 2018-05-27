@@ -3,6 +3,8 @@ package appbuilder.api.methods;
 import java.util.ArrayList;
 import java.util.List;
 
+import appbuilder.api.annotations.Anotação;
+
 /**
  * Essa classe representa toda a estrutura de um método, declaração e chamada
  * com seus devidos parâmetros.Por padrão o corpo é apenas uma quebra linha.O
@@ -21,6 +23,7 @@ public class Método implements Cloneable {
     protected String corpo = "";
     protected String retorno = "";
     protected boolean deInterface;
+    private int anotações = 0 ;
 
     /**
      *
@@ -47,6 +50,15 @@ public class Método implements Cloneable {
     public Método(String modAcesso, String modNacesso, String tipoRetorno, String nome, List<Parametro> parametros) {
         this(modAcesso, modNacesso, tipoRetorno, nome);
         setParametros(parametros);
+    }
+
+
+    public void addAnotação(int anotação ){
+        this.anotações |= anotação;
+    }
+
+    public int getAnotações(){
+        return this.anotações;
     }
 
     public void setDeInterface(boolean b) {
@@ -286,7 +298,12 @@ public class Método implements Cloneable {
     @Override
     public String toString() {
         String codigo = "";
+        
+        if(Anotação.temAnotação(this.anotações, Anotação.OVERRIDE)){
+            codigo+= "@Override\n";
+        }
 
+        
         codigo += modAcesso + " ";
         if (modNacesso.size() > 0) {
             for (String mod : modNacesso) {
@@ -332,6 +349,46 @@ public class Método implements Cloneable {
 
             codigo += "} \n\n";
         }
+        return codigo;
+    }
+
+    public String getAssinatura(){
+        String codigo = "";
+        
+        if(Anotação.temAnotação(this.anotações, Anotação.OVERRIDE)){
+            codigo+= "@Override\n";
+        }
+
+        
+        codigo += modAcesso + " ";
+        if (modNacesso.size() > 0) {
+            for (String mod : modNacesso) {
+                codigo += mod + " ";
+            }
+        }
+
+        if (tipoRetorno.length() > 0) {
+            codigo += tipoRetorno + " ";
+        }
+
+        codigo += nome + "(";
+
+        // indica a posição do parâmetro
+        int contador = 1;
+
+        for (Parametro param : parametros) {
+            // toda vez que chegar no próximo parâmetro, colocar uma vírgula
+            if (contador % 2 == 0) {
+                codigo += ", ";
+                contador = 1;
+            }
+            // coloca o parâmetro
+            codigo += param;
+            contador++;
+        }
+
+        codigo += ")";
+
         return codigo;
     }
 

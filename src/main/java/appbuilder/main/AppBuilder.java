@@ -7,9 +7,8 @@ package appbuilder.main;
 
 import java.io.IOException;
 
-import appbuilder.api.classes.Classe;
-import appbuilder.api.classes.Exceção;
-import appbuilder.api.methods.Método;
+import appbuilder.api.annotations.Anotação;
+import appbuilder.api.classes.Modelo;
 import appbuilder.util.Log;
 
 /**
@@ -22,11 +21,14 @@ public class AppBuilder {
      * @param args the command line argumentss
      */
     public static void main(String[] args) throws ClassNotFoundException, IOException {
-        // classe Pai ou superclasse
         Log.setEstado(false);
-        Exceção exp = new Exceção("MinhaException");
+        Modelo modelo = new Modelo("Diretor");
+        modelo.addStrings("nome", "departamento");
+        modelo.addConstrutorPara("nome", "departamento");
 
-        System.out.println(exp);
-
+        int valor  = modelo.getMétodo("getNome").getAnotações();
+        boolean b  = Anotação.temAnotação(valor, Anotação.OVERRIDE);
+        System.out.println(b);
     }
+
 }

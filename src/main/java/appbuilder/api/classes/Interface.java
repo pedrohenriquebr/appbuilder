@@ -17,7 +17,6 @@ public class Interface extends Classe {
     public Interface(String nome) {
         super(nome);
         setInterface(true);
-        removeConstrutor(this.getConstrutorPrincipal());
     }
 
     @Override
