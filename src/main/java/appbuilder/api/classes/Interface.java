@@ -7,6 +7,8 @@ package appbuilder.api.classes;
 
 import appbuilder.api.methods.Método;
 import appbuilder.api.vars.Atributo;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  *
@@ -18,7 +20,8 @@ public class Interface extends Classe {
         super(nome);
         setInterface(true);
     }
-
+    
+    
     @Override
     public boolean addAtributo(Atributo atr) {
         return false;

@@ -16,6 +16,7 @@ import java.util.*;
 public final class Log {
 
     private static boolean ativado = true;
+    private static String filter = "";
 
     public static void setEstado(boolean estado) {
         ativado = estado;
@@ -44,7 +45,17 @@ public final class Log {
     }
 
     public static void debug(String tag, String message) {
-        debug("[" + tag + "]" + message);
+        if (!filter.isEmpty()) {
+            if (tag.equals(filter)) {
+                debug("[" + tag + "]", message);
+            }
+        } else {
+            debug("[" + tag + "]" + message);
+        }
+    }
+
+    public static void filterTag(String tag) {
+        filter = tag;
     }
 
     public static void debug(Class context, String message) {

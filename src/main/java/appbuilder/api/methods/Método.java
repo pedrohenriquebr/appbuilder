@@ -16,21 +16,20 @@ public class Método implements Cloneable {
 
     protected String modAcesso; // modificador de acesso. Ex: public, private , protected
     protected List<String> modNacesso = new ArrayList<String>(); // modificador de não-acesso. Ex: final, static,
-                                                                 // abstract
+    // abstract
     protected String tipoRetorno; // tipo de retorno. Ex: int, String, void, char , ...
     protected String nome;
     protected List<Parametro> parametros = new ArrayList<Parametro>(); // algumMetodo(String arg0, int arg1, byte arg2)
     protected String corpo = "";
     protected String retorno = "";
     protected boolean deInterface;
-    private int anotações = 0 ;
 
     /**
      *
-     * @param modAcesso   Ex: public, private e protected
-     * @param modNacesso  Ex: final, static
+     * @param modAcesso Ex: public, private e protected
+     * @param modNacesso Ex: final, static
      * @param tipoRetorno Ex: int, String, void, char
-     * @param nome        Ex: algumMetodo()
+     * @param nome Ex: algumMetodo()
      */
     // public int nome()
     public Método(String modAcesso, String tipoRetorno, String nome) {
@@ -52,15 +51,6 @@ public class Método implements Cloneable {
         setParametros(parametros);
     }
 
-
-    public void addAnotação(int anotação ){
-        this.anotações |= anotação;
-    }
-
-    public int getAnotações(){
-        return this.anotações;
-    }
-
     public void setDeInterface(boolean b) {
         this.deInterface = b;
 
@@ -78,7 +68,7 @@ public class Método implements Cloneable {
      *
      * @param params os parametros para o método
      * @return retorna uma String contendo o código de chamada ao método.
-     *         nome(arg0,arg1,...)
+     * nome(arg0,arg1,...)
      */
     public String getChamada(String... params) {
         String codigo = "";
@@ -298,40 +288,8 @@ public class Método implements Cloneable {
     @Override
     public String toString() {
         String codigo = "";
-        
-        if(Anotação.temAnotação(this.anotações, Anotação.OVERRIDE)){
-            codigo+= "@Override\n";
-        }
 
-        
-        codigo += modAcesso + " ";
-        if (modNacesso.size() > 0) {
-            for (String mod : modNacesso) {
-                codigo += mod + " ";
-            }
-        }
-
-        if (tipoRetorno.length() > 0) {
-            codigo += tipoRetorno + " ";
-        }
-
-        codigo += nome + "(";
-
-        // indica a posição do parâmetro
-        int contador = 1;
-
-        for (Parametro param : parametros) {
-            // toda vez que chegar no próximo parâmetro, colocar uma vírgula
-            if (contador % 2 == 0) {
-                codigo += ", ";
-                contador = 1;
-            }
-            // coloca o parâmetro
-            codigo += param;
-            contador++;
-        }
-
-        codigo += ")";
+        codigo += getAssinatura();
         // se fôr de interface, não tem corpo
         if (deInterface) {
             codigo += ";\n\n";
@@ -352,14 +310,9 @@ public class Método implements Cloneable {
         return codigo;
     }
 
-    public String getAssinatura(){
+    public String getAssinatura() {
         String codigo = "";
-        
-        if(Anotação.temAnotação(this.anotações, Anotação.OVERRIDE)){
-            codigo+= "@Override\n";
-        }
 
-        
         codigo += modAcesso + " ";
         if (modNacesso.size() > 0) {
             for (String mod : modNacesso) {

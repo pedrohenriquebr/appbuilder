@@ -25,7 +25,11 @@ import appbuilder.api.vars.Atributo;
  * and open the template in the editor.
  */
 import appbuilder.api.vars.Objeto;
+import appbuilder.main.AppBuilder;
 import appbuilder.util.Log;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.SimpleFormatter;
 
 /**
  *
@@ -37,6 +41,7 @@ public class Classe {
     protected String modAcesso;// modificador de acesso ,Ex: public, private
     protected String nome;
     private boolean éInterface;
+    private static final Logger logger = Logger.getLogger(Level.INFO.getName());
 
     private List<Atributo> atributos = new ArrayList<Atributo>();
     private List<Método> métodos = new ArrayList<Método>();
@@ -52,8 +57,8 @@ public class Classe {
     private Método métodoMain;
 
     /**
-     * classes prontas, usando api de reflection /*nome totalmente qualificado com a
-     * classe pronta
+     * classes prontas, usando api de reflection /*nome totalmente qualificado
+     * com a classe pronta
      */
     private static Map<String, Classe> classes = new HashMap<>();
 
@@ -72,22 +77,24 @@ public class Classe {
     private static boolean CONTEXTO_ESTÁTICO = false;
 
     // deixo classes prontas, já predefinidas
-
     static {
-        Log.debug("Classe.static", "começo: adicionando classes");
+        Handler handler = new ConsoleHandler();
+        handler.setFormatter(new SimpleFormatter());
+        logger.addHandler(handler);
+        logger.setFilter(new AppBuilder());
+        logger.log(Level.INFO, "começo: adicionando classes");
         CONTEXTO_ESTÁTICO = true;
-        try {
-            /**
-             * São classes que já existem ou que foram declaradas em java
-             */
+        /* try {
+           
             addClasse("Exception", "lang", "java");
             addClasse("String", "lang", "java");
 
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Classe.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Level.INFO.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Não foi possível carregar as classes");
-        }
-        Log.debug("Classe.static", "fim: adicionando classes");
+        } */
+
+        logger.log(Level.INFO, "fim: adicionando classes");
 
         CONTEXTO_ESTÁTICO = false;
     }
@@ -98,7 +105,7 @@ public class Classe {
         this.pacote = new Pacote(nome.toLowerCase());
 
         if (!CONTEXTO_ESTÁTICO) {
-            addImportação(Classe.getClasseEstática("java.lang.String"));
+            //addImportação(Classe.getClasseEstática("java.lang.String"));
         }
 
     }
@@ -118,8 +125,8 @@ public class Classe {
     }
 
     /**
-     * Define a superclasse com base nos pacotes ou classes já importadas Não pode
-     * ter uma super classe que não esteja dentro das importações
+     * Define a superclasse com base nos pacotes ou classes já importadas Não
+     * pode ter uma super classe que não esteja dentro das importações
      *
      * @param nomeClasse
      * @param superClasse
@@ -127,7 +134,7 @@ public class Classe {
     public void setSuperClasse(String nomeClasse) {
         Classe classe = getClasse(nomeClasse);
 
-        Log.debug("Superclasse definida: " + classe.getNome());
+        logger.log(Level.INFO, "Superclasse definida: " + classe.getNome());
         try {
 
             setSuperClasse(classe);
@@ -135,7 +142,7 @@ public class Classe {
         } catch (NullPointerException ex) {
             ex.printStackTrace();
             ;
-            Log.debug(Classe.class, "superclasse nula!");
+            logger.log(Level.INFO, "superclasse nula!");
         } catch (CloneNotSupportedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -165,9 +172,9 @@ public class Classe {
 
         for (Método met : superClasse.getMétodos()) {
             if (!meusMétodos.contains(met.getNome())) {
-                Log.debug("Adicionando método : " + met.getNome());
+                logger.log(Level.WARNING, "Adicionando método : " + met.getNome());
                 if (met instanceof Construtor) {
-                    Log.debug(Classe.class, "construtor encontrado: " + met.getAssinatura());
+                    logger.log(Level.INFO, "construtor encontrado: " + met.getAssinatura());
                 } else {
                     addMétodo(met);
                 }
@@ -223,8 +230,8 @@ public class Classe {
     }
 
     /**
-     * Define se essa classe é principal ou não, ou seja, se tem "public static voi
-     * main(String [] args )"
+     * Define se essa classe é principal ou não, ou seja, se tem "public static
+     * voi main(String [] args )"
      *
      * @param b
      * @return
@@ -342,19 +349,19 @@ public class Classe {
          */
         // tipo indentifica se é interface ou classe
         codigo += " " + tipo + " " + this.nome;
-        Log.debug(Classe.class, "exibir nome da superclasse");
+        logger.log(Level.INFO, "exibir nome da superclasse");
         // coloca o extends caso tenha uma superclasse
         /**
          * SUPERCLASSE
          */
         if (superClasse != null) {
-            Log.debug("exibindo superclasse ", "superclasse existe");
+            logger.log(Level.INFO, "exibindo superclasse superclasse existe");
             if (!superClasse.getNome().equals("Object")) {
                 codigo += " extends " + superClasse.getNome();
             }
         }
 
-        Log.debug(Classe.class, "Verificando se implementa alguma interface");
+        logger.log(Level.INFO, "Verificando se implementa alguma interface");
         /**
          * INTERFACES
          */
@@ -391,7 +398,7 @@ public class Classe {
             }
         }
 
-        Log.debug(Classe.class, "exibir métodos");
+        logger.log(Level.INFO, "exibir métodos");
         /**
          * MÉTODOS
          */
@@ -403,9 +410,9 @@ public class Classe {
 
                 if (!superClasse.temMétodo(met)) {
                     codigo += met;
-                    Log.debug(Classe.class, "superclasse não tem " + met.getAssinatura());
+                    logger.log(Level.INFO, "superclasse não tem " + met.getAssinatura());
                 } else {
-                    Log.debug(Classe.class, "superclasse tem " + met.getAssinatura());
+                    logger.log(Level.INFO, "superclasse tem " + met.getAssinatura());
                 }
             } else {
                 codigo += met;
@@ -562,7 +569,7 @@ public class Classe {
 
     /**
      * Retorna objeto do atributo com base no nome passado
-     * 
+     *
      * @param nome nome do atributo
      * @return Atributo com o nome especificado
      */
@@ -608,17 +615,10 @@ public class Classe {
     // Java
     public static Classe addClasse(String nome, String pacote, String caminho) throws ClassNotFoundException {
         Classe classe = new Classe(nome, pacote, caminho);
+        Classe classePai = null;
+        logger.log(Level.INFO, "adicionando classe " + classe.getNomeCompleto());
 
-        Log.debug(Classe.class, "adicionando classe " + classe.getNomeCompleto());
-        // Verifico se já não está
-        Classe teste = classes.get(classe.getNomeCompleto());
-
-        if (teste != null) {
-            // a classe já está inserida
-            Log.debug(Classe.class, "A classe " + teste.getNomeCompleto() + " já está salva !");
-            return teste;
-        }
-
+        logger.log(Level.INFO, classe.getNome() + " sendo pesquisada");
         // caso contrário, continua
         Class<?> predefinida = Class.forName(classe.getNomeCompleto());
         List<String> modifiers = modifiersFromInt(predefinida.getModifiers());
@@ -627,24 +627,27 @@ public class Classe {
         if (superClasse != null) {
             // defino a superclasse para minha metaclasse
             // infelizmente teve recursividade
-            String pacoteQualificado = superClasse.getPackage().getName();
-            String classeQualificada = superClasse.getName();
-            String[] pacoteSplitted = pacoteQualificado.split("\\.");
-            String[] classeSplitted = classeQualificada.split("\\.");
+            String nomePacoteCompleto = superClasse.getPackage().getName();
+            String nomeClasseCompleto = superClasse.getName();
+            String[] nomePacoteDividido = nomePacoteCompleto.split("\\.");
+            String[] nomeClasseDividido = nomeClasseCompleto.split("\\.");
 
-            Log.debug(Classe.class, classe.getNomeCompleto() + " tem superclasse " + superClasse.getName());
+            logger.log(Level.INFO, classe.getNomeCompleto() + " tem superclasse " + superClasse.getName());
 
             /**
-             * superClasse.getName() retorna o nome totalmente qualificado: java.lang.String
-             * superClasse.getPackage().getName() retorna o nome totalmente qualificado:
-             * java.lang O nome da classe é a última palavra, então eu precisei dividir por
-             * "." E precisei fazer recursividade
+             * superClasse.getName() retorna o nome totalmente qualificado:
+             * java.lang.String superClasse.getPackage().getName() retorna o
+             * nome totalmente qualificado: java.lang O nome da classe é a
+             * última palavra, então eu precisei dividir por "." E precisei
+             * fazer recursividade
              */
             try {
+                classePai = Classe.addClasse(
+                        nomeClasseDividido[nomeClasseDividido.length - 1],
+                        nomePacoteDividido[nomePacoteDividido.length - 1], superClasse.getPackage().getName()
+                                .replace("." + nomePacoteDividido[nomePacoteDividido.length - 1], ""));
 
-                classe.setSuperClasse(Classe.addClasse(classeSplitted[classeSplitted.length - 1],
-                        pacoteSplitted[pacoteSplitted.length - 1], superClasse.getPackage().getName()
-                                .replace("." + pacoteSplitted[pacoteSplitted.length - 1], "")));
+                classe.setSuperClasse(classePai);
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
             }
@@ -670,27 +673,19 @@ public class Classe {
             classe.removeConstrutor(classe.getConstrutorPrincipal());
         }
 
-        Log.debug(Classe.class,"adicionando métodos");
+        logger.log(Level.INFO, "adicionando métodos");
         // pega os métodos declarados
         for (Method method : predefinida.getDeclaredMethods()) {
             String name = method.getName();
             String retType = method.getReturnType().getSimpleName();
             Parameter[] params = method.getParameters();
-            Annotation [] anots  = method.getAnnotations();
-
-            for(Annotation anot : anots ){
-                Class<? extends Annotation> t = anot.annotationType();
-                Log.debug("Anotações",anot.toString());
-            }
 
             List<String> mods = modifiersFromInt(method.getModifiers());
             // por padrão o modificador de acesso é public
             Método metodo = new Método("public", retType, name);
-            Log.debug(Classe.class, "adicionado método: " + name);
+            logger.log(Level.INFO, "adicionando método: " + metodo.getAssinatura());
 
             // em teoria o primeiro modificador é de acesso
-            metodo.setModAcesso(mods.get(0));
-
             List<String> modsnacesso = new ArrayList<>();
 
             // começando a partir do segundo modificador
@@ -709,10 +704,19 @@ public class Classe {
 
             if (classe.éInterface) {
                 metodo.setDeInterface(true);
-                Log.debug(Classe.class, classe.getNome() + " é interface ");
+                logger.log(Level.INFO, classe.getNome() + " é interface ");
             }
 
             classe.addMétodo(metodo);
+            logger.log(Level.INFO, "adicionado método: {0}", metodo.getAssinatura());
+
+            /**
+             *
+             * if (classePai != null) {
+             *
+             * if (classePai.temMétodo(metodo)) { logger.log(Level.WARNING,
+             * "CLASSE PAI TEM O MESMO MÉTODO!"); } }
+             */
         }
 
         int contador = 0;
@@ -733,7 +737,7 @@ public class Classe {
             contador++;
 
             if (contador == 1) {
-                Log.debug(Classe.class, "primeiro construtor encontrado: " + c.getAssinatura());
+                logger.log(Level.INFO, "primeiro construtor encontrado: {0}", c.getAssinatura());
             }
 
             classe.addConstrutor(c);
@@ -746,7 +750,7 @@ public class Classe {
 
     // adicionar uma metaclasse criada pelo usuário
     public static Classe addClasse(Classe classe) {
-        Log.debug(Classe.class, "adicionado metaclasse " + classe.getNome());
+        logger.log(Level.INFO, "adicionado metaclasse " + classe.getNome());
         return classes.put(classe.getNomeCompleto(), classe);
     }
 
@@ -778,8 +782,8 @@ public class Classe {
     // acessar uma classe importada
     public Classe getClasse(String nome) {
         Classe cl = classes.get(nomesCompletos.get(nome));
-        Log.debug(Classe.class, "convertendo nome simples em nome completo: " + nome + "=" + nomesCompletos.get(nome));
-        Log.debug(Classe.class, "classe reconhecida: " + cl.getNomeCompleto());
+        logger.log(Level.INFO, "convertendo nome simples em nome completo: " + nome + "=" + nomesCompletos.get(nome));
+        logger.log(Level.INFO, "classe reconhecida: " + cl.getNomeCompleto());
         return cl;
     }
 
