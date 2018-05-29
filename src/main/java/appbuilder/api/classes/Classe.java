@@ -1,5 +1,6 @@
 package appbuilder.api.classes;
 
+import appbuilder.api.classes.exceptions.TratamentoDeExceção;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Constructor;
@@ -26,7 +27,7 @@ import appbuilder.api.vars.Atributo;
  */
 import appbuilder.api.vars.Objeto;
 import appbuilder.main.AppBuilder;
-import appbuilder.util.Log;
+
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.SimpleFormatter;
@@ -55,6 +56,7 @@ public class Classe {
     private Construtor construtorPrincipal;
     // método principal
     private Método métodoMain;
+    private static final Handler handler = new ConsoleHandler();
 
     /**
      * classes prontas, usando api de reflection /*nome totalmente qualificado
@@ -78,26 +80,32 @@ public class Classe {
 
     // deixo classes prontas, já predefinidas
     static {
-        Handler handler = new ConsoleHandler();
+
         handler.setFormatter(new SimpleFormatter());
         logger.addHandler(handler);
         logger.setFilter(new AppBuilder());
         logger.log(Level.INFO, "começo: adicionando classes");
         CONTEXTO_ESTÁTICO = true;
-        /* try {
-           
+        try {
+            //suporte para classe Exceção
+            addClasse("Object", "lang", "java");
             addClasse("Exception", "lang", "java");
-            addClasse("String", "lang", "java");
+            addClasse("RuntimeException", "lang", "java");
+            addClasse("SQLException", "sql", "java");
+            addClasse("NullPointerException", "lang", "java");
+            addClasse("CloneNotSupportedException", "lang", "java");
 
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Level.INFO.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, ex.getMessage() + "");
             System.out.println("Não foi possível carregar as classes");
-        } */
+        }
 
         logger.log(Level.INFO, "fim: adicionando classes");
 
         CONTEXTO_ESTÁTICO = false;
     }
+
+    private boolean éVetor = false;
 
     public Classe(String nome) {
         this.nome = nome;
@@ -105,7 +113,7 @@ public class Classe {
         this.pacote = new Pacote(nome.toLowerCase());
 
         if (!CONTEXTO_ESTÁTICO) {
-            //addImportação(Classe.getClasseEstática("java.lang.String"));
+            addImportação(Classe.getClasseEstática("java.lang.Object"));
         }
 
     }
@@ -118,6 +126,10 @@ public class Classe {
     public Classe(String nome, String pacote, String caminho) {
         this(nome);
         this.pacote = new Pacote(pacote, caminho);
+    }
+
+    public static Handler getHandler() {
+        return handler;
     }
 
     private String camelCase(final String line) {
@@ -171,10 +183,14 @@ public class Classe {
         }
 
         for (Método met : superClasse.getMétodos()) {
-            if (!meusMétodos.contains(met.getNome())) {
-                logger.log(Level.WARNING, "Adicionando método : " + met.getNome());
+            if (!this.existeMétodo(met)) {
+                logger.log(Level.WARNING, getNome() + ": Adicionando método : " + met.getAssinatura());
                 if (met instanceof Construtor) {
-                    logger.log(Level.INFO, "construtor encontrado: " + met.getAssinatura());
+                    logger.log(Level.INFO, getNome() + ": construtor encontrado: " + met.getAssinatura());
+                    Construtor construtor = (Construtor) met.clone();
+                    construtor.setNome(getNome());
+                    addConstrutor(construtor);
+
                 } else {
                     addMétodo(met);
                 }
@@ -185,6 +201,15 @@ public class Classe {
 
     public Classe getSuperClasse() {
         return this.superClasse;
+    }
+
+    public void setVetor(boolean b) {
+        this.éVetor = b;
+        setSuperClasse("Object");
+    }
+
+    public boolean éUmVetor() {
+        return this.éVetor;
     }
 
     /**
@@ -203,7 +228,7 @@ public class Classe {
         }
     }
 
-    public boolean éInterface() {
+    public boolean éUmaInterface() {
         return this.éInterface;
     }
 
@@ -408,11 +433,11 @@ public class Classe {
             // se tiver, não precisa exibir
             if (superClasse != null) {
 
-                if (!superClasse.temMétodo(met)) {
+                if (!superClasse.existeMétodo(met)) {
                     codigo += met;
-                    logger.log(Level.INFO, "superclasse não tem " + met.getAssinatura());
+                    logger.log(Level.INFO, getNome() + ": superclasse não tem " + met.getAssinatura());
                 } else {
-                    logger.log(Level.INFO, "superclasse tem " + met.getAssinatura());
+                    logger.log(Level.INFO, getNome() + ": superclasse tem " + met.getAssinatura());
                 }
             } else {
                 codigo += met;
@@ -611,14 +636,55 @@ public class Classe {
         return this.métodos.contains(metodo);
     }
 
+    public boolean existeMétodo(Método metodo) {
+        boolean ret = false;
+        for (Método met : getMétodos()) {
+            //comparar nome
+            String nome = met.getNome();
+            //comparar os parâmetros e quantidade de parâmetros
+            List<Parametro> params = met.getParametros();
+            int quantidade = params.size();//quantidade de parâmetros
+            int contaParams = 0; //quantidade de parâmetros iguais
+
+            if (quantidade == metodo.getParametros().size()) {
+                for (int j = 0; j < quantidade; j++) {
+                    Parametro p1 = params.get(j);
+                    Parametro p2 = metodo.getParametro(j);
+
+                    if (p1.getTipo().equals(p2.getTipo())) {
+                        contaParams++;
+                    }
+                }
+            }
+
+            //para ser igual deve ter: o nome, parâmetros e tipo de retorno igual
+            if (metodo.getNome().equals(nome)
+                    && metodo.getParametros().size() == quantidade
+                    && contaParams == quantidade
+                    && metodo.getTipoRetorno().equals(met.getTipoRetorno())) {
+                return true;
+            }
+
+        }
+
+        return ret;
+    }
+
     // cria uma classe a partir de uma já predefinida, classes prontas da linguagem
     // Java
     public static Classe addClasse(String nome, String pacote, String caminho) throws ClassNotFoundException {
-        Classe classe = new Classe(nome, pacote, caminho);
+        Classe classe = null;
         Classe classePai = null;
-        logger.log(Level.INFO, "adicionando classe " + classe.getNomeCompleto());
+        if (nome.endsWith("Exception") && !nome.equals("Exception")) {
+            logger.log(Level.INFO, nome + ": é uma classe de exceção ");
+            classe = new Exceção(nome, pacote, caminho);
+        } else {
+            classe = new Classe(nome, pacote, caminho);;
+        }
 
-        logger.log(Level.INFO, classe.getNome() + " sendo pesquisada");
+        logger.log(Level.INFO, nome + ": adicionando classe " + classe.getNomeCompleto());
+
+        logger.log(Level.INFO, classe.getNome() + ": sendo pesquisada");
         // caso contrário, continua
         Class<?> predefinida = Class.forName(classe.getNomeCompleto());
         List<String> modifiers = modifiersFromInt(predefinida.getModifiers());
@@ -633,7 +699,6 @@ public class Classe {
             String[] nomeClasseDividido = nomeClasseCompleto.split("\\.");
 
             logger.log(Level.INFO, classe.getNomeCompleto() + " tem superclasse " + superClasse.getName());
-
             /**
              * superClasse.getName() retorna o nome totalmente qualificado:
              * java.lang.String superClasse.getPackage().getName() retorna o
@@ -708,7 +773,7 @@ public class Classe {
             }
 
             classe.addMétodo(metodo);
-            logger.log(Level.INFO, "adicionado método: {0}", metodo.getAssinatura());
+            logger.log(Level.INFO, classe.getNome() + ": adicionado método: {0}", metodo.getAssinatura());
 
             /**
              *
@@ -722,6 +787,7 @@ public class Classe {
         int contador = 0;
         // construtores declarados
         for (Constructor<?> constructor : predefinida.getDeclaredConstructors()) {
+
             List<String> mods = modifiersFromInt(constructor.getModifiers());
 
             Construtor c = new Construtor(mods.get(0), classe.getNome());
@@ -738,6 +804,10 @@ public class Classe {
 
             if (contador == 1) {
                 logger.log(Level.INFO, "primeiro construtor encontrado: {0}", c.getAssinatura());
+            }
+
+            if (classe.existeMétodo(c)) {
+                continue;
             }
 
             classe.addConstrutor(c);
@@ -831,4 +901,27 @@ public class Classe {
         return this.modsNAcesso;
     }
 
+    List<Construtor> getConstrutores() {
+        List<Construtor> lista = new ArrayList<>();
+        for (Método m : getMétodos()) {
+            if (m instanceof Construtor) {
+                lista.add((Construtor) m);
+            }
+        }
+        return lista;
+    }
+
+    public TratamentoDeExceção tratarExceção(String... exceções) {
+        if (exceções.length == 0) {
+            return null;
+        }
+
+        TratamentoDeExceção tratamento = Exceção.tratar(this, exceções);
+
+        return tratamento;
+    }
+
+    public String lançarExceção(String nome, String... args) {
+        return Exceção.lançar(this, nome, args);
+    }
 }

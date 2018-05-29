@@ -7,16 +7,14 @@ import appbuilder.api.methods.Método;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 /**
  *
  * @author Pedro Henrique Braga da Silva
  */
-public class Construtor extends Método{
-    
+public class Construtor extends Método {
+
     public Construtor(String modAcesso, String nome) {
-        super(modAcesso,"","", nome);
+        super(modAcesso, "", "", nome);
     }
-    
+
 }

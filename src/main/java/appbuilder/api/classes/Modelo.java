@@ -21,8 +21,6 @@ public class Modelo extends Classe {
 
     public Modelo(String nome) {
         super(nome);
-        setConstrutorPrincipal(new Construtor("public",getNome()));
-        addConstrutor(getConstrutorPrincipal());
     }
 
     public Modelo(String nome, String pacote) {

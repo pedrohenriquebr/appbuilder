@@ -3,7 +3,7 @@ package appbuilder.api.methods;
 import java.util.ArrayList;
 import java.util.List;
 
-import appbuilder.api.annotations.Anotação;
+import appbuilder.api.classes.Exceção;
 
 /**
  * Essa classe representa toda a estrutura de um método, declaração e chamada
@@ -23,6 +23,7 @@ public class Método implements Cloneable {
     protected String corpo = "";
     protected String retorno = "";
     protected boolean deInterface;
+    private List<Exceção> exceções = new ArrayList<>();
 
     /**
      *
@@ -49,6 +50,14 @@ public class Método implements Cloneable {
     public Método(String modAcesso, String modNacesso, String tipoRetorno, String nome, List<Parametro> parametros) {
         this(modAcesso, modNacesso, tipoRetorno, nome);
         setParametros(parametros);
+    }
+
+    public boolean addExceção(Exceção exp) {
+        return this.exceções.add(exp);
+    }
+
+    public boolean removeExceção(Exceção exp) {
+        return this.exceções.remove(exp);
     }
 
     public void setDeInterface(boolean b) {
@@ -291,6 +300,22 @@ public class Método implements Cloneable {
 
         codigo += getAssinatura();
         // se fôr de interface, não tem corpo
+        //verificar se tem delegação de tratamento de exceções
+
+        if (exceções.size() > 0) {
+            codigo += " throws ";
+            int contador = 1;
+            for (Exceção e : exceções) {
+                if (contador % 2 == 0) {
+                    codigo += ", ";
+                    contador = 1;
+                }
+
+                codigo += e.getNome();
+                contador++;
+            }
+        }
+
         if (deInterface) {
             codigo += ";\n\n";
         } else {

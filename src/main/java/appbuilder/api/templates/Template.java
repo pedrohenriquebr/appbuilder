@@ -14,13 +14,13 @@ import java.util.*;
  */
 public class Template extends SuperTemplate {
     
-    @Override
-    public int doIt(String task) {
-        return 0;
+    public Template(String g){
+        super();
+        
     }
+    
+    
+    public void fazer() {
 
-    @Override
-    public String toString() {
-        return "string";
     }
 }

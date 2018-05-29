@@ -35,13 +35,12 @@ public class Variavel {
      *
      */
     protected String valor;
-    
+
     /**
      * A classe em que a variável está sendo usada
      */
-    
     protected Classe classe;
-    
+
     /**
      * Constrói a variável com seu atributos básicos, o mínimo para ter uma
      * variável é o seu tipo e nome.Valor da variável por padrão é "null".
@@ -206,13 +205,48 @@ public class Variavel {
     public Objeto instancia(String... args) {
         return Objeto.instancia(this.tipo, args);
     }
-    
+
     public Classe getClasse() {
         return classe;
     }
 
     public void setClasse(Classe classe) {
         this.classe = classe;
+    }
+
+    /**
+     * Considera que o atributo é um objeto e que contém métodos e atributos a
+     * serem chamados. Call serve para chamar algum método.
+     *
+     * @param método
+     * @param args
+     * @return
+     */
+    public String call(String método, String... args) {
+        //no caso aqui é como se fosse acessar uma classe que foi importada
+        Classe cl = this.classe.getClasse(getTipo());
+        //instância dela 
+        Objeto obj = new Objeto(cl);
+        String codigo = "";
+        codigo = obj.call(método, args);
+
+        return getReferencia() + codigo ;
+    }
+
+    /**
+     * Considera que o atributo é um objeto e que contém métodos e atributos a
+     * serem chamados. Get serve para acessar um atributo.
+     *
+     * @param atr
+     * @return
+     */
+    public String get(String atr) {
+        Classe cl = this.classe.getClasse(getTipo());
+        Objeto obj = new Objeto(cl);
+        String codigo = "";
+
+        codigo = obj.get(atr);
+        return getReferencia() + codigo;
     }
 
     /**

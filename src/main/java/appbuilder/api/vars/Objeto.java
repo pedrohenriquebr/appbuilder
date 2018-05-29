@@ -67,13 +67,15 @@ public class Objeto {
         for (String arg : args) {
             if (contador % 2 == 0) {
                 codigo += ",";
+                contador = 1;
             }
 
             codigo += arg;
+            contador++;
         }
 
         codigo += ")";
-
+        
         instancia = codigo;
     }
 
