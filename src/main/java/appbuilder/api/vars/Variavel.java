@@ -203,7 +203,7 @@ public class Variavel {
      * @return objeto da instância da classe ou tipo da variável
      */
     public Objeto instancia(String... args) {
-        return Objeto.instancia(this.tipo, args);
+        return this.classe.getClasse(getTipo()).getInstancia(args);
     }
 
     public Classe getClasse() {
@@ -230,7 +230,7 @@ public class Variavel {
         String codigo = "";
         codigo = obj.call(método, args);
 
-        return getReferencia() + codigo ;
+        return getReferencia() + codigo;
     }
 
     /**

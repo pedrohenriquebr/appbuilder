@@ -6,8 +6,9 @@ package appbuilder.util;
  * and open the template in the editor.
  */
 import appbuilder.api.classes.Classe;
+import appbuilder.api.projects.Manifesto;
 import java.io.*;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  *
@@ -20,6 +21,15 @@ public class ClassBuilder {
 
     public ClassBuilder(String caminho) {
         this.caminho = caminho;
+    }
+
+    public List build(List<Classe> classes) throws IOException {
+        List<File> files = new ArrayList<>();
+        for (Classe classe : classes) {
+            files.add(build(classe));
+        }
+
+        return files;
     }
 
     public File build(Classe classe) throws FileNotFoundException, IOException {
@@ -42,14 +52,25 @@ public class ClassBuilder {
         return arquivo;
     }
 
+    public void compile(List<File> files) throws IOException {
+        for (File file : files) {
+            compile(file);
+        }
+    }
+
     public File getDiretório() {
 
         return this.diretórioArvore;
     }
 
-    public void compile(File arquivo) throws IOException {
-        System.out.println("Executando : " + "javac " + arquivo.getAbsolutePath());
-        Process process = Runtime.getRuntime().exec("javac " + arquivo.getAbsolutePath());
+    public File compile(File arquivo) throws IOException {
+        File diretorio = new File(getDiretório() + "/classes");
+        diretorio.mkdir();
+
+        System.out.println("Executando : " + "javac -cp " + getDiretório() + " "
+                + arquivo.getAbsolutePath() + " -d " + diretorio.getAbsolutePath());
+        Process process = Runtime.getRuntime().exec("javac -cp " + getDiretório() + " "
+                + arquivo.getAbsolutePath() + " -d " + diretorio.getAbsolutePath());
         Scanner scan = new Scanner(process.getInputStream());
 
         while (scan.hasNextLine()) {
@@ -63,11 +84,45 @@ public class ClassBuilder {
         }
 
         scan.close();
+
+        return diretorio;
+    }
+
+    public File packJar(String arquivoSaida, Manifesto manifesto) throws IOException {
+        File verificar = new File(this.caminho + "/classes");
+        if (!verificar.isDirectory() || !verificar.exists()) {
+            return null;
+        }
+
+        File executavel = new File(this.caminho + "/" + arquivoSaida + ".jar");
+        String codigo = "jar cfm " + executavel.getAbsolutePath() + " "
+                + manifesto.getCaminho() + " -C " + verificar.getAbsolutePath() + " . ";
+        System.out.println("Executando: " + codigo);
+
+        Process process = Runtime.getRuntime().exec(codigo);
+
+        Scanner scan = new Scanner(process.getInputStream());
+
+        while (scan.hasNextLine()) {
+            System.out.println(scan.nextLine());
+        }
+
+        scan = new Scanner(process.getErrorStream());
+
+        while (scan.hasNextLine()) {
+            System.out.println(scan.nextLine());
+        }
+
+        scan.close();
+
+        return executavel;
     }
 
     public void execute(Classe classe) throws IOException {
-        System.out.println("Executando: " + "java -cp " + diretórioArvore.getAbsolutePath() + " " + classe.getNomeCompleto());
-        Process process = Runtime.getRuntime().exec("java -cp " + diretórioArvore.getAbsolutePath() + " " + classe.getNomeCompleto());
+        System.out.println("Executando: " + "java -cp "
+                + diretórioArvore.getAbsolutePath() + " " + classe.getNomeCompleto());
+        Process process = Runtime.getRuntime().exec("java -cp "
+                + diretórioArvore.getAbsolutePath() + " " + classe.getNomeCompleto());
 
         Scanner scan = new Scanner(process.getInputStream());
 

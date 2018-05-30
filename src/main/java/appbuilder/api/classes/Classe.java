@@ -851,7 +851,12 @@ public class Classe {
 
     // acessar uma classe importada
     public Classe getClasse(String nome) {
-        Classe cl = classes.get(nomesCompletos.get(nome));
+        Classe cl = null;
+        if (nome.contains(".")) {
+            cl = classes.get(nome);
+        } else {
+            cl = classes.get(nomesCompletos.get(nome));
+        }
         logger.log(Level.INFO, "convertendo nome simples em nome completo: " + nome + "=" + nomesCompletos.get(nome));
         logger.log(Level.INFO, "classe reconhecida: " + cl.getNomeCompleto());
         return cl;
