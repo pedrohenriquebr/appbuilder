@@ -920,6 +920,10 @@ public class Classe {
         return cl;
     }
 
+    public Exceção getExceção(String nome) {
+        return (Exceção) getClasse(nome);
+    }
+
     public String callStatic(String método, String... args) {
         return getMétodo(método).getChamadaEstática(getNome(), args);
     }

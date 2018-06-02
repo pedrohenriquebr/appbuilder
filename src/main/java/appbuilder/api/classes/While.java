@@ -46,8 +46,8 @@ public class While {
         String codigo = "";
         
         codigo+="while("+condição+"){\n\n";
-        codigo+=corpo;
-        codigo+="\t}\n";
+        codigo+="\t"+corpo;
+        codigo+="}\n";
         
         return codigo;
     }

@@ -84,10 +84,13 @@ public class AppBuilder implements Filter {
        
        Dao dao = new Dao(modelo,factory);
        dao.addMétodoPesquisa("estado");
+       dao.addMétodoPesquisa("data");
        
        
        System.out.println(dao);
-       System.exit(0);
+     
+        
+        
 
          /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

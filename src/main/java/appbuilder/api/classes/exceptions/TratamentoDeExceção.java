@@ -48,17 +48,17 @@ public class TratamentoDeExceção {
     public String toString() {
         String codigo = "";
 
-        codigo += "try{ \n\n\t";
+        codigo += "try{ \n\n";
 
-        codigo += corpo;
+        codigo += "\t" + corpo;
 
         codigo += "}";
 
         for (Exceção e : exceções) {
             Variavel var = new Variavel(e.getNome(), "exp");
             var.setClasse(this.classe);
-            codigo += "catch(" + var.getTipo() + " " + var.getNome() + "){\n\n\t";
-            codigo += var.call("printStackTrace") + ";";
+            codigo += "catch(" + var.getTipo() + " " + var.getNome() + "){\n\n";
+            codigo += "\t" + var.call("printStackTrace") + ";";
 
             codigo += "\n}";
         }

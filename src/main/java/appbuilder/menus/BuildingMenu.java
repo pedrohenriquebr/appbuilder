@@ -6,6 +6,8 @@
 package appbuilder.menus;
 
 import appbuilder.api.classes.Classe;
+import appbuilder.api.classes.ConnectionFactory;
+import appbuilder.api.classes.Dao;
 import appbuilder.api.classes.Modelo;
 import appbuilder.api.methods.Método;
 import appbuilder.api.packages.Pacote;
@@ -17,6 +19,7 @@ import appbuilder.util.ClassBuilder;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -43,6 +46,8 @@ public class BuildingMenu extends javax.swing.JFrame {
 
     private Projeto proj;
     private List<Atributo> atributos = new ArrayList<>();
+    private Atributo chave = null;
+    private boolean chaveDefinida = false;
     private Map<Atributo, Boolean> mapa = new HashMap<Atributo, Boolean>();
     private DefaultListModel<String> lista = new DefaultListModel<>();
 
@@ -62,6 +67,10 @@ public class BuildingMenu extends javax.swing.JFrame {
         //deixar escondido
         this.btnAtualizar.setVisible(false);
         this.btnExcluir.setVisible(false);
+
+        if (!chaveDefinida) {
+            this.checkChave.setVisible(true);
+        }
 
         lista.addListDataListener(comboTipos);
 
@@ -92,15 +101,25 @@ public class BuildingMenu extends javax.swing.JFrame {
 
         int i = 0;
         if (atributo.getTipo().equals("String")) {
-            i = 0;
+            i = 0;//Texto
         } else if (atributo.getTipo().equals("int")) {
-            i = 1;
+            i = 1;//Inteiro
+        } else if (atributo.getTipo().equals("double")) {
+            i = 2;//Real
         } else {
-            i = 2;
+            i = 3;//Data
         }
 
         this.comboTipos.setSelectedIndex(i);
         this.checkFiltrador.setSelected(mapa.get(atributo));
+
+        if (chaveDefinida) {
+            this.checkChave.setVisible(chave == atributo);
+            this.checkChave.setSelected(chave == atributo);
+        } else {
+            this.checkChave.setVisible(true);
+            this.checkChave.setSelected(false);
+        }
 
         System.out.println("Atributo carregado : " + atributo.getDeclaração());
         return true;
@@ -114,6 +133,7 @@ public class BuildingMenu extends javax.swing.JFrame {
         this.txtNomeAtributo.setText("");
         this.comboTipos.setSelectedIndex(0);
         this.checkFiltrador.setSelected(false);
+        this.checkChave.setVisible(!chaveDefinida);
     }
 
     public boolean painelPreenchido(JPanel painel) {
@@ -139,6 +159,16 @@ public class BuildingMenu extends javax.swing.JFrame {
         return true;
     }
 
+    public void definirChave(Atributo atr) {
+        this.chave = atr;
+        chaveDefinida = true;
+    }
+
+    public void resetarChave() {
+        this.chave = null;
+        chaveDefinida = false;
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -157,6 +187,7 @@ public class BuildingMenu extends javax.swing.JFrame {
         listAtributos = new javax.swing.JList<>();
         btnAtualizar = new javax.swing.JButton();
         btnExcluir = new javax.swing.JButton();
+        checkChave = new javax.swing.JCheckBox();
         btnConstruir = new javax.swing.JButton();
         btnExecutar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -166,6 +197,7 @@ public class BuildingMenu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Construção do Projeto");
+        setResizable(false);
 
         panelModelo.setBorder(javax.swing.BorderFactory.createTitledBorder("Modelo"));
 
@@ -175,9 +207,14 @@ public class BuildingMenu extends javax.swing.JFrame {
 
         jLabel3.setText("Tipo: ");
 
-        comboTipos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Texto","Inteiro","Real"}));
+        comboTipos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Texto","Inteiro","Real","Data"}));
 
         checkFiltrador.setText("Filtrador");
+        checkFiltrador.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkFiltradorActionPerformed(evt);
+            }
+        });
 
         btnAdicionar.setText("adicionar");
         btnAdicionar.addActionListener(new java.awt.event.ActionListener() {
@@ -227,12 +264,17 @@ public class BuildingMenu extends javax.swing.JFrame {
             }
         });
 
+        checkChave.setText("Chave");
+
         javax.swing.GroupLayout panelModeloLayout = new javax.swing.GroupLayout(panelModelo);
         panelModelo.setLayout(panelModeloLayout);
         panelModeloLayout.setHorizontalGroup(
             panelModeloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelModeloLayout.createSequentialGroup()
                 .addGroup(panelModeloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelModeloLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(panelAtributos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelModeloLayout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addGroup(panelModeloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -254,36 +296,38 @@ public class BuildingMenu extends javax.swing.JFrame {
                                     .addGroup(panelModeloLayout.createSequentialGroup()
                                         .addComponent(comboTipos, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
-                                        .addComponent(checkFiltrador))))))
-                    .addGroup(panelModeloLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(panelAtributos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(40, Short.MAX_VALUE))
+                                        .addGroup(panelModeloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(checkChave)
+                                            .addComponent(checkFiltrador))))))))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         panelModeloLayout.setVerticalGroup(
             panelModeloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelModeloLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtNomeModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(panelModeloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2))
+                .addGroup(panelModeloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelModeloLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNomeModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(panelModeloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)))
+                    .addComponent(checkChave))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelModeloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNomeAtributo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(comboTipos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(checkFiltrador))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelModeloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdicionar)
                     .addComponent(btnAtualizar)
                     .addComponent(btnExcluir))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                 .addComponent(panelAtributos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         btnConstruir.setText("Construir");
@@ -321,26 +365,28 @@ public class BuildingMenu extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(panelModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(90, 90, 90)
                         .addComponent(btnConstruir)
                         .addGap(30, 30, 30)
                         .addComponent(btnExecutar)))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(panelModelo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnConstruir)
                     .addComponent(btnExecutar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(28, 28, 28))
         );
 
         pack();
@@ -369,9 +415,6 @@ public class BuildingMenu extends javax.swing.JFrame {
         String nomeAtributo = txtNomeAtributo.getText();
         String tipo = (String) comboTipos.getSelectedItem();
         boolean filtrador = checkFiltrador.isSelected();
-        lista.addElement(nomeAtributo + "   :   "
-                + tipo + "  :   "
-                + (filtrador == true ? "Filtrador" : "Comum"));
 
         Atributo atributo;
         String tipoAtributo = "";
@@ -380,11 +423,24 @@ public class BuildingMenu extends javax.swing.JFrame {
             tipoAtributo = "String";
         } else if (tipo.equals("Inteiro")) {
             tipoAtributo = "int";
-        } else {
+        } else if (tipo.equals("Real")) {
             tipoAtributo = "double";
+        } else {
+            tipoAtributo = "Calendar";
         }
 
         atributo = new Atributo(tipoAtributo, nomeAtributo);
+
+        boolean podeSerChave = checkChave.isSelected() && !chaveDefinida;
+        //só pode definir uma chave por modelo
+        if (podeSerChave) {
+            definirChave(atributo);
+        }
+
+        lista.addElement(nomeAtributo + "   :   "
+                + tipo + "  :   "
+                + (filtrador == true ? "Filtrador" : "Comum")
+                + (podeSerChave == true ? "  :   Chave" : ""));
 
         adicionarAtributo(atributo, filtrador);
         limparPainel();
@@ -393,11 +449,15 @@ public class BuildingMenu extends javax.swing.JFrame {
 
     private void listAtributosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listAtributosMouseClicked
         // TODO add your handling code here:
+
+        //se clicou na lista, mas não tem atributos, então sai 
         if (lista.size() == 0) {
             return;
         }
 
+        //pega o indice selecionado
         int indice = listAtributos.getSelectedIndex();
+        //clicou duas vezes no mesmo atributo, então limpa o painel
         if (selecionouAtributo && indice == ultimoIndiceSelecionado) {
             //clicou pela segunda vez
             //limpa as caixas de texto
@@ -452,8 +512,10 @@ public class BuildingMenu extends javax.swing.JFrame {
             tipoAtributo = "String";
         } else if (tipo.equals("Inteiro")) {
             tipoAtributo = "int";
-        } else {
+        } else if (tipo.equals("Real")) {
             tipoAtributo = "double";
+        } else {
+            tipoAtributo = "Calendar";
         }
 
         atributo.setNome(nome);
@@ -461,9 +523,15 @@ public class BuildingMenu extends javax.swing.JFrame {
         Boolean b = mapa.get(atributo);
         b = filtrador;
 
+        boolean podeSerChave = (atributo == chave && !checkChave.isSelected());
+        if (podeSerChave) {
+            resetarChave();
+        }
+
         lista.setElementAt(nome + "   :   "
                 + tipo + "  :   "
-                + (filtrador == true ? "Filtrador" : "Comum"), indice);
+                + (filtrador == true ? "Filtrador" : "Comum")
+                + (podeSerChave == true ? "  :   Chave" : ""), indice);
 
         System.out.println("atualizando atributo: " + atributo.getDeclaração() + ", filtrador: " + b.booleanValue());
     }//GEN-LAST:event_btnAtualizarActionPerformed
@@ -473,6 +541,11 @@ public class BuildingMenu extends javax.swing.JFrame {
 
         int indice = listAtributos.getSelectedIndex();
         Atributo atr = atributos.get(indice);
+
+        if (atr == chave) {
+            resetarChave();
+        }
+
         lista.remove(indice);
         mapa.remove(atr);
         atributos.remove(indice);
@@ -483,8 +556,14 @@ public class BuildingMenu extends javax.swing.JFrame {
 
     private void btnConstruirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConstruirActionPerformed
         // TODO add your handling code here:
+        //verificar se algum campo está vazio
         if (txtNomeModelo.getText().isEmpty() || lista.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Preencha o campo do nome do modelo e/ou adicione atributos !");
+            return;
+        }
+        //verificar se a chave está definida
+        if (!chaveDefinida) {
+            JOptionPane.showMessageDialog(null, "Defina o atributo chave para esse modelo !");
             return;
         }
 
@@ -492,40 +571,88 @@ public class BuildingMenu extends javax.swing.JFrame {
         Pacote pacotePrincipal = proj.getPacotePrincipal();
         Pacote pacoteDeModelos = new Pacote("models", pacotePrincipal.getCaminho());
         Pacote pacoteMain = new Pacote("main", pacotePrincipal.getCaminho());
-        Modelo modelo = new Modelo(txtNomeModelo.getText(), pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
+        Pacote pacoteDao = new Pacote("dao", pacotePrincipal.getCaminho());
 
+        Modelo modelo = new Modelo(txtNomeModelo.getText(), pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
+        ConnectionFactory factory = new ConnectionFactory(pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
+        Dao dao = null;
+
+        modelo.addImportação("java.util.Calendar");
+
+        //Verifica se usa base de dados
+        if (proj.isUsaBaseDeDados()) {
+            factory.setUsuário(proj.getUsuario());
+            factory.setBaseDeDados(proj.getBaseDeDados());
+            factory.setSenha(proj.getSenha());
+        }
+
+        //adiciona os atributos ao modelo 
         boolean retorno = true;
-        for (Atributo atributo : atributos) {
+        int atributosAdicionados = 0;
+        for (Atributo atributo : this.atributos) {
 
             retorno = modelo.addAtributo(atributo.getTipo(), atributo.getNome());
+            //se adicionou com sucesso, então incrementa o contador
+            if (retorno) {
+                atributosAdicionados++;
+            }
+
+            if (chave == atributo) {
+                modelo.setChave(atributo.getNome());
+            }
+
             System.out.println("encontrado atributo :" + atributo.getDeclaração() + ": " + (retorno == true ? "sucesso" : "falha"));
         }
 
+        //Constroi a classe Principal
         Classe.addClasse(modelo);
         Classe principal = new Classe("Principal", pacoteMain.getNome(), proj.getPacotePrincipal().getCaminho());
         principal.addImportação(
                 Classe.getClasseEstática(modelo.getNomeCompleto()));
         try {
-            principal.addImportação(Classe.addClasse("Scanner","util","java"));
+            principal.addImportação(Classe.addClasse("Scanner", "util", "java"));
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        //Metaclasse Dao
+        try {
+            dao = new Dao(modelo, factory);
+            dao.setPacote(pacoteDao);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Erro ao criar a metaclasse Dao!");
+        }
+
+        //pegar os atributos que têm filtrador setado
+        for (Atributo atributo : this.atributos) {
+            Boolean filtrador = mapa.get(atributo);
+            if (filtrador == null) {
+                continue;
+            }
+
+            if (filtrador.booleanValue() == true) {
+                dao.addMétodoPesquisa(atributo.getNome());
+            }
         }
 
         principal.setPrincipal(true);
 
         Método main = principal.getMain();
         Variavel var = new Variavel(modelo.getNome(), "modelo");
-        
+
         var.setClasse(principal);
         main.addCorpo(var.getDeclaração(var.instancia().getInstancia()));
         main.addCorpo("Scanner scan = new Scanner(System.in)");
         main.addCorpo("System.out.println(\"Olá Mundo!\")");
-        
 
         List<Classe> classes = new ArrayList<>();
         classes.add(principal);
         classes.add(modelo);
+        classes.add(dao);
+        classes.add(factory);
 
+        //Cria o manifesto
         Manifesto manifesto = new Manifesto();
         manifesto.setClassePrincipal(principal.getNomeCompleto());
         List<File> codigoFonte = null;
@@ -537,7 +664,7 @@ public class BuildingMenu extends javax.swing.JFrame {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Erro ao escrever manifesto do projeto !");
         }
-
+        //Constrói as classes
         builder = new ClassBuilder(proj.getCaminho());
 
         try {
@@ -546,14 +673,14 @@ public class BuildingMenu extends javax.swing.JFrame {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Erro ao construir projeto !");
         }
-
+        //Compila os arquivos
         try {
             compilados = builder.compile(codigoFonte);
         } catch (IOException ex) {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Erro ao compilar os códigos fonte !");
         }
-
+        //Empacota as classes 
         try {
             this.executavel = builder.packJar(proj.getNome(), manifesto);
         } catch (IOException ex) {
@@ -574,6 +701,10 @@ public class BuildingMenu extends javax.swing.JFrame {
             System.err.println("Erro ao executar projeto !");
         }
     }//GEN-LAST:event_btnExecutarActionPerformed
+
+    private void checkFiltradorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkFiltradorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_checkFiltradorActionPerformed
 
     /**
      * @param args the command line arguments
@@ -596,6 +727,7 @@ public class BuildingMenu extends javax.swing.JFrame {
     private javax.swing.JButton btnConstruir;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnExecutar;
+    private javax.swing.JCheckBox checkChave;
     private javax.swing.JCheckBox checkFiltrador;
     private javax.swing.JComboBox<String> comboTipos;
     private javax.swing.JLabel jLabel1;

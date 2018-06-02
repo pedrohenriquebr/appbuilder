@@ -17,9 +17,6 @@ import javax.swing.*;
 public class ProjectMenu extends javax.swing.JFrame {
 
     private String path = "";
-    private final int altura = 270;
-    private final int largura = 480;
-    private final int alturaParaPainel = 445;
 
     private boolean painelBd = false;
     private boolean senhaVisivel = false;
@@ -28,8 +25,7 @@ public class ProjectMenu extends javax.swing.JFrame {
         initComponents();
         this.path = path;
         txtCaminho.setText(path);
-        panelBancoDeDados.setVisible(false);
-        this.setSize(largura, altura);
+
     }
 
     public boolean painelPreenchido(JPanel painel) {
@@ -55,15 +51,6 @@ public class ProjectMenu extends javax.swing.JFrame {
         return true;
     }
 
-    public void exibirPainelBancoDeDados(boolean valor) {
-        this.panelBancoDeDados.setVisible(valor);
-        if (valor) {
-            this.setSize(largura, alturaParaPainel);
-        } else {
-            this.setSize(largura, altura);
-        }
-    }
-
     public void exibirSenha(boolean valor) {
         //não sei como 
     }
@@ -84,7 +71,6 @@ public class ProjectMenu extends javax.swing.JFrame {
         txtNomeProjeto = new javax.swing.JTextField();
         btnOkInfo = new javax.swing.JButton();
         checkInterfaceGráfica = new javax.swing.JCheckBox();
-        checkBancoDeDados = new javax.swing.JCheckBox();
         panelBancoDeDados = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtNomeUsuario = new javax.swing.JTextField();
@@ -115,13 +101,6 @@ public class ProjectMenu extends javax.swing.JFrame {
 
         checkInterfaceGráfica.setText("Iterface Gráfica");
 
-        checkBancoDeDados.setText("Banco de Dados");
-        checkBancoDeDados.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                checkBancoDeDadosActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout panelInformacoesLayout = new javax.swing.GroupLayout(panelInformacoes);
         panelInformacoes.setLayout(panelInformacoesLayout);
         panelInformacoesLayout.setHorizontalGroup(
@@ -134,10 +113,9 @@ public class ProjectMenu extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(txtNomeProjeto, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
-                .addGroup(panelInformacoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panelInformacoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnOkInfo, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(checkBancoDeDados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(checkInterfaceGráfica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(checkInterfaceGráfica, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(44, 44, 44))
         );
         panelInformacoesLayout.setVerticalGroup(
@@ -147,8 +125,6 @@ public class ProjectMenu extends javax.swing.JFrame {
                 .addGroup(panelInformacoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelInformacoesLayout.createSequentialGroup()
                         .addComponent(checkInterfaceGráfica)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(checkBancoDeDados)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnOkInfo)
                         .addContainerGap())
@@ -235,12 +211,6 @@ public class ProjectMenu extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void checkBancoDeDadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBancoDeDadosActionPerformed
-        // TODO add your handling code here:
-        painelBd = !painelBd;
-        exibirPainelBancoDeDados(painelBd);
-    }//GEN-LAST:event_checkBancoDeDadosActionPerformed
-
     private void btnOkInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkInfoActionPerformed
         // TODO add your handling code here:
 
@@ -249,11 +219,7 @@ public class ProjectMenu extends javax.swing.JFrame {
         boolean infoOk = painelPreenchido(panelInformacoes);
         boolean bdOk = painelPreenchido(panelBancoDeDados);
 
-        if (checkBancoDeDados.isSelected()) {
-            tudoOk = infoOk && bdOk;
-        } else {
-            tudoOk = infoOk;
-        }
+        tudoOk = infoOk && bdOk;
 
         if (!tudoOk) {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos !");
@@ -262,11 +228,10 @@ public class ProjectMenu extends javax.swing.JFrame {
 
             Projeto proj = new Projeto(txtCaminho.getText(), txtNomeProjeto.getText());
 
-            if (checkBancoDeDados.isSelected()) {
-                proj.setBaseDeDados(txtBaseDeDados.getText());
-                proj.setUsuario(txtNomeUsuario.getText());
-                proj.setSenha(new String(txtSenha.getPassword()));
-            }
+            proj.setBaseDeDados(txtBaseDeDados.getText());
+            proj.setUsuario(txtNomeUsuario.getText());
+            proj.setSenha(new String(txtSenha.getPassword()));
+
             proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome()));
             new BuildingMenu(proj).setVisible(true);
             this.dispose();
@@ -276,7 +241,6 @@ public class ProjectMenu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnOkInfo;
-    private javax.swing.JCheckBox checkBancoDeDados;
     private javax.swing.JCheckBox checkInterfaceGráfica;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

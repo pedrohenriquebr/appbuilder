@@ -48,9 +48,6 @@ public class Dao extends Classe {
 
         addImportação(Classe.addClasse(factory));
         addImportação(Classe.addClasse(modelo));
-
-        Atributo chave = modelo.getChave();
-
         conexão = new Atributo("private", "Connection", "con");
         addAtributo(conexão);
 
@@ -62,272 +59,272 @@ public class Dao extends Classe {
         setConstrutorPrincipal(construtor);
         addConstrutor(construtor);
 
-        //COMEÇO - ADD
-        {
-            métodoAdd = new Método("public", "boolean", "add");
-            Parametro paramModelo = new Parametro(this.modelo.getNome(), "modelo");
-            paramModelo.setClasse(this);
-            métodoAdd.addParametro(paramModelo);
-            métodoAdd.addExceção((Exceção) getClasse("SQLException"));
-
-            {
-                Variavel stmt = new Variavel("PreparedStatement", "stmt");
-                stmt.setClasse(this);
-
-                String addQuery = "INSERT INTO "
-                        + modelo.getNome().toLowerCase() + "(";
-                int c = 1;
-                for (Atributo atr : modelo.getAtributos()) {
-
-                    if (c == 2) {
-                        addQuery += ", ";
-                        c = 1;
-                    }
-
-                    addQuery += atr.getNome().toLowerCase();
-
-                    c++;
-                }
-
-                addQuery += ") VALUES (";
-                int qtde = modelo.getAtributos().size();
-                int contador = 1;
-                for (int i = 0; i < qtde; i++) {
-                    if (contador == 2) {
-                        addQuery += ",";
-                        contador = 1;
-                    }
-                    contador++;
-                    addQuery += "?";
-                }
-
-                addQuery += ")";
-
-                String executeInsertQuery = conexão.call("prepareStatement", "\"" + addQuery + "\"");
-                métodoAdd.addCorpo(stmt.getDeclaração(executeInsertQuery));
-
-                int pos = 1;
-                for (Atributo atributo : modelo.getAtributos()) {
-                    String metodo = "set";
-                    String argumento = paramModelo.
-                            call(
-                                    modelo.getGetter(
-                                            atributo.getNome())
-                                            .getNome());
-
-                    if (atributo.getTipo().equals("String")) {
-                        metodo += "String";
-                    } else if (atributo.getTipo().equals("int")) {
-                        metodo += "Int";
-
-                    } else if (atributo.getTipo().equals("double")) {
-                        metodo += "Double";
-                    } else if (atributo.getTipo().equals("float")) {
-                        metodo += "Float";
-                    } else if (atributo.getTipo().equals("Calendar")) {
-                        metodo += "Date";
-                        Método getter = modelo.getGetter(atributo.getNome());
-                        Variavel var = new Variavel("Calendar", "tmp" + pos);
-                        var.setClasse(this);
-                        métodoAdd.addCorpo(var.getDeclaração(argumento));
-                        argumento = var.call("getTime");
-                    }
-
-                    métodoAdd.addCorpo(stmt.call(metodo, pos + "", argumento));
-                    pos++;
-                }
-
-                Variavel retAdd = new Variavel("int", "retorno");
-                retAdd.setClasse(this);
-                métodoAdd.addCorpo(retAdd.getDeclaração(stmt.call("executeUpdate")));
-                Variavel tmp = new Variavel("Statement", "closeOperation");
-                tmp.setClasse(this);
-                métodoAdd.addCorpo(tmp.getDeclaração("(Statement) " + stmt.getReferencia()));
-                métodoAdd.addCorpo(tmp.call("close"));
-                métodoAdd.setRetorno(retAdd.getReferencia() + " > 0");
-
-            }
-
-        }
-        //FIM - ADD
-
-        // COMEÇO - REMOVE 
-        {
-            métodoRemove = new Método("public", "boolean", "remove");
-            Parametro paramModelo = new Parametro(this.modelo.getNome(), "modelo");
-            paramModelo.setClasse(this);
-            métodoRemove.addParametro(paramModelo);
-            métodoRemove.addExceção((Exceção) getClasse("SQLException"));
-
-            {
-                Variavel stmt = new Variavel("PreparedStatement", "stmt");
-                stmt.setClasse(this);
-
-                String removeQuery = "DELETE  FROM "
-                        + modelo.getNome().toLowerCase() + " WHERE "
-                        + chave.getNome().toLowerCase() + "=?";
-
-                String executeRemoveQuery = conexão.call("prepareStatement", "\"" + removeQuery + "\"");
-                métodoRemove.addCorpo(stmt.getDeclaração(executeRemoveQuery));
-
-                int pos = 1;
-                Atributo atributo = chave;
-                String metodo = "set";
-                String argumento = paramModelo.
-                        call(
-                                modelo.getGetter(
-                                        atributo.getNome())
-                                        .getNome());
-
-                if (atributo.getTipo().equals("String")) {
-                    metodo += "String";
-                } else if (atributo.getTipo().equals("int")) {
-                    metodo += "Int";
-
-                } else if (atributo.getTipo().equals("double")) {
-                    metodo += "Double";
-                } else if (atributo.getTipo().equals("float")) {
-                    metodo += "Float";
-                } else if (atributo.getTipo().equals("Calendar")) {
-                    metodo += "Date";
-                    Método getter = modelo.getGetter(atributo.getNome());
-                    Variavel var = new Variavel("Calendar", "tmp" + pos);
-                    var.setClasse(this);
-                    métodoRemove.addCorpo(var.getDeclaração(argumento));
-                    argumento = var.call("getTime");
-                }
-
-                métodoRemove.addCorpo(stmt.call(metodo, pos + "", argumento));
-                pos++;
-
-                Variavel retAdd = new Variavel("int", "retorno");
-                retAdd.setClasse(this);
-                métodoRemove.addCorpo(retAdd.getDeclaração(stmt.call("executeUpdate")));
-                Variavel tmp = new Variavel("Statement", "closeOperation");
-                tmp.setClasse(this);
-                métodoRemove.addCorpo(tmp.getDeclaração("(Statement) " + stmt.getReferencia()));
-                métodoRemove.addCorpo(tmp.call("close"));
-                métodoRemove.setRetorno(retAdd.getReferencia() + " > 0");
-
-            }
-        }
-
-        //FIM - REMOVE
-        //COMEÇO - UPDATE
-        {
-            métodoUpdate = new Método("public", "boolean", "update");
-            Parametro paramModelo = new Parametro(this.modelo.getNome(), "modelo");
-            paramModelo.setClasse(this);
-            métodoUpdate.addParametro(paramModelo);
-            métodoUpdate.addExceção((Exceção) getClasse("SQLException"));
-
-            {
-                Variavel stmt = new Variavel("PreparedStatement", "stmt");
-                stmt.setClasse(this);
-
-                String updateQuery = "UPDATE "
-                        + modelo.getNome().toLowerCase() + " SET ";
-                int c = 1;
-                for (Atributo atr : modelo.getAtributos()) {
-                    if (atr == chave) {
-                        continue;
-                    }
-
-                    if (c == 2) {
-                        updateQuery += ", ";
-                        c = 1;
-                    }
-
-                    updateQuery += atr.getNome().toLowerCase() + "=?";
-
-                    c++;
-                }
-
-                updateQuery += " WHERE " + chave.getNome().toLowerCase() + "=?";
-
-                String executeUpdateQuery = conexão.call("prepareStatement", "\"" + updateQuery + "\"");
-                métodoUpdate.addCorpo(stmt.getDeclaração(executeUpdateQuery));
-
-                int pos = 1;
-                for (Atributo atributo : modelo.getAtributos()) {
-                    if (atributo == chave) {
-                        continue;
-                    }
-
-                    String metodo = "set";
-                    String argumento = paramModelo.
-                            call(
-                                    modelo.getGetter(
-                                            atributo.getNome())
-                                            .getNome());
-
-                    if (atributo.getTipo().equals("String")) {
-                        metodo += "String";
-                    } else if (atributo.getTipo().equals("int")) {
-                        metodo += "Int";
-
-                    } else if (atributo.getTipo().equals("double")) {
-                        metodo += "Double";
-                    } else if (atributo.getTipo().equals("float")) {
-                        metodo += "Float";
-                    } else if (atributo.getTipo().equals("Calendar")) {
-                        metodo += "Date";
-                        Método getter = modelo.getGetter(atributo.getNome());
-                        Variavel var = new Variavel("Calendar", "tmp" + pos);
-                        var.setClasse(this);
-                        métodoUpdate.addCorpo(var.getDeclaração(argumento));
-                        argumento = var.call("getTime");
-                    }
-
-                    métodoUpdate.addCorpo(stmt.call(metodo, pos + "", argumento));
-                    pos++;
-                }
-
-                String metodo = "set";
-                String argumento = paramModelo.
-                        call(
-                                modelo.getGetter(
-                                        chave.getNome())
-                                        .getNome());
-
-                if (chave.getTipo().equals("String")) {
-                    metodo += "String";
-                } else if (chave.getTipo().equals("int")) {
-                    metodo += "Int";
-
-                } else if (chave.getTipo().equals("double")) {
-                    metodo += "Double";
-                } else if (chave.getTipo().equals("float")) {
-                    metodo += "Float";
-                } else if (chave.getTipo().equals("Calendar")) {
-                    metodo += "Date";
-                    Método getter = modelo.getGetter(chave.getNome());
-                    Variavel var = new Variavel("Calendar", "tmp" + pos);
-                    var.setClasse(this);
-                    métodoUpdate.addCorpo(var.getDeclaração(argumento));
-                    argumento = var.call("getTime");
-                }
-
-                métodoUpdate.addCorpo(stmt.call(metodo, pos + "", argumento));
-
-                Variavel retAdd = new Variavel("int", "retorno");
-                retAdd.setClasse(this);
-                métodoUpdate.addCorpo(retAdd.getDeclaração(stmt.call("executeUpdate")));
-                Variavel tmp = new Variavel("Statement", "closeOperation");
-                tmp.setClasse(this);
-                métodoUpdate.addCorpo(tmp.getDeclaração("(Statement) " + stmt.getReferencia()));
-                métodoUpdate.addCorpo(tmp.call("close"));
-                métodoUpdate.setRetorno(retAdd.getReferencia() + " > 0");
-
-            }
-
-        }
-        //FIM - UPDATE 
+        //ADD 
+        addMétodoAdd();
+        //REMOVE
+        addMétodoRemove();
+        //UPDATE
+        addMétodoUpdate();
 
         addMétodo(métodoAdd);
         addMétodo(métodoRemove);
         addMétodo(métodoUpdate);
 
+    }
+
+    private void addMétodoUpdate() {
+        Atributo chave = modelo.getChave();
+        métodoUpdate = new Método("public", "boolean", "update");
+        Parametro paramModelo = new Parametro(this.modelo.getNome(), "modelo");
+        paramModelo.setClasse(this);
+        métodoUpdate.addParametro(paramModelo);
+        métodoUpdate.addExceção(getExceção("SQLException"));
+
+        Variavel stmt = new Variavel("PreparedStatement", "stmt");
+        stmt.setClasse(this);
+
+        String updateQuery = "UPDATE "
+                + modelo.getNome().toLowerCase() + " SET ";
+        int c = 1;
+        for (Atributo atr : modelo.getAtributos()) {
+            if (atr == chave) {
+                continue;
+            }
+
+            if (c == 2) {
+                updateQuery += ", ";
+                c = 1;
+            }
+
+            updateQuery += atr.getNome().toLowerCase() + "=?";
+
+            c++;
+        }
+
+        updateQuery += " WHERE " + chave.getNome().toLowerCase() + "=?";
+
+        String executeUpdateQuery = conexão.call("prepareStatement", "\"" + updateQuery + "\"");
+        métodoUpdate.addCorpo(stmt.getDeclaração(executeUpdateQuery));
+
+        int pos = 1;
+        for (Atributo atributo : modelo.getAtributos()) {
+            if (atributo == chave) {
+                continue;
+            }
+
+            String metodo = "set";
+            String argumento = paramModelo.
+                    call(
+                            modelo.getGetter(
+                                    atributo.getNome())
+                                    .getNome());
+
+            if (atributo.getTipo().equals("String")) {
+                metodo += "String";
+            } else if (atributo.getTipo().equals("int")) {
+                metodo += "Int";
+
+            } else if (atributo.getTipo().equals("double")) {
+                metodo += "Double";
+            } else if (atributo.getTipo().equals("float")) {
+                metodo += "Float";
+            } else if (atributo.getTipo().equals("Calendar")) {
+                metodo += "Date";
+                Método getter = modelo.getGetter(atributo.getNome());
+                Variavel var = new Variavel("Calendar", "tmp" + pos);
+                var.setClasse(this);
+                métodoUpdate.addCorpo(var.getDeclaração(argumento));
+                argumento = getClasse("Date").getInstancia(var.call("getTimeInMillis")).getInstancia();
+            }
+
+            métodoUpdate.addCorpo(stmt.call(metodo, pos + "", argumento));
+            pos++;
+        }
+
+        String metodo = "set";
+        String argumento = paramModelo.
+                call(
+                        modelo.getGetter(
+                                chave.getNome())
+                                .getNome());
+
+        if (chave.getTipo().equals("String")) {
+            metodo += "String";
+        } else if (chave.getTipo().equals("int")) {
+            metodo += "Int";
+
+        } else if (chave.getTipo().equals("double")) {
+            metodo += "Double";
+        } else if (chave.getTipo().equals("float")) {
+            metodo += "Float";
+        } else if (chave.getTipo().equals("Calendar")) {
+            metodo += "Date";
+            Método getter = modelo.getGetter(chave.getNome());
+            Variavel var = new Variavel("Calendar", "tmp" + pos);
+            var.setClasse(this);
+            métodoUpdate.addCorpo(var.getDeclaração(argumento));
+            argumento = getClasse("Date").getInstancia(var.call("getTimeInMillis")).getInstancia();
+        }
+
+        métodoUpdate.addCorpo(stmt.call(metodo, pos + "", argumento));
+
+        Variavel retAdd = new Variavel("int", "retorno");
+        retAdd.setClasse(this);
+        métodoUpdate.addCorpo(retAdd.getDeclaração(stmt.call("executeUpdate")));
+        Variavel tmp = new Variavel("Statement", "closeOperation");
+        tmp.setClasse(this);
+        métodoUpdate.addCorpo(tmp.getDeclaração("(Statement) " + stmt.getReferencia()));
+        métodoUpdate.addCorpo(tmp.call("close"));
+        métodoUpdate.setRetorno(retAdd.getReferencia() + " > 0");
+
+    }
+
+    private void addMétodoRemove() {
+        // COMEÇO - REMOVE 
+
+        Atributo chave = modelo.getChave();
+        métodoRemove = new Método("public", "boolean", "remove");
+        Parametro paramModelo = new Parametro(this.modelo.getNome(), "modelo");
+        paramModelo.setClasse(this);
+        métodoRemove.addParametro(paramModelo);
+        métodoRemove.addExceção(getExceção("SQLException"));
+
+        Variavel stmt = new Variavel("PreparedStatement", "stmt");
+        stmt.setClasse(this);
+
+        String removeQuery = "DELETE  FROM "
+                + modelo.getNome().toLowerCase() + " WHERE "
+                + chave.getNome().toLowerCase() + "=?";
+
+        String executeRemoveQuery = conexão.call("prepareStatement", "\"" + removeQuery + "\"");
+        métodoRemove.addCorpo(stmt.getDeclaração(executeRemoveQuery));
+
+        int pos = 1;
+        Atributo atributo = chave;
+        String metodo = "set";
+        String argumento = paramModelo.
+                call(
+                        modelo.getGetter(
+                                atributo.getNome())
+                                .getNome());
+
+        if (atributo.getTipo().equals("String")) {
+            metodo += "String";
+        } else if (atributo.getTipo().equals("int")) {
+            metodo += "Int";
+
+        } else if (atributo.getTipo().equals("double")) {
+            metodo += "Double";
+        } else if (atributo.getTipo().equals("float")) {
+            metodo += "Float";
+        } else if (atributo.getTipo().equals("Calendar")) {
+            metodo += "Date";
+            Método getter = modelo.getGetter(atributo.getNome());
+            Variavel var = new Variavel("Calendar", "tmp" + pos);
+            var.setClasse(this);
+            métodoRemove.addCorpo(var.getDeclaração(argumento));
+            argumento = getClasse("Date").getInstancia(var.call("getTimeInMillis")).getInstancia();
+        }
+
+        métodoRemove.addCorpo(stmt.call(metodo, pos + "", argumento));
+        pos++;
+
+        Variavel retAdd = new Variavel("int", "retorno");
+        retAdd.setClasse(this);
+        métodoRemove.addCorpo(retAdd.getDeclaração(stmt.call("executeUpdate")));
+        Variavel tmp = new Variavel("Statement", "closeOperation");
+        tmp.setClasse(this);
+        métodoRemove.addCorpo(tmp.getDeclaração("(Statement) " + stmt.getReferencia()));
+        métodoRemove.addCorpo(tmp.call("close"));
+        métodoRemove.setRetorno(retAdd.getReferencia() + " > 0");
+
+    }
+
+    private void addMétodoAdd() {
+        //COMEÇO - ADD
+
+        métodoAdd = new Método("public", "boolean", "add");
+        Parametro paramModelo = new Parametro(this.modelo.getNome(), "modelo");
+        paramModelo.setClasse(this);
+        métodoAdd.addParametro(paramModelo);
+        métodoAdd.addExceção(getExceção("SQLException"));
+
+        Variavel stmt = new Variavel("PreparedStatement", "stmt");
+        stmt.setClasse(this);
+
+        String addQuery = "INSERT INTO "
+                + modelo.getNome().toLowerCase() + "(";
+        int c = 1;
+        for (Atributo atr : modelo.getAtributos()) {
+
+            if (c == 2) {
+                addQuery += ", ";
+                c = 1;
+            }
+
+            addQuery += atr.getNome().toLowerCase();
+
+            c++;
+        }
+
+        addQuery += ") VALUES (";
+        int qtde = modelo.getAtributos().size();
+        int contador = 1;
+        for (int i = 0; i < qtde; i++) {
+            if (contador == 2) {
+                addQuery += ",";
+                contador = 1;
+            }
+            contador++;
+            addQuery += "?";
+        }
+
+        addQuery += ")";
+
+        String executeInsertQuery = conexão.call("prepareStatement", "\"" + addQuery + "\"");
+        métodoAdd.addCorpo(stmt.getDeclaração(executeInsertQuery));
+
+        int pos = 1;
+        for (Atributo atributo : modelo.getAtributos()) {
+            String metodo = "set";
+            String argumento = paramModelo.
+                    call(
+                            modelo.getGetter(
+                                    atributo.getNome())
+                                    .getNome());
+
+            if (atributo.getTipo().equals("String")) {
+                metodo += "String";
+            } else if (atributo.getTipo().equals("int")) {
+                metodo += "Int";
+
+            } else if (atributo.getTipo().equals("double")) {
+                metodo += "Double";
+            } else if (atributo.getTipo().equals("float")) {
+                metodo += "Float";
+            } else if (atributo.getTipo().equals("Calendar")) {
+                metodo += "Date";
+                Método getter = modelo.getGetter(atributo.getNome());
+                Variavel var = new Variavel("Calendar", "tmp" + pos);
+                var.setClasse(this);
+                métodoAdd.addCorpo(var.getDeclaração(argumento));
+                argumento = getClasse("Date").getInstancia(var.call("getTimeInMillis")).getInstancia();
+            }
+
+            métodoAdd.addCorpo(stmt.call(metodo, pos + "", argumento));
+            pos++;
+        }
+
+        Variavel retAdd = new Variavel("int", "retorno");
+        retAdd.setClasse(this);
+        métodoAdd.addCorpo(retAdd.getDeclaração(stmt.call("executeUpdate")));
+        Variavel tmp = new Variavel("Statement", "closeOperation");
+        tmp.setClasse(this);
+        métodoAdd.addCorpo(tmp.getDeclaração("(Statement) " + stmt.getReferencia()));
+        métodoAdd.addCorpo(tmp.call("close"));
+        métodoAdd.setRetorno(retAdd.getReferencia() + " > 0");
+
+        //FIM - ADD
     }
 
     public void addMétodoPesquisa(String nomeAtributo) {
@@ -337,12 +334,13 @@ public class Dao extends Classe {
             return;
         }
 
-        Método método = new Método("public", "List", "searchBy" + camelCase(nomeAtributo));
+        Método método = new Método("public", "List<" + modelo.getNome() + ">", "searchBy" + camelCase(nomeAtributo));
         Parametro param = new Parametro(atributo.getTipo(), nomeAtributo.toLowerCase());
         método.addParametro(param);
         param.setClasse(this);
+        método.addExceção(getExceção("SQLException"));
 
-        Variavel lista = new Variavel("ArrayList <" + atributo.getTipo() + ">", "lista");
+        Variavel lista = new Variavel("ArrayList <" + modelo.getNome() + ">", "lista");
         lista.setClasse(this);
         Variavel stmt = new Variavel("PreparedStatement", "stmt");
         stmt.setClasse(this);
@@ -361,7 +359,6 @@ public class Dao extends Classe {
             metodo += "String";
         } else if (atributo.getTipo().equals("int")) {
             metodo += "Int";
-
         } else if (atributo.getTipo().equals("double")) {
             metodo += "Double";
         } else if (atributo.getTipo().equals("float")) {
@@ -372,7 +369,7 @@ public class Dao extends Classe {
             Variavel var = new Variavel("Calendar", "tmp" + pos);
             var.setClasse(this);
             método.addCorpo(var.getDeclaração(argumento));
-            argumento = var.call("getTime");
+            argumento = getClasse("Date").getInstancia(var.call("getTimeInMillis")).getInstancia();
         }
 
         método.addCorpo(stmt.call(metodo, pos + "", argumento));
@@ -380,14 +377,65 @@ public class Dao extends Classe {
         Variavel rs = new Variavel("ResultSet", "rs");
         rs.setClasse(this);
         método.addCorpo(rs.getDeclaração(stmt.call("executeQuery")));
-        
-        While wh  = new While(rs.call("next"));
-        
+
+        While wh = new While(rs.call("next"));
+        Variavel obj = new Variavel(modelo.getNome(), "obj");
+        obj.setClasse(this);
+        wh.addCorpo(obj.getDeclaração(obj.instancia().getInstancia()));
+
+        //
+        pos = 1;
+        for (Atributo atr : this.modelo.getAtributos()) {
+            String chamada = "get";
+            String arg = "";
+
+            if (atr.getTipo().equals("Calendar")) {
+                chamada += "Date";
+                String tmp = rs.call(chamada, "\"" + atr.getNome().toLowerCase() + "\"");
+                Variavel data = new Variavel("Calendar", "data" + pos);
+                data.setClasse(this);
+                wh.addCorpo(
+                        data.getDeclaração(
+                                getClasse("Calendar").
+                                        callStatic("getInstance")));
+
+                Método getter = modelo.getGetter(atr.getNome());
+
+                wh.addCorpo(data.call("setTime", tmp));
+                arg = data.getReferencia();
+                pos++;
+            } else {
+
+                if (atr.getTipo().equals("String")) {
+                    chamada += "String";
+                } else if (atr.getTipo().equals("int")) {
+                    chamada += "Int";
+
+                } else if (atr.getTipo().equals("double")) {
+                    chamada += "Double";
+                } else if (atr.getTipo().equals("float")) {
+                    chamada += "Float";
+                }
+
+                arg = rs.call(chamada, "\"" + atr.getNome().toLowerCase() + "\"");
+
+            }
+
+            wh.addCorpo(obj.call(modelo.getSetter(atr.getNome()).getNome(), arg));
+
+        }
+
+        wh.addCorpo(lista.call("add", obj.getReferencia()));
         método.addCorpo(wh.toString());
-        
+        Variavel tmp = new Variavel("Statement", "closeOperation");
+        tmp.setClasse(this);
+        método.addCorpo(tmp.getDeclaração("(Statement) " + stmt.getReferencia()));
+        método.addCorpo(tmp.call("close"));
+        método.addCorpo(rs.call("close"));
+
         método.setRetorno(lista.getReferencia());
         addMétodo(método);
-        
+
     }
 
     public Modelo getModelo() {

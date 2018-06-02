@@ -46,11 +46,13 @@ public class Dao {
     public Modelo pesquisarPorNome(String nome) throws SQLException{
         PreparedStatement stmt = this.con.prepareStatement("SELECT * FROM tabela WHERE nome=?");
         stmt.setString(1,nome);
-        
+        Calendar c = Calendar.getInstance();
+       
         ResultSet rs  = stmt.executeQuery();
         ArrayList<Modelo> m = new ArrayList<>();
         while(rs.next()){
             String g = rs.getString("");
+            
             
         }
         

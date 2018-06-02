@@ -37,7 +37,7 @@ public class Método implements Cloneable {
         this.modAcesso = modAcesso.trim();
         this.tipoRetorno = tipoRetorno.trim();
         this.nome = nome.trim();
-        corpo = "\n";// padrão o corpo é apenas uma quebra linha
+        corpo = "";// padrão o corpo é apenas uma quebra linha
     }
 
     // public static int nome()
