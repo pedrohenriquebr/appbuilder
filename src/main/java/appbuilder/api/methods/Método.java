@@ -192,13 +192,14 @@ public class Método implements Cloneable {
      * @param codigo o código a ser colocado no corpo
      * @return o código formatado
      */
-    private String formatar(String codigo) {
+    public static String formatar(String codigo) {
         String[] linhas = codigo.split(";\n");
         String formatado = "";
         for (String linha : linhas) {
             // colocar ; de volta
             formatado += "\t";
-            if (!linha.endsWith(";\n") || !linha.endsWith(";") || !linha.endsWith("}")) {
+            
+            if (!linha.endsWith(";\n") || !linha.endsWith(";") && !linha.endsWith("}")) {
                 formatado += linha + ";\n";
             } else {
                 formatado += linha;

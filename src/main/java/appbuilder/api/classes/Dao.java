@@ -377,7 +377,17 @@ public class Dao extends Classe {
 
         método.addCorpo(stmt.call(metodo, pos + "", argumento));
 
+        Variavel rs = new Variavel("ResultSet", "rs");
+        rs.setClasse(this);
+        método.addCorpo(rs.getDeclaração(stmt.call("executeQuery")));
+        
+        While wh  = new While(rs.call("next"));
+        
+        método.addCorpo(wh.toString());
+        
+        método.setRetorno(lista.getReferencia());
         addMétodo(método);
+        
     }
 
     public Modelo getModelo() {
