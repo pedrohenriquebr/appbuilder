@@ -5,6 +5,7 @@
  */
 package appbuilder.menus;
 
+import appbuilder.api.packages.Pacote;
 import appbuilder.api.projects.Projeto;
 import java.awt.Component;
 import javax.swing.*;
@@ -100,6 +101,8 @@ public class ProjectMenu extends javax.swing.JFrame {
         panelInformacoes.setToolTipText("Informções básicas do projeto");
 
         jLabel1.setText("Caminho: ");
+
+        txtCaminho.setEditable(false);
 
         jLabel2.setText("Nome do projeto");
 
@@ -201,7 +204,6 @@ public class ProjectMenu extends javax.swing.JFrame {
                         .addGroup(panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtNomeUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtBaseDeDados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -257,14 +259,17 @@ public class ProjectMenu extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos !");
         } else {
             JOptionPane.showMessageDialog(null, "Tudo Ok!");
-            
-            Projeto proj = new Projeto(txtCaminho.getText(),txtNomeProjeto.getText());
-            
-            if(checkBancoDeDados.isSelected()){
+
+            Projeto proj = new Projeto(txtCaminho.getText(), txtNomeProjeto.getText());
+
+            if (checkBancoDeDados.isSelected()) {
                 proj.setBaseDeDados(txtBaseDeDados.getText());
                 proj.setUsuario(txtNomeUsuario.getText());
                 proj.setSenha(new String(txtSenha.getPassword()));
             }
+            proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome()));
+            new BuildingMenu(proj).setVisible(true);
+            this.dispose();
         }
     }//GEN-LAST:event_btnOkInfoActionPerformed
 

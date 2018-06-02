@@ -17,6 +17,7 @@ import appbuilder.api.vars.Atributo;
 import appbuilder.api.vars.Variavel;
 import appbuilder.menus.MainMenu;
 import appbuilder.util.ClassBuilder;
+import java.awt.Button;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -37,7 +38,7 @@ public class AppBuilder implements Filter {
 
     private static final Logger logger = Logger.getLogger(Classe.class.getName());
 
-    public static void main(String[] args) throws CloneNotSupportedException, IOException {
+    public static void main(String[] args) throws CloneNotSupportedException, IOException, ClassNotFoundException {
         /* Manifesto manifesto = new Manifesto();
         Modelo modeloPessoa = new Modelo("Pessoa", "models", "br.com.myapp");
         modeloPessoa.addStrings("rg", "nome", "nomePai", "nomeMãe", "uf", "dataNascimento");
@@ -46,7 +47,8 @@ public class AppBuilder implements Filter {
         Classe.addClasse(modeloPessoa);
         Classe.addClasse(modeloCarro);
 
-        Classe cl = new Classe("Principal", "main", "br.com.myapp");
+        Classe cl = new Classe("Principa
+        l", "main", "br.com.myapp");
         cl.setPrincipal(true);
         manifesto.setClassePrincipal(cl.getNomeCompleto());
         cl.addImportação(modeloPessoa);
@@ -65,6 +67,27 @@ public class AppBuilder implements Filter {
         System.exit(0);
         
          */
+       
+      
+       Modelo modelo = new Modelo("Pessoa");
+       modelo.addImportação("java.util.Calendar");
+       modelo.addStrings("nome","rg","endereco");
+       modelo.addString("estado");
+       modelo.addInteiro("cpf");
+       modelo.setChave("rg");
+       modelo.addAtributo("Calendar", "data");
+       
+       ConnectionFactory factory = new ConnectionFactory("database", "br.com.mycompany");
+       factory.setUsuário("pedro");
+       factory.setSenha("pedro123");
+       factory.setBaseDeDados("meuprojeto");
+       
+       Dao dao = new Dao(modelo,factory);
+       dao.addMétodoPesquisa("estado");
+       
+       
+       System.out.println(dao);
+       System.exit(0);
 
          /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

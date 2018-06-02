@@ -52,10 +52,13 @@ public class ClassBuilder {
         return arquivo;
     }
 
-    public void compile(List<File> files) throws IOException {
+    public List<File> compile(List<File> files) throws IOException {
+        List<File> compilados = new ArrayList<>();
         for (File file : files) {
-            compile(file);
+            compilados.add(compile(file));
         }
+
+        return compilados;
     }
 
     public File getDiretório() {
@@ -123,6 +126,25 @@ public class ClassBuilder {
                 + diretórioArvore.getAbsolutePath() + " " + classe.getNomeCompleto());
         Process process = Runtime.getRuntime().exec("java -cp "
                 + diretórioArvore.getAbsolutePath() + " " + classe.getNomeCompleto());
+
+        Scanner scan = new Scanner(process.getInputStream());
+
+        while (scan.hasNextLine()) {
+            System.out.println(scan.nextLine());
+        }
+
+        scan = new Scanner(process.getErrorStream());
+
+        while (scan.hasNextLine()) {
+            System.out.println(scan.nextLine());
+        }
+
+        scan.close();
+    }
+
+    public void executeJar(File file) throws IOException {
+        System.out.println("Executando: java -jar " + file.getAbsolutePath());
+        Process process = Runtime.getRuntime().exec("java -jar " + file.getAbsolutePath());
 
         Scanner scan = new Scanner(process.getInputStream());
 

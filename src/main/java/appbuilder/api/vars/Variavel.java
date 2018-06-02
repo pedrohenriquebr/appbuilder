@@ -203,6 +203,7 @@ public class Variavel {
      * @return objeto da instância da classe ou tipo da variável
      */
     public Objeto instancia(String... args) {
+
         return this.classe.getClasse(getTipo()).getInstancia(args);
     }
 
@@ -244,6 +245,10 @@ public class Variavel {
         Classe cl = this.classe.getClasse(getTipo());
         Objeto obj = new Objeto(cl);
         String codigo = "";
+
+        if (!cl.temAtributo(atr)) {
+            throw new RuntimeException("classe " + cl.getNome() + " não tem atributo " + atr);
+        }
 
         codigo = obj.get(atr);
         return getReferencia() + codigo;

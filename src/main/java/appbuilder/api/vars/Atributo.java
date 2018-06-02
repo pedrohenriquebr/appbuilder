@@ -16,10 +16,22 @@ import appbuilder.util.*;
  */
 public class Atributo extends Variavel {
 
+    private boolean inicializar = false;
+    private boolean estático = false;
+
     public Atributo(String tipo, String nome) {
         super(tipo, nome);
         //por padrão
         addModificador("public");
+    }
+
+    public void ativarInicialização(String valor) {
+        setValor(valor);
+        inicializar = true;
+    }
+
+    public void desativarInicialização() {
+        inicializar = false;
     }
 
     public Atributo(String modificador, String tipo, String nome) {
@@ -34,6 +46,11 @@ public class Atributo extends Variavel {
 
     @Override
     public String getReferencia() {
+        if(this.getMods().contains("static")){
+            estático  = true;
+            return getClasse().getNome()+"."+nome;
+        }
+        
         return "this." + nome;
     }
 
@@ -49,7 +66,12 @@ public class Atributo extends Variavel {
             codigo += mod + " ";
         }
 
-        codigo += tipo + " " + nome + ";\n";
+        codigo += tipo + " " + nome;
+
+        if (inicializar) {
+            codigo += " = " + valor;
+        }
+        codigo += ";\n";
 
         return codigo;
     }

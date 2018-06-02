@@ -27,6 +27,8 @@ import appbuilder.api.vars.Atributo;
  */
 import appbuilder.api.vars.Objeto;
 import appbuilder.main.AppBuilder;
+import java.lang.reflect.Type;
+import java.sql.PreparedStatement;
 
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -91,9 +93,18 @@ public class Classe {
             addClasse("Object", "lang", "java");
             addClasse("Exception", "lang", "java");
             addClasse("RuntimeException", "lang", "java");
+            addClasse("List", "util", "java");
+            addClasse("ArrayList", "util", "java");
             addClasse("SQLException", "sql", "java");
             addClasse("NullPointerException", "lang", "java");
             addClasse("CloneNotSupportedException", "lang", "java");
+            addClasse("Connection", "sql", "java");
+            addClasse("DriverManager", "sql", "java");
+            addClasse("PreparedStatement", "sql", "java");
+            addClasse("Statement", "sql", "java");
+            addClasse("ResultSet", "sql", "java");
+            addClasse("Date", "sql", "java");
+            addClasse("Calendar", "util", "java");
 
         } catch (ClassNotFoundException ex) {
             logger.log(Level.SEVERE, ex.getMessage() + "");
@@ -106,6 +117,7 @@ public class Classe {
     }
 
     private boolean éVetor = false;
+    private boolean usaGenerics = false;
 
     public Classe(String nome) {
         this.nome = nome;
@@ -132,7 +144,15 @@ public class Classe {
         return handler;
     }
 
-    private String camelCase(final String line) {
+    public void setUsaGenerics(boolean v) {
+        this.usaGenerics = v;
+    }
+
+    public boolean isUsaGenerics() {
+        return this.usaGenerics;
+    }
+
+    public String camelCase(final String line) {
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
@@ -629,11 +649,31 @@ public class Classe {
             }
         }
 
+        if (superClasse != null) {
+            for (Método met : superClasse.getMétodos()) {
+                if (met.getNome().equals(nome)) {
+                    método = met;
+                }
+            }
+
+        }
         return método;
     }
 
     public boolean temMétodo(Método metodo) {
         return this.métodos.contains(metodo);
+    }
+
+    public boolean temMétodo(String método) {
+        boolean retorno = false;
+
+        for (Método m : this.métodos) {
+            if (m.getNome().equals(método)) {
+                return true;
+            }
+        }
+
+        return retorno;
     }
 
     public boolean existeMétodo(Método metodo) {
@@ -821,7 +861,8 @@ public class Classe {
     // adicionar uma metaclasse criada pelo usuário
     public static Classe addClasse(Classe classe) {
         logger.log(Level.INFO, "adicionado metaclasse " + classe.getNome());
-        return classes.put(classe.getNomeCompleto(), classe);
+        classes.put(classe.getNomeCompleto(), classe);
+        return classe;
     }
 
     private static List<String> modifiersFromInt(int modifiers) {
@@ -852,23 +893,44 @@ public class Classe {
     // acessar uma classe importada
     public Classe getClasse(String nome) {
         Classe cl = null;
+        boolean generics = false;
+
+        if (nome.contains("<") && nome.contains(">")) {
+            nome = nome.split("<")[0].trim();
+            generics = true;
+        }
+
+        if (nome.equals(getNome()) || nome.equals(getNomeCompleto())) {
+            return this;
+        }
+
         if (nome.contains(".")) {
             cl = classes.get(nome);
         } else {
             cl = classes.get(nomesCompletos.get(nome));
         }
+
         logger.log(Level.INFO, "convertendo nome simples em nome completo: " + nome + "=" + nomesCompletos.get(nome));
         logger.log(Level.INFO, "classe reconhecida: " + cl.getNomeCompleto());
+
+        if (generics) {
+            cl.setUsaGenerics(true);
+        }
+
         return cl;
     }
 
-    public Método callStatic(String método, String... args) {
-        return getMétodo(nome);
+    public String callStatic(String método, String... args) {
+        return getMétodo(método).getChamadaEstática(getNome(), args);
     }
 
     public boolean addImportação(Classe classe) {
         addNomeCompleto(classe.getNome(), classe.getNomeCompleto());
         return this.importações.add(new Importação(classe.getNome(), classe.getPacote().getCaminho()));
+    }
+
+    public boolean addImportação(String pacoteCompleto) {
+        return addImportação(Classe.getClasseEstática(pacoteCompleto));
     }
 
     public String getImportação(String classe) {

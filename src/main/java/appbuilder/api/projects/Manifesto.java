@@ -21,10 +21,18 @@ public class Manifesto {
     private String caminho = "";
 
     public void write(String caminho) throws IOException {
-        write(new File(caminho));
+        if (caminho.endsWith("/")) {
+            write(new File(caminho + "MANIFEST.MF"));
+        } else {
+            write(new File(caminho + "/MANIFEST.MF"));
+        }
     }
 
     public void write(File file) throws IOException {
+        if(!file.exists()){
+            file.createNewFile();
+        }
+        
         FileWriter writer = new FileWriter(file);
         this.caminho = file.getAbsolutePath();
         writer.write("Manifest-Version: " + versão + "\n");

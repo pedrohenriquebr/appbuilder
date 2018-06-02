@@ -19,6 +19,8 @@ import appbuilder.api.vars.Atributo;
  */
 public class Modelo extends Classe {
 
+    private Atributo chave;
+
     public Modelo(String nome) {
         super(nome);
     }
@@ -31,6 +33,14 @@ public class Modelo extends Classe {
         super(nome, pacote, caminho);
     }
 
+    public void setChave(String nome) {
+        chave = getAtributo(nome);
+    }
+
+    public Atributo getChave() {
+        return this.chave;
+    }
+
     /**
      * Método para criar um atributo, que estará associado com seus devidos
      * getter e setter
@@ -40,7 +50,6 @@ public class Modelo extends Classe {
      * @return
      */
     public boolean addAtributo(String tipo, String nome) {
-
         if (nome.isEmpty()) {
             return false;
         }
@@ -99,6 +108,7 @@ public class Modelo extends Classe {
     public boolean addDouble(String nome) {
         return addAtributo("double", nome);
     }
+
     /**
      * Adiciona vários atributos com seus getters e setters do tipo int
      *

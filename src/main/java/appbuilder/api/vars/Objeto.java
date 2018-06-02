@@ -41,6 +41,17 @@ public class Objeto {
      * @return
      */
     public String call(String nome, String... args) {
+
+        if (classe.getSuperClasse() != null) {
+            if (!classe.getSuperClasse().temMétodo(nome) && !classe.temMétodo(nome)) {
+                throw new RuntimeException("classe " + classe.getNome() + " não tem método " + nome);
+            }
+        } else {
+            if (!classe.temMétodo(nome)) {
+                throw new RuntimeException("classe " + classe.getNome() + " não tem método " + nome);
+            }
+        }
+
         return "." + classe.getMétodo(nome).getChamada(args);
     }
 
@@ -61,7 +72,13 @@ public class Objeto {
      */
     public void setInstancia(String... args) {
         String codigo = "";
-        codigo += "new " + classe.getNome() + "(";
+
+        if (classe.isUsaGenerics()) {
+            codigo += "new " + classe.getNome() + "<>(";
+        } else {
+            codigo += "new " + classe.getNome() + "(";
+
+        }
 
         int contador = 1;
         for (String arg : args) {
@@ -75,7 +92,7 @@ public class Objeto {
         }
 
         codigo += ")";
-        
+
         instancia = codigo;
     }
 

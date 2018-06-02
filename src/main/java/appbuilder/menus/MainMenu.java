@@ -51,7 +51,7 @@ public class MainMenu extends javax.swing.JFrame implements ActionListener {
     public void verifyPath() {
         File file = new File(txtCaminho.getText());
 
-        if (file.exists()) {
+        if (file.exists() && file.canRead() && file.canWrite()) {
             btnOk.setEnabled(true);
         } else {
             btnOk.setEnabled(false);

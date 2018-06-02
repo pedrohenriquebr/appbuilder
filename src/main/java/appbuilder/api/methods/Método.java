@@ -198,7 +198,7 @@ public class Método implements Cloneable {
         for (String linha : linhas) {
             // colocar ; de volta
             formatado += "\t";
-            if (!linha.endsWith(";\n") || !linha.endsWith(";")) {
+            if (!linha.endsWith(";\n") || !linha.endsWith(";") || !linha.endsWith("}")) {
                 formatado += linha + ";\n";
             } else {
                 formatado += linha;
