@@ -625,8 +625,7 @@ public class BuildingMenu extends javax.swing.JFrame {
         //Constroi a classe Principal
         Classe.addClasse(modelo);
         Classe principal = new Classe("Principal", pacoteMain.getNome(), proj.getPacotePrincipal().getCaminho());
-        principal.addImportação(
-                Classe.getClasseEstática(modelo.getNomeCompleto()));
+        principal.addImportação(modelo.getNomeCompleto());
         try {
             principal.addImportação(Classe.addClasse("Scanner", "util", "java"));
         } catch (ClassNotFoundException ex) {

@@ -51,7 +51,7 @@ public class Método implements Cloneable {
         this(modAcesso, modNacesso, tipoRetorno, nome);
         setParametros(parametros);
     }
-
+    
     public boolean addExceção(Exceção exp) {
         return this.exceções.add(exp);
     }

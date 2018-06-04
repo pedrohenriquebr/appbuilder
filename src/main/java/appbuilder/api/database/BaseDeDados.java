@@ -51,7 +51,7 @@ public class BaseDeDados {
     }
 
     public String getSelectQuery(String nomeAtributo) {
-        return mapSelectQueries.get(nomeAtributo);
+        return mapSelectQueries.get(nomeAtributo.trim().toLowerCase());
     }
 
     private void addUpateQuery() {

@@ -45,14 +45,7 @@
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>com.taringamberini.apptest.App</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
+                
             </plugin>
         </plugins>
     </build>

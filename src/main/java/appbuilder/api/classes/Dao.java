@@ -265,7 +265,8 @@ public class Dao extends Classe {
                 Variavel var = new Variavel("Calendar", "tmp" + pos);
                 var.setClasse(this);
                 métodoAdd.addCorpo(var.getDeclaração(argumento));
-                argumento = getClasse("Date").getInstancia(var.call("getTimeInMillis")).getInstancia();
+                argumento = getClasse("Date").getInstancia(
+                        var.call("getTimeInMillis")).getInstancia();
             }
 
             métodoAdd.addCorpo(stmt.call(metodo, pos + "", argumento));
@@ -290,7 +291,7 @@ public class Dao extends Classe {
         if (atributo == null) {
             return;
         }
-
+        
         Método método = new Método("public", "List<" + modelo.getNome() + ">", "searchBy" + camelCase(nomeAtributo));
         Parametro param = new Parametro(atributo.getTipo(), nomeAtributo.toLowerCase());
         método.addParametro(param);
@@ -303,7 +304,7 @@ public class Dao extends Classe {
         stmt.setClasse(this);
         boolean added = database.addSelectQuery(nomeAtributo);
         assert added == true;
-
+        
         if (!added) {
             System.err.println("addMétodoPesquisa: não foi possível adicionar query de pesquisa !");
         }
@@ -332,7 +333,8 @@ public class Dao extends Classe {
             Variavel var = new Variavel("Calendar", "tmp" + pos);
             var.setClasse(this);
             método.addCorpo(var.getDeclaração(argumento));
-            argumento = getClasse("Date").getInstancia(var.call("getTimeInMillis")).getInstancia();
+            argumento = getClasse("Date").getInstancia(
+                    var.call("getTimeInMillis")).getInstancia();
         }
 
         método.addCorpo(stmt.call(metodo, pos + "", argumento));
@@ -361,8 +363,6 @@ public class Dao extends Classe {
                         data.getDeclaração(
                                 getClasse("Calendar").
                                         callStatic("getInstance")));
-
-                Método getter = modelo.getGetter(atr.getNome());
 
                 wh.addCorpo(data.call("setTime", tmp));
                 arg = data.getReferencia();
