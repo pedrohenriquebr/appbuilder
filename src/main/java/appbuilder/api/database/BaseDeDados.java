@@ -113,7 +113,7 @@ public class BaseDeDados {
         this.insertQuery += ")";
     }
 
-    public String getInsertString() {
+    public String getInsertQuery() {
         return this.insertQuery;
     }
 

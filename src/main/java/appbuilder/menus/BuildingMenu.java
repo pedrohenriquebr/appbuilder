@@ -9,6 +9,7 @@ import appbuilder.api.classes.Classe;
 import appbuilder.api.classes.ConnectionFactory;
 import appbuilder.api.classes.Dao;
 import appbuilder.api.classes.Modelo;
+import appbuilder.api.database.BaseDeDados;
 import appbuilder.api.methods.Método;
 import appbuilder.api.packages.Pacote;
 import appbuilder.api.projects.Manifesto;
@@ -587,6 +588,7 @@ public class BuildingMenu extends javax.swing.JFrame {
 
         Modelo modelo = new Modelo(txtNomeModelo.getText(), pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
         ConnectionFactory factory = new ConnectionFactory(pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
+        BaseDeDados database = new BaseDeDados(modelo, factory);
         Dao dao = null;
 
         modelo.addImportação("java.util.Calendar");
@@ -633,7 +635,7 @@ public class BuildingMenu extends javax.swing.JFrame {
 
         //Metaclasse Dao
         try {
-            dao = new Dao(modelo, factory);
+            dao = new Dao(modelo, factory, database);
             dao.setPacote(pacoteDao);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
