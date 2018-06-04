@@ -523,15 +523,27 @@ public class BuildingMenu extends javax.swing.JFrame {
         Boolean b = mapa.get(atributo);
         b = filtrador;
 
-        boolean podeSerChave = (atributo == chave && !checkChave.isSelected());
+        if (atributo == chave) {
+            if (checkChave.isSelected()) {
+                definirChave(atributo);
+            } else {
+                resetarChave();
+            }
+        } else {
+            if (checkChave.isSelected()) {
+                definirChave(atributo);
+            }
+        }
+
+        /* boolean podeSerChave = (atributo == chave && !checkChave.isSelected());
         if (podeSerChave) {
             resetarChave();
         }
-
+         */
         lista.setElementAt(nome + "   :   "
                 + tipo + "  :   "
                 + (filtrador == true ? "Filtrador" : "Comum")
-                + (podeSerChave == true ? "  :   Chave" : ""), indice);
+                + (checkChave.isSelected() == true ? "  :   Chave" : ""), indice);
 
         System.out.println("atualizando atributo: " + atributo.getDeclaração() + ", filtrador: " + b.booleanValue());
     }//GEN-LAST:event_btnAtualizarActionPerformed
@@ -584,14 +596,14 @@ public class BuildingMenu extends javax.swing.JFrame {
             factory.setUsuário(proj.getUsuario());
             factory.setBaseDeDados(proj.getBaseDeDados());
             factory.setSenha(proj.getSenha());
+            factory.setServidor(proj.getServidor());
         }
 
         //adiciona os atributos ao modelo 
-        boolean retorno = true;
         int atributosAdicionados = 0;
         for (Atributo atributo : this.atributos) {
 
-            retorno = modelo.addAtributo(atributo.getTipo(), atributo.getNome());
+            boolean retorno = modelo.addAtributo(atributo.getTipo(), atributo.getNome());
             //se adicionou com sucesso, então incrementa o contador
             if (retorno) {
                 atributosAdicionados++;
@@ -603,6 +615,10 @@ public class BuildingMenu extends javax.swing.JFrame {
 
             System.out.println("encontrado atributo :" + atributo.getDeclaração() + ": " + (retorno == true ? "sucesso" : "falha"));
         }
+
+        assert atributosAdicionados == this.atributos.size() :
+                "Quantidade de atributos adicionados ao modelo é diferente "
+                + "dos solicitados!";
 
         //Constroi a classe Principal
         Classe.addClasse(modelo);
@@ -714,7 +730,7 @@ public class BuildingMenu extends javax.swing.JFrame {
                 new Runnable() {
             @Override
             public void run() {
-                Projeto proj = new Projeto(System.getProperty("user.home") + "/Documentos/Testes", "MeuApp");
+                Projeto proj = new Projeto(System.getProperty("user.home") + "/Documentos/meuProjeto", "MeuApp");
                 proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome()));
                 new BuildingMenu(proj).setVisible(true);
             }
