@@ -78,6 +78,8 @@ public class ProjectMenu extends javax.swing.JFrame {
         txtSenha = new javax.swing.JPasswordField();
         jLabel5 = new javax.swing.JLabel();
         txtBaseDeDados = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtServidor = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Menu do Projeto");
@@ -144,9 +146,19 @@ public class ProjectMenu extends javax.swing.JFrame {
 
         jLabel3.setText("Usuário: ");
 
+        txtNomeUsuario.setText("root");
+
         jLabel4.setText("Senha:");
 
-        jLabel5.setText("Base de Dados");
+        txtSenha.setText("root");
+
+        jLabel5.setText("Base de Dados:");
+
+        txtBaseDeDados.setText("project");
+
+        jLabel6.setText("Servidor");
+
+        txtServidor.setText("localhost");
 
         javax.swing.GroupLayout panelBancoDeDadosLayout = new javax.swing.GroupLayout(panelBancoDeDados);
         panelBancoDeDados.setLayout(panelBancoDeDadosLayout);
@@ -154,35 +166,38 @@ public class ProjectMenu extends javax.swing.JFrame {
             panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBancoDeDadosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtNomeUsuario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
-                        .addComponent(txtBaseDeDados, javax.swing.GroupLayout.Alignment.LEADING))
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNomeUsuario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                    .addComponent(txtBaseDeDados, javax.swing.GroupLayout.Alignment.LEADING))
                 .addGap(50, 50, 50)
-                .addGroup(panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel4)
-                    .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSenha, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtServidor))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelBancoDeDadosLayout.setVerticalGroup(
             panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBancoDeDadosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(panelBancoDeDadosLayout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(25, 25, 25))
-                    .addGroup(panelBancoDeDadosLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtNomeUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtBaseDeDados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNomeUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelBancoDeDadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBaseDeDados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtServidor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -228,11 +243,12 @@ public class ProjectMenu extends javax.swing.JFrame {
 
             Projeto proj = new Projeto(txtCaminho.getText(), txtNomeProjeto.getText());
 
-            proj.setBaseDeDados(txtBaseDeDados.getText());
-            proj.setUsuario(txtNomeUsuario.getText());
-            proj.setSenha(new String(txtSenha.getPassword()));
+            proj.setBaseDeDados(txtBaseDeDados.getText().trim());
+            proj.setUsuario(txtNomeUsuario.getText().trim());
+            proj.setSenha(new String(txtSenha.getPassword()).trim());
+            proj.setServidor(txtServidor.getText().trim());
 
-            proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome()));
+            proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome().trim()));
             new BuildingMenu(proj).setVisible(true);
             this.dispose();
         }
@@ -247,6 +263,7 @@ public class ProjectMenu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel panelBancoDeDados;
     private javax.swing.JPanel panelInformacoes;
     private javax.swing.JTextField txtBaseDeDados;
@@ -254,5 +271,6 @@ public class ProjectMenu extends javax.swing.JFrame {
     private javax.swing.JTextField txtNomeProjeto;
     private javax.swing.JTextField txtNomeUsuario;
     private javax.swing.JPasswordField txtSenha;
+    private javax.swing.JTextField txtServidor;
     // End of variables declaration//GEN-END:variables
 }

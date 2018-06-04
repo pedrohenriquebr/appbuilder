@@ -209,6 +209,7 @@ public class Classe {
                     logger.log(Level.INFO, getNome() + ": construtor encontrado: " + met.getAssinatura());
                     Construtor construtor = (Construtor) met.clone();
                     construtor.setNome(getNome());
+
                     addConstrutor(construtor);
 
                 } else {
@@ -216,6 +217,8 @@ public class Classe {
                 }
             }
         }
+
+        
 
     }
 

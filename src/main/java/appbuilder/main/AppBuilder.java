@@ -39,60 +39,8 @@ public class AppBuilder implements Filter {
     private static final Logger logger = Logger.getLogger(Classe.class.getName());
 
     public static void main(String[] args) throws CloneNotSupportedException, IOException, ClassNotFoundException {
-        /* Manifesto manifesto = new Manifesto();
-        Modelo modeloPessoa = new Modelo("Pessoa", "models", "br.com.myapp");
-        modeloPessoa.addStrings("rg", "nome", "nomePai", "nomeMãe", "uf", "dataNascimento");
-        Modelo modeloCarro = new Modelo("Carro", "models", "br.com.myapp");
-        modeloCarro.addStrings("renavan", "placa", "uf", "marca", "modelo", "ano");
-        Classe.addClasse(modeloPessoa);
-        Classe.addClasse(modeloCarro);
-
-        Classe cl = new Classe("Principa
-        l", "main", "br.com.myapp");
-        cl.setPrincipal(true);
-        manifesto.setClassePrincipal(cl.getNomeCompleto());
-        cl.addImportação(modeloPessoa);
-        Método main = cl.getMain();
-        main.addCorpo("System.out.println(\"Eu sou um app!\");");
-        List<Classe> classes = new ArrayList<>();
-        classes.add(modeloCarro);
-        classes.add(modeloPessoa);
-        classes.add(cl);
-        ClassBuilder builder = new ClassBuilder(System.getProperty("user.home") + "/Documentos/Testes/");
-        List<File> lista = builder.build(classes);
-        builder.compile(lista);
-
-        manifesto.write(builder.getDiretório() + "/MANIFEST.MF");
-        builder.packJar("myapp", manifesto);
-        System.exit(0);
         
-         */
-       
-      
-       Modelo modelo = new Modelo("Pessoa");
-       modelo.addImportação("java.util.Calendar");
-       modelo.addStrings("nome","rg","endereco");
-       modelo.addString("estado");
-       modelo.addInteiro("cpf");
-       modelo.setChave("rg");
-       modelo.addAtributo("Calendar", "data");
-       
-       ConnectionFactory factory = new ConnectionFactory("database", "br.com.mycompany");
-       factory.setUsuário("pedro");
-       factory.setSenha("pedro123");
-       factory.setBaseDeDados("meuprojeto");
-       
-       Dao dao = new Dao(modelo,factory);
-       dao.addMétodoPesquisa("estado");
-       dao.addMétodoPesquisa("data");
-       
-       
-       System.out.println(dao);
-     
-        
-        
-
-         /* Set the Nimbus look and feel */
+        /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 

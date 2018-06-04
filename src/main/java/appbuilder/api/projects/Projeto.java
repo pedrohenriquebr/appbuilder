@@ -21,20 +21,19 @@ public class Projeto {
 
     private Pacote pacotePrincipal;
     private Modelo modelo;
-    //private ClasseDAO dao ;
+
     private Classe principal;
 
     //caso use base de dados
     private String usuario;
     private String senha;
     private String baseDeDados;
+    private String servidor;
 
     public Projeto(String caminho, String nome) {
         this.caminho = caminho;
         this.nome = nome;
     }
-    
-    
 
     public Pacote getPacotePrincipal() {
         return pacotePrincipal;
@@ -59,8 +58,7 @@ public class Projeto {
     public void setPrincipal(Classe principal) {
         this.principal = principal;
     }
-    
-    
+
     public String getCaminho() {
         return caminho;
     }
@@ -115,6 +113,14 @@ public class Projeto {
 
     public void setBaseDeDados(String baseDeDados) {
         this.baseDeDados = baseDeDados;
+    }
+
+    public String getServidor() {
+        return servidor;
+    }
+
+    public void setServidor(String servidor) {
+        this.servidor = servidor;
     }
 
 }

@@ -20,7 +20,7 @@ import appbuilder.api.vars.Atributo;
 public class Modelo extends Classe {
 
     private Atributo chave;
-
+    
     public Modelo(String nome) {
         super(nome);
     }

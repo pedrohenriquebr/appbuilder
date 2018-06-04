@@ -23,28 +23,40 @@ public class ConnectionFactory extends Classe {
         Atributo user = new Atributo("private", "String", "user");
         Atributo password = new Atributo("private", "String", "password");
         Atributo database = new Atributo("private", "String", "database");
+        Atributo host = new Atributo("private", "String", "host");
 
         user.addModificador("static");
         password.addModificador("static");
         database.addModificador("static");
+        host.addModificador("static");
         addAtributo(user);
         addAtributo(password);
         addAtributo(database);
+        addAtributo(host);
 
         //inicializar
-        //os atributos com seus devidos valores
+        //os atributos com seus devidos valores padrões
         user.ativarInicialização("\"root\"");
         password.ativarInicialização("\"root\"");
         database.ativarInicialização("\"project\"");
+        host.ativarInicialização("\"localhost\"");
 
         Método getConnection = new Método("public", "static", "Connection", "getConnection");
         getConnection.addExceção((Exceção) getClasse("SQLException"));
         getConnection.setRetorno(getClasse("DriverManager").
                 callStatic("getConnection",
-                        "\"jdbc:mysql://localhost/\"+" + database.getReferencia() + "",
+                        "\"jdbc:mysql://\"+" + host.getReferencia() + "+\"/\"+" + database.getReferencia() + "",
                         user.getReferencia(), password.getReferencia()));
 
         addMétodo(getConnection);
+    }
+
+    public void setServidor(String servidor) {
+        getAtributo("host").setValor("\"" + servidor + "\"");
+    }
+
+    public String getServidor() {
+        return getAtributo("host").getValor().replace("\"", "");
     }
 
     public void setSenha(String senha) {
