@@ -125,7 +125,7 @@ public class Classe {
         this.pacote = new Pacote(nome.toLowerCase());
 
         if (!CONTEXTO_ESTÁTICO) {
-            addImportação(Classe.getClasseEstática("java.lang.Object"));
+            addImportação("java.lang.Object");
         }
 
     }
@@ -152,7 +152,7 @@ public class Classe {
         return this.usaGenerics;
     }
 
-    public String camelCase(final String line) {
+    public String upperCase(final String line) {
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
@@ -217,8 +217,6 @@ public class Classe {
                 }
             }
         }
-
-        
 
     }
 
@@ -556,7 +554,7 @@ public class Classe {
      */
     public Método getGetter(String atributo) {
         Método método = null;
-        String camelCase = "get" + camelCase(atributo);
+        String camelCase = "get" + upperCase(atributo);
         método = getMétodo(camelCase);
 
         return método;
@@ -565,7 +563,7 @@ public class Classe {
     // retorna o setter com base no nome do atributo associado
     public Método getSetter(String atributo) {
         Método método = null;
-        String camelCase = "set" + camelCase(atributo);
+        String camelCase = "set" + upperCase(atributo);
         método = getMétodo(camelCase);
 
         return método;
