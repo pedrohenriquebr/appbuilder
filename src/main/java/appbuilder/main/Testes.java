@@ -9,6 +9,10 @@ import appbuilder.api.classes.Classe;
 import appbuilder.api.classes.ConnectionFactory;
 import appbuilder.api.classes.Modelo;
 import appbuilder.api.database.BaseDeDados;
+import appbuilder.api.database.MyConnectionFactory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.logging.Filter;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -21,16 +25,15 @@ public class Testes implements Filter {
 
     private static final Logger logger = Logger.getLogger(Classe.class.getName());
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Modelo modelo = new Modelo("Pessoa", "main", "br.com.testes");
-        modelo.addStrings("codigo","nome","telefone");
+        modelo.addStrings("código", "nome", "telefone");
         modelo.addAtributo("Calendar", "nascimento");
-        modelo.setChave("codigo");
+        modelo.setChave("código");
         ConnectionFactory factory = new ConnectionFactory("factory", "br.com.testes");
         factory.setBaseDeDados("projeto");
         BaseDeDados database = new BaseDeDados(modelo, factory);
-
-        System.out.println(database.getCreateDataBaseQuery());
+        database.buildAll();
 
     }
 
@@ -40,7 +43,6 @@ public class Testes implements Filter {
             return false;
         }
 
-      
         return false;
     }
 

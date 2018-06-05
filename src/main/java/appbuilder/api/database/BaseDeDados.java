@@ -8,6 +8,9 @@ package appbuilder.api.database;
 import appbuilder.api.classes.ConnectionFactory;
 import appbuilder.api.classes.Modelo;
 import appbuilder.api.vars.Atributo;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +53,27 @@ public class BaseDeDados {
 
     }
 
+    public boolean buildAll() throws SQLException {
+        Connection con = MyConnectionFactory.getConnection();
+
+        assert con != null : "conexão jdbc nula !! ";
+        boolean b1 = false;
+        boolean b2 = false;
+        boolean b3 = false;
+        PreparedStatement stmt = con.prepareStatement(getCreateDataBaseQuery());
+        b1 = stmt.executeUpdate() > 0;
+        assert b1 : "não deu pra criar base de dados";
+        PreparedStatement st = con.prepareStatement("USE " + this.factory.getBaseDeDados());
+        b3 = st.executeUpdate() > 0;
+        assert b1 : "não deu pra usar a base de dados !";
+
+        PreparedStatement stmt2 = con.prepareStatement(getCreateTableQuery());
+        b2 = stmt2.executeUpdate() > 0;
+        assert b2 : "não deu pra criar a tabela ";
+
+        return b1 && b2;
+    }
+
     private void addCreateTableQuery() {
         this.createTableQuery = "CREATE TABLE IF NOT EXISTS " + this.modelo.getNome().toLowerCase() + "(";
 
@@ -67,24 +91,24 @@ public class BaseDeDados {
                 tipo = "VARCHAR(255)";
             } else if (atributo.getTipo().equals("int")) {
                 tipo = "INT";
-            }else if(atributo.getTipo().equals("double")){
+            } else if (atributo.getTipo().equals("double")) {
                 tipo = "DOUBLE";
-            }else if(atributo.getTipo().equals("float")){
+            } else if (atributo.getTipo().equals("float")) {
                 tipo = "FLOAT";
-            }else if(atributo.getTipo().equals("Calendar")){
+            } else if (atributo.getTipo().equals("Calendar")) {
                 tipo = "DATE";
-            }else{
-                throw new RuntimeException("atributo "+nome+" com tipo desconhecido para criar query da tabela!");
+            } else {
+                throw new RuntimeException("atributo " + nome + " com tipo desconhecido para criar query da tabela!");
             }
-            
-            this.createTableQuery+= nome +" "+tipo+" NOT NULL";
+
+            this.createTableQuery += nome + " " + tipo + " NOT NULL";
             if (this.modelo.getChave() == atributo) {
-                this.createTableQuery+= " PRIMARY KEY";
+                this.createTableQuery += " PRIMARY KEY";
             }
             contador++;
         }
-        
-        this.createTableQuery+=")";
+
+        this.createTableQuery += ")";
     }
 
     public String getCreateTableQuery() {
