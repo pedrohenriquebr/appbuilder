@@ -58,7 +58,32 @@ public class Dao extends Classe {
         //construtor
         Construtor construtor = new Construtor("public", this.nome);
         TratamentoDeExceção trycatch = tratarExceção("SQLException");
+        Variavel stmt = new Variavel("PreparedStatement", "stmt");
+        Variavel ret1 = new Variavel("boolean", "ret1");
+        Variavel ret2 = new Variavel("boolean", "ret2");
+        Variavel ret3 = new Variavel("boolean", "ret3");
+        ret2.setClasse(this);
+        ret3.setClasse(this);
+        ret1.setClasse(this);
+        stmt.setClasse(this);
+
+        String createDataBaseQuery = database.getCreateDataBaseQuery();
+        String useDataBaseQuery = database.getUseDataBaseQuery();
+        String createTableQuery = database.getCreateTableQuery();
+
         trycatch.addCorpo(conexão.getInicialização(factory.callStatic("getConnection")));
+        String executeCreateDataBaseQuery = conexão.call("prepareStatement", "\"" + createDataBaseQuery + "\"");
+        String executeUseDataBaseQuery = conexão.call("prepareStatement", "\"" + useDataBaseQuery + "\"");
+        String executeCreateTableQuery = conexão.call("prepareStatement", "\"" + createTableQuery + "\"");
+        trycatch.addCorpo(stmt.getDeclaração(executeCreateDataBaseQuery));
+        trycatch.addCorpo(ret1.getDeclaração(stmt.call("executeUpdate") + "> 0 "));
+        trycatch.addCorpo(stmt.getInicialização(executeUseDataBaseQuery));
+        trycatch.addCorpo(ret2.getDeclaração(stmt.call("executeUpdate") + "> 0 "));
+        trycatch.addCorpo(stmt.getInicialização(executeCreateTableQuery));
+        trycatch.addCorpo(ret3.getDeclaração(stmt.call("executeUpdate") + "> 0 "));
+        If cond = new If("!(" + ret1.getReferencia() + " && " + ret2.getReferencia() + " && " + ret3.getReferencia() + ")");
+        trycatch.addCorpo(cond.toString());
+
         construtor.addCorpo(trycatch.toString());
         setConstrutorPrincipal(construtor);
         addConstrutor(construtor);
@@ -291,7 +316,7 @@ public class Dao extends Classe {
         if (atributo == null) {
             return;
         }
-        
+
         Método método = new Método("public", "List<" + modelo.getNome() + ">", "searchBy" + upperCase(nomeAtributo));
         Parametro param = new Parametro(atributo.getTipo(), nomeAtributo.toLowerCase());
         método.addParametro(param);
@@ -304,7 +329,7 @@ public class Dao extends Classe {
         stmt.setClasse(this);
         boolean added = database.addSelectQuery(nomeAtributo);
         assert added == true;
-        
+
         if (!added) {
             System.err.println("addMétodoPesquisa: não foi possível adicionar query de pesquisa !");
         }

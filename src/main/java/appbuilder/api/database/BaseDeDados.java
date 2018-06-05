@@ -35,6 +35,7 @@ public class BaseDeDados {
 
     private String createDataBaseQuery = "";
     private String createTableQuery = "";
+    private String useDataBaseQuery = "";
 
     public BaseDeDados(Modelo modelo, ConnectionFactory factory) {
         this.modelo = modelo;
@@ -51,6 +52,8 @@ public class BaseDeDados {
         addCreateDataBaseQuery();
         addCreateTableQuery();
 
+        this.useDataBaseQuery = "USE " + this.factory.getBaseDeDados().toLowerCase();
+
     }
 
     public boolean buildAll() throws SQLException {
@@ -63,7 +66,7 @@ public class BaseDeDados {
         PreparedStatement stmt = con.prepareStatement(getCreateDataBaseQuery());
         b1 = stmt.executeUpdate() > 0;
         assert b1 : "não deu pra criar base de dados";
-        PreparedStatement st = con.prepareStatement("USE " + this.factory.getBaseDeDados());
+        PreparedStatement st = con.prepareStatement(useDataBaseQuery);
         b3 = st.executeUpdate() > 0;
         assert b1 : "não deu pra usar a base de dados !";
 
@@ -72,6 +75,10 @@ public class BaseDeDados {
         assert b2 : "não deu pra criar a tabela ";
 
         return b1 && b2;
+    }
+
+    public String getUseDataBaseQuery() {
+        return this.useDataBaseQuery;
     }
 
     private void addCreateTableQuery() {

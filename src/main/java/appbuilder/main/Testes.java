@@ -7,9 +7,11 @@ package appbuilder.main;
 
 import appbuilder.api.classes.Classe;
 import appbuilder.api.classes.ConnectionFactory;
+import appbuilder.api.classes.Dao;
 import appbuilder.api.classes.Modelo;
 import appbuilder.api.database.BaseDeDados;
 import appbuilder.api.database.MyConnectionFactory;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -25,7 +27,7 @@ public class Testes implements Filter {
 
     private static final Logger logger = Logger.getLogger(Classe.class.getName());
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, FileNotFoundException, ClassNotFoundException {
         Modelo modelo = new Modelo("Pessoa", "main", "br.com.testes");
         modelo.addStrings("código", "nome", "telefone");
         modelo.addAtributo("Calendar", "nascimento");
@@ -33,7 +35,10 @@ public class Testes implements Filter {
         ConnectionFactory factory = new ConnectionFactory("factory", "br.com.testes");
         factory.setBaseDeDados("projeto");
         BaseDeDados database = new BaseDeDados(modelo, factory);
-        database.buildAll();
+
+        Dao dao = new Dao(modelo, factory, database);
+       
+        System.out.println(dao);
 
     }
 

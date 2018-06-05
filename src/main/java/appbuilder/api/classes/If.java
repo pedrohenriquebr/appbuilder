@@ -12,7 +12,7 @@ package appbuilder.api.classes;
 public class If {
 
     private String expressão= "";
-    private String corpo= "";
+    private String corpo= "ppp";
 
     public If(String expressão) {
         this.expressão = expressão;
@@ -21,9 +21,9 @@ public class If {
     public String toString() {
         String codigo = "";
 
-        codigo += "\t\tif( " + expressão + " ){\n";
-        codigo += corpo;
-        codigo += "}\n\n";
+        codigo += "if( " + expressão + " ){\n";
+        codigo += "\t\t"+corpo;
+        codigo += "\n\t}\n\n";
 
         return codigo;
     }
