@@ -66,7 +66,7 @@ public class BaseDeDados {
         PreparedStatement stmt = con.prepareStatement(getCreateDataBaseQuery());
         b1 = stmt.executeUpdate() > 0;
         assert b1 : "não deu pra criar base de dados";
-        PreparedStatement st = con.prepareStatement(useDataBaseQuery);
+        PreparedStatement st = con.prepareStatement(getUseDataBaseQuery());
         b3 = st.executeUpdate() > 0;
         assert b1 : "não deu pra usar a base de dados !";
 

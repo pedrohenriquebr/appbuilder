@@ -86,7 +86,7 @@ public class Classe {
 
         handler.setFormatter(new SimpleFormatter());
         logger.addHandler(handler);
-        //logger.setFilter(new Testes());
+        logger.setFilter(new Testes());
         logger.log(Level.INFO, "começo: adicionando classes");
         CONTEXTO_ESTÁTICO = true;
         try {
@@ -344,7 +344,7 @@ public class Classe {
     public Método getMain() {
         return this.métodoMain;
     }
-
+    @Override
     public String toString() {
         String codigo = "";
 
@@ -974,7 +974,7 @@ public class Classe {
         return this.modsNAcesso;
     }
 
-    List<Construtor> getConstrutores() {
+    public List<Construtor> getConstrutores() {
         List<Construtor> lista = new ArrayList<>();
         for (Método m : getMétodos()) {
             if (m instanceof Construtor) {

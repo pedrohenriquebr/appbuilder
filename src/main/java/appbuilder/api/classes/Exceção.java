@@ -24,6 +24,11 @@ public class Exceção extends Classe {
 
         //delegar todos os construtores
     }
+    
+    public Exceção(String nome, String pacote) {
+        this(nome);
+        this.pacote = new Pacote(pacote);
+    }
 
     public Exceção(String nome, String pacote, String caminho) {
         this(nome);

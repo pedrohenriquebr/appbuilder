@@ -8,6 +8,7 @@ package appbuilder.menus;
 import appbuilder.api.classes.Classe;
 import appbuilder.api.classes.ConnectionFactory;
 import appbuilder.api.classes.Dao;
+import appbuilder.api.classes.Janela;
 import appbuilder.api.classes.Modelo;
 import appbuilder.api.database.BaseDeDados;
 import appbuilder.api.methods.Método;
@@ -627,7 +628,7 @@ public class BuildingMenu extends javax.swing.JFrame {
 
         //Constroi a classe Principal
         Classe.addClasse(modelo);
-        Classe principal = new Classe("Principal", pacoteMain.getNome(), proj.getPacotePrincipal().getCaminho());
+        Janela principal = new Janela("Principal", pacoteMain.getNome(), proj.getPacotePrincipal().getCaminho());
         principal.addImportação(modelo.getNomeCompleto());
         try {
             principal.addImportação(Classe.addClasse("Scanner", "util", "java"));
