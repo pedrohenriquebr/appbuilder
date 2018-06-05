@@ -108,6 +108,7 @@ public class Classe {
             addClasse("Calendar", "util", "java");
             addClasse("Runnable", "lang", "java");
             addClasse("Thread", "lang", "java");
+            addClasse("EventQueue","awt","java");
 
         } catch (ClassNotFoundException ex) {
             logger.log(Level.SEVERE, ex.getMessage() + "");

@@ -77,6 +77,10 @@ public class Janela extends Classe {
                 + "        );\n"
                 + "\n"
                 + "        pack();");
+        
+        Construtor c = getConstrutorPrincipal();
+        
+        c.addCorpo(initComponents.getChamada()));
 
     }
 

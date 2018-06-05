@@ -23,6 +23,7 @@ import appbuilder.api.vars.Atributo;
 import appbuilder.api.vars.Variavel;
 import appbuilder.menus.BuildingMenu;
 import appbuilder.util.ClassBuilder;
+import java.awt.EventQueue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class Testes implements Filter {
         
         
         
-
+        
         Projeto proj = new Projeto("/home/pedro/Documentos/ProjetoTeste", "projeto");
         proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome().trim()));
         ClassBuilder builder = new ClassBuilder(proj.getCaminho());
@@ -72,30 +73,26 @@ public class Testes implements Filter {
         Pacote pacoteMain = new Pacote("main", pacotePrincipal.getCaminho());
         Janela principal = new Janela("Principal", pacoteMain.getNome(), proj.getPacotePrincipal().getCaminho());
         principal.addInterface((Interface) principal.getClasse("Runnable"));
+        principal.addImportação("java.awt.EventQueue");
         principal.setPrincipal(true);
         Método main = principal.getMain();
-        Variavel obj = new Variavel("Thread", "janela");
-        obj.setClasse(principal);
-        main.addCorpo(obj.getDeclaração(
-                obj.instancia(
-                        principal.getInstancia().getInstancia()).
-                        getInstancia()));
-        
-        main.addCorpo(obj.call("start"));
-        
+        main.addCorpo(Classe.getClasseEstática("java.awt.EventQueue").
+                callStatic("invokeLater",
+                        principal.getInstancia().getInstancia()));
         Método run = principal.getMétodo("run");
-        obj = new Variavel(principal.getNome(),"obj");
+        Variavel obj = new Variavel(principal.getNome(),"obj");
         obj.setClasse(principal);
         run.addCorpo(obj.getDeclaração(obj.instancia().getInstancia()));
-        run.addCorpo(obj.call("setSize","200","300"));
         run.addCorpo(obj.call("setVisible", "true"));
+        
+        
 
         List<Classe> classes = new ArrayList<>();
         classes.add(principal);
         
         
        
-
+        
         //Cria o manifesto
       
         List<File> codigoFonte = null;
