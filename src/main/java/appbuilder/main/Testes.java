@@ -9,6 +9,7 @@ import appbuilder.api.classes.Classe;
 import appbuilder.api.classes.ConnectionFactory;
 import appbuilder.api.classes.Construtor;
 import appbuilder.api.classes.Dao;
+import appbuilder.api.classes.Interface;
 import appbuilder.api.classes.Janela;
 import appbuilder.api.classes.Modelo;
 import appbuilder.api.database.BaseDeDados;
@@ -49,7 +50,7 @@ public class Testes implements Filter {
         System.out.println(args);
     }
 
-    public static void main(String[] args) throws SQLException, FileNotFoundException, ClassNotFoundException {
+    public static void main(String[] args) throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
         /* Modelo modelo = new Modelo("Pessoa", "main", "br.com.testes");
         modelo.addStrings("código", "nome", "telefone");
         modelo.addAtributo("Calendar", "nascimento");
@@ -60,87 +61,29 @@ public class Testes implements Filter {
         Dao dao = new Dao(modelo, factory, database);
          */
 
-        Projeto proj = new Projeto("C:\\Users\\aluno\\Documents\\ProjetoTeste", "projeto");
+        Projeto proj = new Projeto("/home/pedro/Documentos/ProjetoTeste", "projeto");
         proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome().trim()));
-        File executavel = null;
         ClassBuilder builder = new ClassBuilder(proj.getCaminho());
         Pacote pacotePrincipal = proj.getPacotePrincipal();
-        Pacote pacoteDeModelos = new Pacote("models", pacotePrincipal.getCaminho());
         Pacote pacoteMain = new Pacote("main", pacotePrincipal.getCaminho());
-        Pacote pacoteDao = new Pacote("dao", pacotePrincipal.getCaminho());
-
-        Modelo modelo = new Modelo("Funcionário", pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
-        ConnectionFactory factory = new ConnectionFactory(pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
-        BaseDeDados database = null;
-        Dao dao = null;
-
-        modelo.addImportação("java.util.Calendar");
-
-        //Verifica se usa base de dados
-        if (proj.isUsaBaseDeDados()) {
-            factory.setUsuário(proj.getUsuario());
-            factory.setBaseDeDados(proj.getBaseDeDados());
-            factory.setSenha(proj.getSenha());
-            factory.setServidor(proj.getServidor());
-        }
-
-        modelo.addStrings("nome", "telefone");
-        modelo.addInteiro("código");
-        modelo.addAtributo("Calendar", "nascimento");
-        modelo.setChave("código");
-
-        //Constroi a classe Principal
-        Classe.addClasse(modelo);
         Janela principal = new Janela("Principal", pacoteMain.getNome(), proj.getPacotePrincipal().getCaminho());
-        principal.addImportação(modelo.getNomeCompleto());
-        try {
-            principal.addImportação(Classe.addClasse("Scanner", "util", "java"));
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        //Metaclasse Dao e base de dados
-        try {
-            database = new BaseDeDados(modelo, factory);
-            database.buildAll();
-            dao = new Dao(modelo, factory, database);
-            dao.setPacote(pacoteDao);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("Erro ao criar a metaclasse Dao!");
-        } catch (SQLException ex) {
-            Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        dao.addMétodoPesquisa("código");
-        dao.addMétodoPesquisa("nome");
-
+        principal.addInterface((Interface) principal.getClasse("Runnable"));
         principal.setPrincipal(true);
         Método main = principal.getMain();
         Variavel obj = new Variavel(principal.getNome(), "janela");
         obj.setClasse(principal);
         main.addCorpo(obj.getDeclaração(obj.instancia().getInstancia()));
+        main.addCorpo(obj.call("setSize","200","300"));
         main.addCorpo(obj.call("setVisible", "true"));
-        main.addCorpo(obj.call("setSize", "500","400"));
 
         List<Classe> classes = new ArrayList<>();
         classes.add(principal);
-        classes.add(modelo);
-        classes.add(dao);
-        classes.add(factory);
+       
 
         //Cria o manifesto
-        Manifesto manifesto = new Manifesto();
-        manifesto.setClassePrincipal(principal.getNomeCompleto());
+      
         List<File> codigoFonte = null;
         List<File> compilados = null;
-
-        try {
-            manifesto.write(proj.getCaminho());
-        } catch (IOException ex) {
-            Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("Erro ao escrever manifesto do projeto !");
-        }
         //Constrói as classes
         builder = new ClassBuilder(proj.getCaminho());
 
@@ -157,21 +100,9 @@ public class Testes implements Filter {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Erro ao compilar os códigos fonte !");
         }
-        //Empacota as classes 
-        try {
-            executavel = builder.packJar(proj.getNome(), manifesto);
-        } catch (IOException ex) {
-            Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("Erro ao empacotar o projeto !");
-        }
+       
         
-        System.out.println("Executando o jar ");
-        try {
-            builder.executeJar(executavel);
-        } catch (IOException ex) {
-            Logger.getLogger(Testes.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Problemas ao executar o jar !");
-        }
+        builder.execute(principal);
     }
 
     @Override
