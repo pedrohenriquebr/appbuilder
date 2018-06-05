@@ -93,9 +93,16 @@ public class ClassBuilder {
 
     public File packJar(String arquivoSaida, Manifesto manifesto) throws IOException {
         File verificar = new File(this.caminho + "/classes");
-        if (!verificar.isDirectory() || !verificar.exists()) {
+        if (!verificar.isDirectory() && verificar.exists()) {
             return null;
         }
+        
+        File libs = new File(this.caminho+"/libs");
+        if(!libs.isDirectory() && libs.exists()){
+            return null;
+        }
+        
+        libs.mkdir();
 
         File executavel = new File(this.caminho + "/" + arquivoSaida + ".jar");
         String codigo = "jar cfm " + executavel.getAbsolutePath() + " "
@@ -123,9 +130,9 @@ public class ClassBuilder {
 
     public void execute(Classe classe) throws IOException {
         System.out.println("Executando: " + "java -cp "
-                + diretórioArvore.getAbsolutePath() + " " + classe.getNomeCompleto());
+                + this.caminho+"/classes" + " " + classe.getNomeCompleto());
         Process process = Runtime.getRuntime().exec("java -cp "
-                + diretórioArvore.getAbsolutePath() + " " + classe.getNomeCompleto());
+                + this.caminho+"/classes" + " " + classe.getNomeCompleto());
 
         Scanner scan = new Scanner(process.getInputStream());
 
