@@ -12,7 +12,7 @@ package appbuilder.api.classes;
 public class If {
 
     private String expressão= "";
-    private String corpo= "ppp";
+    private String corpo= "";
 
     public If(String expressão) {
         this.expressão = expressão;

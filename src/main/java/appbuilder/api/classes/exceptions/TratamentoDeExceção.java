@@ -52,7 +52,7 @@ public class TratamentoDeExceção {
 
         codigo += "\t" + corpo;
 
-        codigo += "}";
+        codigo += "\n\t}";
 
         for (Exceção e : exceções) {
             Variavel var = new Variavel(e.getNome(), "exp");
