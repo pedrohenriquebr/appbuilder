@@ -22,6 +22,7 @@ import java.awt.EventQueue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -588,7 +589,7 @@ public class BuildingMenu extends javax.swing.JFrame {
 
         Modelo modelo = new Modelo(txtNomeModelo.getText(), pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
         ConnectionFactory factory = new ConnectionFactory(pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
-        BaseDeDados database = new BaseDeDados(modelo, factory);
+        BaseDeDados database = null;
         Dao dao = null;
 
         modelo.addImportação("java.util.Calendar");
@@ -632,13 +633,17 @@ public class BuildingMenu extends javax.swing.JFrame {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        //Metaclasse Dao
+        //Metaclasse Dao e base de dados
         try {
+            database = new BaseDeDados(modelo, factory);
+            database.buildAll();
             dao = new Dao(modelo, factory, database);
             dao.setPacote(pacoteDao);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Erro ao criar a metaclasse Dao!");
+        } catch (SQLException ex) {
+            Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         //pegar os atributos que têm filtrador setado
