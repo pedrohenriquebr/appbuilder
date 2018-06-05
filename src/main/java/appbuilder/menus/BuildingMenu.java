@@ -112,6 +112,8 @@ public class BuildingMenu extends javax.swing.JFrame {
             i = 3;//Data
         }
 
+        System.out.println("atributo tem filtrador : " + mapa.get(atributo));
+
         this.comboTipos.setSelectedIndex(i);
         this.checkFiltrador.setSelected(mapa.get(atributo));
 
@@ -522,8 +524,8 @@ public class BuildingMenu extends javax.swing.JFrame {
 
         atributo.setNome(nome);
         atributo.setTipo(tipoAtributo);
+        mapa.replace(atributo, new Boolean(filtrador));
         Boolean b = mapa.get(atributo);
-        b = filtrador;
 
         if (atributo == chave) {
             if (checkChave.isSelected()) {

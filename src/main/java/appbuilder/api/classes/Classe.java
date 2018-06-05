@@ -86,7 +86,7 @@ public class Classe {
 
         handler.setFormatter(new SimpleFormatter());
         logger.addHandler(handler);
-        logger.setFilter(new Testes());
+        //logger.setFilter(new Testes());
         logger.log(Level.INFO, "começo: adicionando classes");
         CONTEXTO_ESTÁTICO = true;
         try {

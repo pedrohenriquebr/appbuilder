@@ -16,9 +16,9 @@ import java.sql.SQLException;
 public class MyConnectionFactory {
 
     private static String user = "root";
-    private static String password = "pedro123";
+    private static String password = "root";
     private static String database = "";
-    private static String host = "0.0.0.0";
+    private static String host = "localhost";
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:mysql://" + host + "/" + database, user, password);
