@@ -639,15 +639,14 @@ public class BuildingMenu extends javax.swing.JFrame {
         //Metaclasse Dao e base de dados
         try {
             database = new BaseDeDados(modelo, factory);
-            database.buildAll();
             dao = new Dao(modelo, factory, database);
             dao.setPacote(pacoteDao);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Erro ao criar a metaclasse Dao!");
-        } catch (SQLException ex) {
-            Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        
 
         //pegar os atributos que têm filtrador setado
         for (Atributo atributo : this.atributos) {
@@ -668,8 +667,10 @@ public class BuildingMenu extends javax.swing.JFrame {
 
         var.setClasse(principal);
         main.addCorpo(var.getDeclaração(var.instancia().getInstancia()));
-        main.addCorpo("Scanner scan = new Scanner(System.in)");
-        main.addCorpo("System.out.println(\"Olá Mundo!\")");
+        Variavel obj = new Variavel(principal.getNome(), "janela");
+        obj.setClasse(principal);
+        main.addCorpo(obj.getDeclaração(obj.instancia().getInstancia()));
+        main.addCorpo(obj.call("setVisible", "true"));
 
         List<Classe> classes = new ArrayList<>();
         classes.add(principal);
