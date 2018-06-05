@@ -60,6 +60,10 @@ public class Testes implements Filter {
         BaseDeDados database = new BaseDeDados(modelo, factory);
         Dao dao = new Dao(modelo, factory, database);
          */
+        
+        
+        
+        
 
         Projeto proj = new Projeto("/home/pedro/Documentos/ProjetoTeste", "projeto");
         proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome().trim()));
@@ -70,14 +74,26 @@ public class Testes implements Filter {
         principal.addInterface((Interface) principal.getClasse("Runnable"));
         principal.setPrincipal(true);
         Método main = principal.getMain();
-        Variavel obj = new Variavel(principal.getNome(), "janela");
+        Variavel obj = new Variavel("Thread", "janela");
         obj.setClasse(principal);
-        main.addCorpo(obj.getDeclaração(obj.instancia().getInstancia()));
-        main.addCorpo(obj.call("setSize","200","300"));
-        main.addCorpo(obj.call("setVisible", "true"));
+        main.addCorpo(obj.getDeclaração(
+                obj.instancia(
+                        principal.getInstancia().getInstancia()).
+                        getInstancia()));
+        
+        main.addCorpo(obj.call("start"));
+        
+        Método run = principal.getMétodo("run");
+        obj = new Variavel(principal.getNome(),"obj");
+        obj.setClasse(principal);
+        run.addCorpo(obj.getDeclaração(obj.instancia().getInstancia()));
+        run.addCorpo(obj.call("setSize","200","300"));
+        run.addCorpo(obj.call("setVisible", "true"));
 
         List<Classe> classes = new ArrayList<>();
         classes.add(principal);
+        
+        
        
 
         //Cria o manifesto

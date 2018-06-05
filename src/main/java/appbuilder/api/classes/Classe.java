@@ -268,6 +268,7 @@ public class Classe {
             try {
                 Método metodo = (Método) met.clone();
                 metodo.setDeInterface(false);
+                metodo.removeModNacesso("abstract");
                 addMétodo(metodo);
             } catch (CloneNotSupportedException c) {
                 c.printStackTrace();

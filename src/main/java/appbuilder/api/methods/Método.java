@@ -51,7 +51,7 @@ public class Método implements Cloneable {
         this(modAcesso, modNacesso, tipoRetorno, nome);
         setParametros(parametros);
     }
-    
+
     public boolean addExceção(Exceção exp) {
         return this.exceções.add(exp);
     }
@@ -167,6 +167,10 @@ public class Método implements Cloneable {
         this.modNacesso = modNacesso;
     }
 
+    public boolean removeModNacesso(String mod) {
+        return this.modNacesso.remove(mod);
+    }
+
     /**
      * Adicionar um modificador de não-acesso, Ex: static, final, synchronized
      *
@@ -198,7 +202,7 @@ public class Método implements Cloneable {
         for (String linha : linhas) {
             // colocar ; de volta
             formatado += "\t";
-            
+
             if (!linha.endsWith(";\n") || !linha.endsWith(";") && !linha.endsWith("}")) {
                 formatado += linha + ";\n";
             } else {
