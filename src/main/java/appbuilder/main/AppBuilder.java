@@ -34,9 +34,8 @@ import java.util.logging.Logger;
  *
  * @author aluno
  */
-public class AppBuilder implements Filter {
+public class AppBuilder  {
 
-    private static final Logger logger = Logger.getLogger(Classe.class.getName());
 
     public static void main(String[] args) throws CloneNotSupportedException, IOException, ClassNotFoundException {
         
@@ -72,17 +71,5 @@ public class AppBuilder implements Filter {
 
     }
 
-    @Override
-    public boolean isLoggable(LogRecord lr) {
-        if (lr == null) {
-            return false;
-        }
-
-        if (lr.getMessage().contains("adicionado método:") && lr.getMessage().contains("")) {
-            return true;
-        }
-
-        return false;
-    }
-
+   
 }

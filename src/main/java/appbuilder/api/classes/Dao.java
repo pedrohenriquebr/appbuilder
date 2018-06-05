@@ -292,7 +292,7 @@ public class Dao extends Classe {
             return;
         }
         
-        Método método = new Método("public", "List<" + modelo.getNome() + ">", "searchBy" + camelCase(nomeAtributo));
+        Método método = new Método("public", "List<" + modelo.getNome() + ">", "searchBy" + upperCase(nomeAtributo));
         Parametro param = new Parametro(atributo.getTipo(), nomeAtributo.toLowerCase());
         método.addParametro(param);
         param.setClasse(this);

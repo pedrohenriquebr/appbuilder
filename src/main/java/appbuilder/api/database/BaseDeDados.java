@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ *Classe responsável por construir os comandos SQL de forma dinâmica, recebendo
+ * classe Modelo e ConnectionFactory.
  * @author pedro
  */
 public class BaseDeDados {
@@ -22,21 +23,46 @@ public class BaseDeDados {
     private Modelo modelo;
     private ConnectionFactory factory;
 
-    private String createTableQuery = "";
     private String insertQuery = "";
     private String deleteQuery = "";
     private List<String> selectQueries = new ArrayList<>();
     private Map<String, String> mapSelectQueries = new HashMap<>();
     private String updateQuery = "";
 
+    private String createDataBaseQuery = "";
+    private String createTableQuery = "";
+
     public BaseDeDados(Modelo modelo, ConnectionFactory factory) {
         this.modelo = modelo;
         this.factory = factory;
+
+        if (this.modelo.getChave() == null) {
+            throw new RuntimeException("modelo não tem uma chave definida !");
+        }
 
         addUpateQuery();
         addDeleteQuery();
         addInsertQuery();
 
+        addCreateDataBaseQuery();
+
+    }
+
+    private void addCreateTableQuery() {
+        this.createTableQuery = "";
+    }
+
+    public String getCreateTableQuery() {
+        return this.createDataBaseQuery;
+    }
+
+    private void addCreateDataBaseQuery() {
+        this.createDataBaseQuery = "CREATE DATABASE ? CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+        this.createDataBaseQuery = this.createDataBaseQuery.replace("?", factory.getBaseDeDados().toLowerCase());
+    }
+
+    public String getCreateDataBaseQuery() {
+        return this.createDataBaseQuery;
     }
 
     public boolean addSelectQuery(String nomeAtributo) {
@@ -77,6 +103,7 @@ public class BaseDeDados {
     }
 
     private void addDeleteQuery() {
+
         this.deleteQuery = "DELETE  FROM "
                 + this.modelo.getNome().toLowerCase() + " WHERE "
                 + this.modelo.getChave().getNome().toLowerCase() + "=?";

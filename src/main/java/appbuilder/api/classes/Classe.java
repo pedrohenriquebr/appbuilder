@@ -27,6 +27,7 @@ import appbuilder.api.vars.Atributo;
  */
 import appbuilder.api.vars.Objeto;
 import appbuilder.main.AppBuilder;
+import appbuilder.main.Testes;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 
@@ -85,7 +86,7 @@ public class Classe {
 
         handler.setFormatter(new SimpleFormatter());
         logger.addHandler(handler);
-        logger.setFilter(new AppBuilder());
+        logger.setFilter(new Testes());
         logger.log(Level.INFO, "começo: adicionando classes");
         CONTEXTO_ESTÁTICO = true;
         try {
@@ -531,14 +532,14 @@ public class Classe {
     }
 
     public boolean addGetter(Atributo atributo) {
-        Método getter = new Método("public", atributo.getTipo(), "get" + camelCase(atributo.getNome()));
+        Método getter = new Método("public", atributo.getTipo(), "get" + upperCase(atributo.getNome()));
         getter.setRetorno(atributo.getReferencia());
 
         return addMétodo(getter);
     }
 
     public boolean addSetter(Atributo atributo) {
-        Método setter = new Método("public", "void", "set" + camelCase(atributo.getNome()));
+        Método setter = new Método("public", "void", "set" + upperCase(atributo.getNome()));
         setter.addParametro(atributo.getTipo(), atributo.getNome());
         setter.setCorpo(atributo.getInicialização(atributo.getNome()));
 
