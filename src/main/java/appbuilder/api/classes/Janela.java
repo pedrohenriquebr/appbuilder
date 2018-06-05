@@ -56,12 +56,15 @@ public class Janela extends Classe {
 
         this.initComponents = new Método("public", "void", "initComponents");
         this.layout = new Variavel("javax.swing.GroupLayout", "layout");
-
         this.layout.setClasse(this);
         addMétodo(this.initComponents);
 
-        this.initComponents.addCorpo(getMétodo("setDefaultCloseOperation").getChamada("javax.swing.WindowConstants.EXIT_ON_CLOSE"));
-        this.initComponents.addCorpo(layout.getDeclaração(layout.instancia(getMétodo("getContentPane").getChamada()).getInstancia()));
+        this.initComponents.addCorpo(getMétodo("setDefaultCloseOperation")
+                .getChamada("javax.swing.WindowConstants.EXIT_ON_CLOSE"));
+        this.initComponents.addCorpo(layout.
+                getDeclaração(layout.instancia(getMétodo("getContentPane").
+                        getChamada()).getInstancia()));
+        this.initComponents.addCorpo("setSize(200,400)");
         this.initComponents.addCorpo(""
                 + "        getContentPane().setLayout(layout);\n"
                 + "        layout.setHorizontalGroup(\n"
