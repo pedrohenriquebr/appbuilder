@@ -14,8 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *Classe responsável por construir os comandos SQL de forma dinâmica, recebendo
+ * Classe responsável por construir os comandos SQL de forma dinâmica, recebendo
  * classe Modelo e ConnectionFactory.
+ *
  * @author pedro
  */
 public class BaseDeDados {
@@ -45,19 +46,53 @@ public class BaseDeDados {
         addInsertQuery();
 
         addCreateDataBaseQuery();
+        addCreateTableQuery();
 
     }
 
     private void addCreateTableQuery() {
-        this.createTableQuery = "";
+        this.createTableQuery = "CREATE TABLE IF NOT EXISTS " + this.modelo.getNome().toLowerCase() + "(";
+
+        int contador = 1;
+
+        for (Atributo atributo : this.modelo.getAtributos()) {
+            if (contador == 2) {
+                this.createTableQuery += ", ";
+                contador = 1;
+            }
+
+            String nome = atributo.getNome().toLowerCase();
+            String tipo = "";
+            if (atributo.getTipo().equals("String")) {
+                tipo = "VARCHAR(255)";
+            } else if (atributo.getTipo().equals("int")) {
+                tipo = "INT";
+            }else if(atributo.getTipo().equals("double")){
+                tipo = "DOUBLE";
+            }else if(atributo.getTipo().equals("float")){
+                tipo = "FLOAT";
+            }else if(atributo.getTipo().equals("Calendar")){
+                tipo = "DATE";
+            }else{
+                throw new RuntimeException("atributo "+nome+" com tipo desconhecido para criar query da tabela!");
+            }
+            
+            this.createTableQuery+= nome +" "+tipo+" NOT NULL";
+            if (this.modelo.getChave() == atributo) {
+                this.createTableQuery+= " PRIMARY KEY";
+            }
+            contador++;
+        }
+        
+        this.createTableQuery+=")";
     }
 
     public String getCreateTableQuery() {
-        return this.createDataBaseQuery;
+        return this.createTableQuery;
     }
 
     private void addCreateDataBaseQuery() {
-        this.createDataBaseQuery = "CREATE DATABASE ? CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+        this.createDataBaseQuery = "CREATE DATABASE IF NOT EXISTS ? CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
         this.createDataBaseQuery = this.createDataBaseQuery.replace("?", factory.getBaseDeDados().toLowerCase());
     }
 
