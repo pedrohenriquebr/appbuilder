@@ -106,6 +106,8 @@ public class Classe {
             addClasse("ResultSet", "sql", "java");
             addClasse("Date", "sql", "java");
             addClasse("Calendar", "util", "java");
+            addClasse("Runnable", "lang", "java");
+            addClasse("Thread", "lang", "java");
 
         } catch (ClassNotFoundException ex) {
             logger.log(Level.SEVERE, ex.getMessage() + "");
@@ -127,6 +129,10 @@ public class Classe {
 
         if (!CONTEXTO_ESTÁTICO) {
             addImportação("java.lang.Object");
+            addImportação("java.lang.Runnable");
+            addImportação("java.lang.Exception");
+            addImportação("java.lang.RuntimeException");
+            addImportação("java.lang.Thread");
         }
 
     }
@@ -344,6 +350,7 @@ public class Classe {
     public Método getMain() {
         return this.métodoMain;
     }
+
     @Override
     public String toString() {
         String codigo = "";
@@ -731,6 +738,10 @@ public class Classe {
         Class<?> predefinida = Class.forName(classe.getNomeCompleto());
         List<String> modifiers = modifiersFromInt(predefinida.getModifiers());
         Class<?> superClasse = predefinida.getSuperclass();
+        
+        if(predefinida.isInterface()){
+            classe = new Interface(nome,pacote, caminho);
+        }
 
         if (superClasse != null) {
             // defino a superclasse para minha metaclasse
@@ -828,6 +839,8 @@ public class Classe {
 
         int contador = 0;
         // construtores declarados
+        
+        
         for (Constructor<?> constructor : predefinida.getDeclaredConstructors()) {
 
             List<String> mods = modifiersFromInt(constructor.getModifiers());
