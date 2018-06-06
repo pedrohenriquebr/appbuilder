@@ -29,7 +29,7 @@ public class Janela extends Classe {
 
         try {
             addImportação(Classe.addClasse("JFrame", "swing", "javax"));
-
+            addImportação(Classe.addClasse("JButton", "swing", "javax"));
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Janela.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Não foi possível adicionar importação "
@@ -47,13 +47,6 @@ public class Janela extends Classe {
 
         delegarConstrutores();
 
-        try {
-            addImportação(Classe.addClasse("GroupLayout", "swing", "javax"));
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Janela.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Problema ao adicionar importações para Janela " + getNome());
-        }
-
         this.initComponents = new Método("public", "void", "initComponents");
         this.layout = new Variavel("javax.swing.GroupLayout", "layout");
         this.layout.setClasse(this);
@@ -64,23 +57,12 @@ public class Janela extends Classe {
         this.initComponents.addCorpo(layout.
                 getDeclaração(layout.instancia(getMétodo("getContentPane").
                         getChamada()).getInstancia()));
-        this.initComponents.addCorpo("setSize(200,400)");
-        this.initComponents.addCorpo(""
-                + "        getContentPane().setLayout(layout);\n"
-                + "        layout.setHorizontalGroup(\n"
-                + "            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)\n"
-                + "            .addGap(0, 608, Short.MAX_VALUE)\n"
-                + "        );\n"
-                + "        layout.setVerticalGroup(\n"
-                + "            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)\n"
-                + "            .addGap(0, 472, Short.MAX_VALUE)\n"
-                + "        );\n"
-                + "\n"
-                + "        pack();");
+        this.initComponents.addCorpo(getMétodo("setSize").getChamada("200", "400"));
         
+
         Construtor c = getConstrutorPrincipal();
-        
-        c.addCorpo(initComponents.getChamada()));
+        c.addCorpo(initComponents.getChamada());
+        c.addCorpo(getMétodo("pack").getChamada());
 
     }
 

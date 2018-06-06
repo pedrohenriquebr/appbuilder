@@ -38,6 +38,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 
+
 /**
  * Classe para fazer testes !
  *
@@ -61,40 +62,29 @@ public class Testes implements Filter {
         BaseDeDados database = new BaseDeDados(modelo, factory);
         Dao dao = new Dao(modelo, factory, database);
          */
-        
-        
-        
-        
-        
+
+
         Projeto proj = new Projeto("/home/pedro/Documentos/ProjetoTeste", "projeto");
         proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome().trim()));
         ClassBuilder builder = new ClassBuilder(proj.getCaminho());
         Pacote pacotePrincipal = proj.getPacotePrincipal();
         Pacote pacoteMain = new Pacote("main", pacotePrincipal.getCaminho());
         Janela principal = new Janela("Principal", pacoteMain.getNome(), proj.getPacotePrincipal().getCaminho());
-        principal.addInterface((Interface) principal.getClasse("Runnable"));
         principal.addImportação("java.awt.EventQueue");
         principal.setPrincipal(true);
         Método main = principal.getMain();
-        main.addCorpo(Classe.getClasseEstática("java.awt.EventQueue").
-                callStatic("invokeLater",
-                        principal.getInstancia().getInstancia()));
-        Método run = principal.getMétodo("run");
-        Variavel obj = new Variavel(principal.getNome(),"obj");
+        Variavel obj = new Variavel(principal.getNome(), "obj");
         obj.setClasse(principal);
-        run.addCorpo(obj.getDeclaração(obj.instancia().getInstancia()));
-        run.addCorpo(obj.call("setVisible", "true"));
-        
-        
+        main.addCorpo(obj.getDeclaração(obj.instancia().getInstancia()));
+        main.addCorpo(obj.call("setVisible", "true"));
 
         List<Classe> classes = new ArrayList<>();
         classes.add(principal);
-        
-        
-       
-        
+
+        System.out.println(principal);
+        System.exit(0);
+
         //Cria o manifesto
-      
         List<File> codigoFonte = null;
         List<File> compilados = null;
         //Constrói as classes
@@ -113,8 +103,7 @@ public class Testes implements Filter {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Erro ao compilar os códigos fonte !");
         }
-       
-        
+
         builder.execute(principal);
     }
 

@@ -108,7 +108,9 @@ public class Classe {
             addClasse("Calendar", "util", "java");
             addClasse("Runnable", "lang", "java");
             addClasse("Thread", "lang", "java");
-            addClasse("EventQueue","awt","java");
+            addClasse("EventQueue", "awt", "java");
+            
+            
 
         } catch (ClassNotFoundException ex) {
             logger.log(Level.SEVERE, ex.getMessage() + "");
@@ -740,9 +742,9 @@ public class Classe {
         Class<?> predefinida = Class.forName(classe.getNomeCompleto());
         List<String> modifiers = modifiersFromInt(predefinida.getModifiers());
         Class<?> superClasse = predefinida.getSuperclass();
-        
-        if(predefinida.isInterface()){
-            classe = new Interface(nome,pacote, caminho);
+
+        if (predefinida.isInterface()) {
+            classe = new Interface(nome, pacote, caminho);
         }
 
         if (superClasse != null) {
@@ -841,8 +843,7 @@ public class Classe {
 
         int contador = 0;
         // construtores declarados
-        
-        
+
         for (Constructor<?> constructor : predefinida.getDeclaredConstructors()) {
 
             List<String> mods = modifiersFromInt(constructor.getModifiers());
@@ -927,9 +928,12 @@ public class Classe {
             cl = classes.get(nomesCompletos.get(nome));
         }
 
-        logger.log(Level.INFO, "convertendo nome simples em nome completo: " + nome + "=" + nomesCompletos.get(nome));
-        logger.log(Level.INFO, "classe reconhecida: " + cl.getNomeCompleto());
-
+        if (cl != null) {
+            logger.log(Level.INFO, "convertendo nome simples em nome completo: " + nome + "=" + nomesCompletos.get(nome));
+            logger.log(Level.INFO, "classe reconhecida: " + cl.getNomeCompleto());
+        }
+        
+        
         if (generics) {
             cl.setUsaGenerics(true);
         }
