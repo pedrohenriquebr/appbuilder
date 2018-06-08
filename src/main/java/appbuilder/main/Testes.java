@@ -64,7 +64,7 @@ public class Testes implements Filter {
          */
 
 
-        Projeto proj = new Projeto("/home/pedro/Documentos/ProjetoTeste", "projeto");
+        Projeto proj = new Projeto("/home/psilva/Documentos/ProjetoTeste", "projeto");
         proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome().trim()));
         ClassBuilder builder = new ClassBuilder(proj.getCaminho());
         Pacote pacotePrincipal = proj.getPacotePrincipal();
@@ -80,9 +80,16 @@ public class Testes implements Filter {
 
         List<Classe> classes = new ArrayList<>();
         classes.add(principal);
+        Modelo modelo = new Modelo("Pessoa", "models", "br.com.mycompany");
+        modelo.addStrings("Nome","DataNascimento","CPF","Endereço");
+        for(Atributo atr : modelo.getAtributos()){
+            principal.addCampoEntrada(atr.getNome());
+        }
+        
+        principal.loadButtons();
 
         System.out.println(principal);
-        System.exit(0);
+        //System.exit(0);
 
         //Cria o manifesto
         List<File> codigoFonte = null;
