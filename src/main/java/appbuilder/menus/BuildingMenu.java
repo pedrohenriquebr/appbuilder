@@ -410,7 +410,7 @@ public class BuildingMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
-        // TODO add your handling code here:
+        // TODO addComponent your handling code here:
 
         if (!painelPreenchido(panelModelo)) {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos !");
@@ -453,7 +453,7 @@ public class BuildingMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAdicionarActionPerformed
 
     private void listAtributosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listAtributosMouseClicked
-        // TODO add your handling code here:
+        // TODO addComponent your handling code here:
 
         //se clicou na lista, mas não tem atributos, então sai 
         if (lista.size() == 0) {
@@ -499,7 +499,7 @@ public class BuildingMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_listAtributosMouseClicked
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
-        // TODO add your handling code here:
+        // TODO addComponent your handling code here:
         if (!painelPreenchido(panelModelo)) {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos !");
             return;
@@ -554,7 +554,7 @@ public class BuildingMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAtualizarActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        // TODO add your handling code here:
+        // TODO addComponent your handling code here:
 
         int indice = listAtributos.getSelectedIndex();
         Atributo atr = atributos.get(indice);
@@ -572,7 +572,7 @@ public class BuildingMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnConstruirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConstruirActionPerformed
-        // TODO add your handling code here:
+        // TODO addComponent your handling code here:
         //verificar se algum campo está vazio
         if (txtNomeModelo.getText().isEmpty() || lista.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Preencha o campo do nome do modelo e/ou adicione atributos !");
@@ -593,6 +593,9 @@ public class BuildingMenu extends javax.swing.JFrame {
         Modelo modelo = new Modelo(txtNomeModelo.getText(), pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
         ConnectionFactory factory = new ConnectionFactory(pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
         BaseDeDados database = null;
+        Classe.addClasse(modelo);
+        Janela principal = new Janela("Principal", pacoteMain.getNome(), proj.getPacotePrincipal().getCaminho());
+        principal.addImportação(modelo.getNomeCompleto());
         Dao dao = null;
 
         modelo.addImportação("java.util.Calendar");
@@ -606,9 +609,10 @@ public class BuildingMenu extends javax.swing.JFrame {
         }
 
         //adiciona os atributos ao modelo 
+        //adiciona campos de entrada na Janela principal
         int atributosAdicionados = 0;
         for (Atributo atributo : this.atributos) {
-
+            
             boolean retorno = modelo.addAtributo(atributo.getTipo(), atributo.getNome());
             //se adicionou com sucesso, então incrementa o contador
             if (retorno) {
@@ -625,16 +629,10 @@ public class BuildingMenu extends javax.swing.JFrame {
         assert atributosAdicionados == this.atributos.size() :
                 "Quantidade de atributos adicionados ao modelo é diferente "
                 + "dos solicitados!";
-
-        //Constroi a classe Principal
-        Classe.addClasse(modelo);
-        Janela principal = new Janela("Principal", pacoteMain.getNome(), proj.getPacotePrincipal().getCaminho());
-        principal.addImportação(modelo.getNomeCompleto());
-        try {
-            principal.addImportação(Classe.addClasse("Scanner", "util", "java"));
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
+        //após a confirmação dos atributos terem sidos adicionados
+        //criar um JLabel e JTextField para cada atributo do modelo
+        principal.loadModelo(modelo);
 
         //Metaclasse Dao e base de dados
         try {
@@ -645,8 +643,6 @@ public class BuildingMenu extends javax.swing.JFrame {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Erro ao criar a metaclasse Dao!");
         }
-        
-        
 
         //pegar os atributos que têm filtrador setado
         for (Atributo atributo : this.atributos) {
@@ -659,7 +655,11 @@ public class BuildingMenu extends javax.swing.JFrame {
                 dao.addMétodoPesquisa(atributo.getNome());
             }
         }
-
+        
+        
+        //agora que todas as outras classes estiverem prontas, eu posso criar
+        //o método main
+        //Constroi a classe Principal
         principal.setPrincipal(true);
 
         Método main = principal.getMain();
@@ -720,7 +720,7 @@ public class BuildingMenu extends javax.swing.JFrame {
 
     private void btnExecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecutarActionPerformed
         try {
-            // TODO add your handling code here:
+            // TODO addComponent your handling code here:
             builder.executeJar(executavel);
         } catch (IOException ex) {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
@@ -729,7 +729,7 @@ public class BuildingMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExecutarActionPerformed
 
     private void checkFiltradorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkFiltradorActionPerformed
-        // TODO add your handling code here:
+        // TODO addComponent your handling code here:
     }//GEN-LAST:event_checkFiltradorActionPerformed
 
     /**
