@@ -215,7 +215,11 @@ public class Variavel {
             String pacote = pacoteCompleto.substring(pacoteCompleto.lastIndexOf(".") + 1);
             String acimaDoPacote = pacoteCompleto.substring(0, pacoteCompleto.lastIndexOf("."));
             try {
-                Classe.addClasse(nome, pacote, acimaDoPacote);
+                cl = Classe.addClasse(nome, pacote, acimaDoPacote);
+                if (cl != null) {
+                    this.classe.addImportação(getTipo());
+                }
+
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Variavel.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Problema ao adicionar classe " + getTipo());
@@ -270,6 +274,19 @@ public class Variavel {
         }
 
         codigo = obj.get(atr);
+        return getReferencia() + codigo;
+    }
+
+    public String set(String atr, String valor) {
+        Classe cl = this.classe.getClasse(getTipo());
+        Objeto obj = new Objeto(cl);
+        String codigo = "";
+
+        if (!cl.temAtributo(atr)) {
+            throw new RuntimeException("classe " + cl.getNome() + " não tem atributo " + atr);
+        }
+
+        codigo = obj.get(atr) + " = " + valor + ";\n";
         return getReferencia() + codigo;
     }
 
