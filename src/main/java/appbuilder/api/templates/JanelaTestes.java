@@ -8,6 +8,9 @@ package appbuilder.api.templates;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import javax.swing.*;
 
 /**
@@ -16,41 +19,56 @@ import javax.swing.*;
  */
 public class JanelaTestes extends JFrame {
 
-    public static void addComponentsToPane(Container pane) {
-        pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-
-        addAButton("Button 1", pane);
-        pane.add(new JLabel("oi"));
-        addAButton("Button 2", pane);
-        addAButton("Button 3", pane);
-        addAButton("Long-Named Button 4", pane);
-        addAButton("5", pane);
+    public JanelaTestes() {
+        initComponents();
     }
 
-    private static void addAButton(String text, Container container) {
-        JButton button = new JButton(text);
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        container.add(button);
-    }
+    public void initComponents() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setSize(300, 300);
+        setLocationRelativeTo(null);
+        GridBagLayout layout = new GridBagLayout();
+        Container c = getContentPane();
+        GridBagConstraints gbc = new GridBagConstraints();
+        c.setLayout(layout);
+        gbc.gridx = 0;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+        c.add(new JLabel("Seu nome:"), gbc);
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
 
-    /**
-     * Create the GUI and show it. For thread safety, this method should be
-     * invoked from the event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("BoxLayoutDemo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JTextField txtNome = new JTextField("");
+        txtNome.setToolTipText("Seu nome por favor");
+        txtNome.setColumns(20);
+        c.add(txtNome, gbc);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 0;
+        c.add(new JLabel("Sua idade: "),gbc);
+        gbc.anchor = GridBagConstraints.CENTER;
+        
+        JTextField txtIdade = new JTextField("");
+        txtIdade.setToolTipText("Sua idade por favor");
+        txtIdade.setColumns(20);
+        c.add(txtIdade, gbc);
 
-        //Set up the content pane.
-        addComponentsToPane(frame.getContentPane());
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        JButton btn1 = new JButton("1");
+        JButton btn2 = new JButton("2");
+        GridBagConstraints gbc2 = new GridBagConstraints();
+        gbc2.anchor = GridBagConstraints.CENTER;
+        gbc2.insets = new Insets(5, 5, 5, 5);
+        panel.add(btn1, gbc2);
 
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
+        panel.add(btn2, gbc2);
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        c.add(panel,gbc);
+
     }
 
     public static void main(String[] args) {
-        createAndShowGUI();
+        new JanelaTestes().setVisible(true);
     }
 }
