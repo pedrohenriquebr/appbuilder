@@ -17,6 +17,10 @@ public class If {
     public If(String expressão) {
         this.expressão = expressão;
     }
+    
+    public void addCorpo(String corpo ){
+        this.corpo += corpo;
+    }
 
     public String toString() {
         String codigo = "";

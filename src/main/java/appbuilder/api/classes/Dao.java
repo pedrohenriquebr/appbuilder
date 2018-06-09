@@ -31,6 +31,7 @@ public class Dao extends Classe {
     private Método métodoAdd;
     private Método métodoRemove;
     private Método métodoUpdate;
+    private Método métodoSelectAll;
 
     private List<Método> metodosSearch = new ArrayList<>();
 
@@ -82,6 +83,7 @@ public class Dao extends Classe {
         trycatch.addCorpo(stmt.getInicialização(executeCreateTableQuery));
         trycatch.addCorpo(ret3.getDeclaração(stmt.call("executeUpdate") + "> 0 "));
         If cond = new If("!(" + ret1.getReferencia() + " && " + ret2.getReferencia() + " && " + ret3.getReferencia() + ")");
+        
         trycatch.addCorpo(cond.toString());
 
         construtor.addCorpo(trycatch.toString());
@@ -94,11 +96,89 @@ public class Dao extends Classe {
         addMétodoRemove();
         //UPDATE
         addMétodoUpdate();
+        //SELECT ALL
+        addMétodoSelectAll();
 
         addMétodo(métodoAdd);
         addMétodo(métodoRemove);
         addMétodo(métodoUpdate);
+        addMétodo(métodoSelectAll);
+        
+       
+    }
 
+    private void addMétodoSelectAll() {
+        métodoSelectAll = new Método("public", "List<"+modelo.getNome()+">", "selectAll");
+        métodoSelectAll.addExceção(getExceção("SQLException"));
+        Variavel lista = new Variavel("ArrayList <" + modelo.getNome() + ">", "lista");
+        lista.setClasse(this);
+        Variavel stmt = new Variavel("PreparedStatement", "stmt");
+        stmt.setClasse(this);
+
+        String selectAllQuery = database.getSelectAllQuery();
+
+        String executeSelectAllQuery = conexão.call("prepareStatement", "\"" + selectAllQuery + "\"");
+        métodoSelectAll.addCorpo(lista.getDeclaração(lista.instancia().getInstancia()));
+        métodoSelectAll.addCorpo(stmt.getDeclaração(executeSelectAllQuery));
+        Variavel rs = new Variavel("ResultSet","rs");
+        rs.setClasse(this);
+        
+        métodoSelectAll.addCorpo(rs.getDeclaração(stmt.call("executeQuery")));
+        
+        While wh = new While(rs.call("next"));
+        Variavel obj = new Variavel(modelo.getNome(), "obj");
+        obj.setClasse(this);
+        wh.addCorpo(obj.getDeclaração(obj.instancia().getInstancia()));
+
+        //
+        int pos = 1;
+        for (Atributo atr : this.modelo.getAtributos()) {
+            String chamada = "get";
+            String arg = "";
+
+            if (atr.getTipo().equals("Calendar")) {
+                chamada += "Date";
+                String tmp = rs.call(chamada, "\"" + atr.getNome().toLowerCase() + "\"");
+                Variavel data = new Variavel("Calendar", "data" + pos);
+                data.setClasse(this);
+                wh.addCorpo(
+                        data.getDeclaração(
+                                getClasse("Calendar").
+                                        callStatic("getInstance")));
+
+                wh.addCorpo(data.call("setTime", tmp));
+                arg = data.getReferencia();
+                pos++;
+            } else {
+
+                if (atr.getTipo().equals("String")) {
+                    chamada += "String";
+                } else if (atr.getTipo().equals("int")) {
+                    chamada += "Int";
+
+                } else if (atr.getTipo().equals("double")) {
+                    chamada += "Double";
+                } else if (atr.getTipo().equals("float")) {
+                    chamada += "Float";
+                }
+
+                arg = rs.call(chamada, "\"" + atr.getNome().toLowerCase() + "\"");
+
+            }
+
+            wh.addCorpo(obj.call(modelo.getSetter(atr.getNome()).getNome(), arg));
+
+        }
+
+        wh.addCorpo(lista.call("add", obj.getReferencia()));
+        métodoSelectAll.addCorpo(wh.toString());
+        Variavel tmp = new Variavel("Statement", "closeOperation");
+        tmp.setClasse(this);
+        métodoSelectAll.addCorpo(tmp.getDeclaração("(Statement) " + stmt.getReferencia()));
+        métodoSelectAll.addCorpo(tmp.call("close"));
+        métodoSelectAll.addCorpo(rs.call("close"));
+        
+        métodoSelectAll.setRetorno(lista.getReferencia());
     }
 
     private void addMétodoUpdate() {

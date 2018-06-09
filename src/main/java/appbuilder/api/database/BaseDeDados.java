@@ -32,6 +32,7 @@ public class BaseDeDados {
     private List<String> selectQueries = new ArrayList<>();
     private Map<String, String> mapSelectQueries = new HashMap<>();
     private String updateQuery = "";
+    private String selectAllQuery = "";
 
     private String createDataBaseQuery = "";
     private String createTableQuery = "";
@@ -48,6 +49,7 @@ public class BaseDeDados {
         addUpateQuery();
         addDeleteQuery();
         addInsertQuery();
+        addSelectAllQuery();
 
         addCreateDataBaseQuery();
         addCreateTableQuery();
@@ -144,6 +146,16 @@ public class BaseDeDados {
 
     public String getSelectQuery(String nomeAtributo) {
         return mapSelectQueries.get(nomeAtributo.trim().toLowerCase());
+    }
+
+    public String getSelectAllQuery() {
+        return this.selectAllQuery;
+    }
+
+    private void addSelectAllQuery() {
+        this.selectAllQuery = "SELECT * FROM "
+                + this.modelo.getNome().toLowerCase();
+
     }
 
     private void addUpateQuery() {

@@ -38,7 +38,6 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 
-
 /**
  * Classe para fazer testes !
  *
@@ -53,19 +52,8 @@ public class Testes implements Filter {
     }
 
     public static void main(String[] args) throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
-        /* Modelo modelo = new Modelo("Pessoa", "main", "br.com.testes");
-        modelo.addStrings("código", "nome", "telefone");
-        modelo.addAtributo("Calendar", "nascimento");
-        modelo.setChave("código");
-        ConnectionFactory factory = new ConnectionFactory("factory", "br.com.testes");
-        factory.setBaseDeDados("projeto");
-        BaseDeDados database = new BaseDeDados(modelo, factory);
-        Dao dao = new Dao(modelo, factory, database);
-         */
-        
-        
 
-
+      
         Projeto proj = new Projeto("/home/psilva/Documentos/ProjetoTeste", "projeto");
         proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome().trim()));
         ClassBuilder builder = new ClassBuilder(proj.getCaminho());
@@ -83,15 +71,20 @@ public class Testes implements Filter {
         List<Classe> classes = new ArrayList<>();
         classes.add(principal);
         Modelo modelo = new Modelo("Pessoa", "models", "br.com.mycompany");
-        modelo.addStrings("Nome","DataNascimento","CPF","Endereço");
-        for(Atributo atr : modelo.getAtributos()){
+        modelo.addStrings("Nome", "DataNascimento", "CPF", "Endereço");
+        modelo.setChave("Nome");
+        ConnectionFactory factory = new ConnectionFactory("factory", "br.com.testes");
+        factory.setBaseDeDados("projeto");
+        BaseDeDados database = new BaseDeDados(modelo, factory);
+        Dao dao = new Dao(modelo, factory, database);
+        for (Atributo atr : modelo.getAtributos()) {
             principal.addCampoEntrada(atr.getNome());
         }
-        
+
         principal.loadButtons();
 
-        System.out.println(principal);
-        //System.exit(0);
+        System.out.println(dao);
+        System.exit(0);
 
         //Cria o manifesto
         List<File> codigoFonte = null;
