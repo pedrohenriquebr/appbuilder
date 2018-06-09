@@ -842,16 +842,16 @@ public class Classe {
 
         //atributos públicos
         for (Field atributo : predefinida.getDeclaredFields()) {
-            String tipo  = atributo.getType().getName();
-            List<String> mods =  modifiersFromInt(atributo.getModifiers());
+            String tipo = atributo.getType().getName();
+            List<String> mods = modifiersFromInt(atributo.getModifiers());
             String modAcesso = mods.get(0);
             Atributo atr = new Atributo(modAcesso, tipo, atributo.getName());
             for (int h = 1; h < mods.size(); h++) {
                 atr.addModificador(mods.get(h));
             }
-            
+
             classe.addAtributo(atr);
-        }   
+        }
 
         int contador = 0;
         // construtores declarados
@@ -891,6 +891,11 @@ public class Classe {
     // adicionar uma metaclasse criada pelo usuário
     public static Classe addClasse(Classe classe) {
         logger.log(Level.INFO, "adicionado metaclasse " + classe.getNome());
+
+        if (classes.get(classe.getNomeCompleto()) != null) {
+            return classes.replace(classe.getNomeCompleto(), classe);
+        }
+
         classes.put(classe.getNomeCompleto(), classe);
         return classe;
     }
@@ -908,6 +913,9 @@ public class Classe {
      * @return o caminhoCompleto
      */
     public String addNomeCompleto(String nome, String nomeCompleto) {
+        if(this.nomesCompletos.containsKey(nome)){
+            return "";
+        }
 
         return this.nomesCompletos.put(nome, nomeCompleto);
     }
