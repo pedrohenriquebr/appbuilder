@@ -36,6 +36,9 @@ public class Janela extends Classe {
             Classe.addClasse("JTextField", "swing", "javax");
             Classe.addClasse("Insets", "awt", "java");
             Classe.addClasse("JPanel", "swing", "javax");
+            Classe.addClasse("GridBagLayout", "awt", "java");
+            Classe.addClasse("GridBagConstraints", "awt", "java");
+            Classe.addClasse("Container", "awt", "java");
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();;
         }
@@ -52,6 +55,9 @@ public class Janela extends Classe {
         addImportação("javax.swing.JLabel");
         addImportação("javax.swing.JTextField");
         addImportação("java.awt.Insets");
+        addImportação("java.awt.GridBagLayout");
+        addImportação("java.awt.GridBagConstraints");
+        addImportação("java.awt.Container");
         addImportação("javax.swing.JPanel");
 
         setSuperClasse("JFrame");
@@ -71,15 +77,15 @@ public class Janela extends Classe {
         initComponents.addCorpo(getMétodo("setDefaultCloseOperation")
                 .getChamada("javax.swing.WindowConstants.EXIT_ON_CLOSE"));
         initComponents.addCorpo(getMétodo("setSize").getChamada("500", "400"));
-        container = new Variavel("java.awt.Container", "container");
+        container = new Variavel("Container", "container");
         container.setClasse(this);
-        layout = new Variavel("java.awt.GridBagLayout", "layout");
+        layout = new Variavel("GridBagLayout", "layout");
         layout.setClasse(this);
-        gbc = new Variavel("java.awt.GridBagConstraints", "gbc");
+        gbc = new Variavel("GridBagConstraints", "gbc");
         gbc.setClasse(this);
         panel = new Variavel("JPanel", "panel");
         panel.setClasse(this);
-        gbcPanel = new Variavel("java.awt.GridBagConstraints", "gbcPanel");
+        gbcPanel = new Variavel("GridBagConstraints", "gbcPanel");
         gbcPanel.setClasse(this);
 
         initComponents.addCorpo(container.getDeclaração(getMétodo("getContentPane").getChamada()));
@@ -96,7 +102,7 @@ public class Janela extends Classe {
         initComponents.addCorpo(gbcPanel.getDeclaração(gbcPanel.instancia().getInstancia()));
         initComponents.addCorpo(panel.call("setLayout", Classe.get("java.awt.GridBagLayout").getInstancia()));
         initComponents.addCorpo(gbcPanel.set("insets", Classe.get("java.awt.Insets", "5", "5", "5", "5").getInstancia()));
-        initComponents.addCorpo(gbcPanel.set("anchor", "java.awt.GridBagConstraints.CENTER"));
+        initComponents.addCorpo(gbcPanel.set("anchor", "GridBagConstraints.CENTER"));
 
         Construtor c = getConstrutorPrincipal();
         c.addCorpo(initComponents.getChamada());
@@ -167,17 +173,17 @@ public class Janela extends Classe {
         Atributo jtext = addComponent("JTextField", "txt" + upperCase(nomeCampo), "");
 
         Variavel tmpPanel = new Variavel("JPanel", "tmpPanel" + getAtributos().size());
-        Variavel tmpGbc = new Variavel("java.awt.GridBagConstraints", "tmpGbc" + getAtributos().size());
+        Variavel tmpGbc = new Variavel("GridBagConstraints", "tmpGbc" + getAtributos().size());
 
         tmpPanel.setClasse(this);
         tmpGbc.setClasse(this);
         initComponents.addCorpo(tmpPanel.getDeclaração(tmpPanel.instancia().getInstancia()));
         initComponents.addCorpo(tmpGbc.getDeclaração(tmpGbc.instancia().getInstancia()));
         initComponents.addCorpo(tmpPanel.call("setLayout", Classe.get("java.awt.GridBagLayout").getInstancia()));
-        initComponents.addCorpo(tmpGbc.set("anchor", "java.awt.GridBagConstraints.WEST"));
+        initComponents.addCorpo(tmpGbc.set("anchor", "GridBagConstraints.WEST"));
         initComponents.addCorpo(tmpGbc.set("gridx", "0"));
         initComponents.addCorpo(tmpPanel.call("add", jlabel.getReferencia(), tmpGbc.getReferencia()));
-        initComponents.addCorpo(tmpGbc.set("anchor", "java.awt.GridBagConstraints.CENTER"));
+        initComponents.addCorpo(tmpGbc.set("anchor", "GridBagConstraints.CENTER"));
         initComponents.addCorpo(jtext.call("setColumns", "25"));
         initComponents.addCorpo(jtext.call("setToolTipText", "\"" + upperCase(nomeCampo) + " por favor\""));
         initComponents.addCorpo(tmpPanel.call("add", jtext.getReferencia(), tmpGbc.getReferencia()));
