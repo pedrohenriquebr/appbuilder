@@ -62,6 +62,8 @@ public class Testes implements Filter {
         BaseDeDados database = new BaseDeDados(modelo, factory);
         Dao dao = new Dao(modelo, factory, database);
          */
+        
+        
 
 
         Projeto proj = new Projeto("/home/psilva/Documentos/ProjetoTeste", "projeto");
