@@ -6,6 +6,7 @@
 package appbuilder.api.classes;
 
 import appbuilder.api.methods.Método;
+import appbuilder.api.packages.Pacote;
 import appbuilder.api.vars.Atributo;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -19,6 +20,16 @@ public class Interface extends Classe {
     public Interface(String nome) {
         super(nome);
         setInterface(true);
+    }
+    
+    public Interface(String nome, String pacote) {
+        this(nome);
+        this.pacote = new Pacote(pacote);
+    }
+
+    public Interface(String nome, String pacote, String caminho) {
+        this(nome);
+        this.pacote = new Pacote(pacote, caminho);
     }
     
     

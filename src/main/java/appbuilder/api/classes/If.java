@@ -21,9 +21,9 @@ public class If {
     public String toString() {
         String codigo = "";
 
-        codigo += "\t\tif( " + expressão + " ){\n";
-        codigo += corpo;
-        codigo += "}\n\n";
+        codigo += "if( " + expressão + " ){\n";
+        codigo += "\t\t"+corpo;
+        codigo += "\n\t}\n\n";
 
         return codigo;
     }

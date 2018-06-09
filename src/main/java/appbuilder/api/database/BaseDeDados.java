@@ -8,12 +8,17 @@ package appbuilder.api.database;
 import appbuilder.api.classes.ConnectionFactory;
 import appbuilder.api.classes.Modelo;
 import appbuilder.api.vars.Atributo;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * Classe responsável por construir os comandos SQL de forma dinâmica, recebendo
+ * classe Modelo e ConnectionFactory.
  *
  * @author pedro
  */
@@ -22,21 +27,108 @@ public class BaseDeDados {
     private Modelo modelo;
     private ConnectionFactory factory;
 
-    private String createTableQuery = "";
     private String insertQuery = "";
     private String deleteQuery = "";
     private List<String> selectQueries = new ArrayList<>();
     private Map<String, String> mapSelectQueries = new HashMap<>();
     private String updateQuery = "";
 
+    private String createDataBaseQuery = "";
+    private String createTableQuery = "";
+    private String useDataBaseQuery = "";
+
     public BaseDeDados(Modelo modelo, ConnectionFactory factory) {
         this.modelo = modelo;
         this.factory = factory;
+
+        if (this.modelo.getChave() == null) {
+            throw new RuntimeException("modelo não tem uma chave definida !");
+        }
 
         addUpateQuery();
         addDeleteQuery();
         addInsertQuery();
 
+        addCreateDataBaseQuery();
+        addCreateTableQuery();
+
+        this.useDataBaseQuery = "USE " + this.factory.getBaseDeDados().toLowerCase();
+
+    }
+
+    public boolean buildAll() throws SQLException {
+        Connection con = MyConnectionFactory.getConnection();
+
+        assert con != null : "conexão jdbc nula !! ";
+        boolean b1 = false;
+        boolean b2 = false;
+        boolean b3 = false;
+        PreparedStatement stmt = con.prepareStatement(getCreateDataBaseQuery());
+        b1 = stmt.executeUpdate() > 0;
+        assert b1 : "não deu pra criar base de dados";
+        PreparedStatement st = con.prepareStatement(getUseDataBaseQuery());
+        b3 = st.executeUpdate() > 0;
+        assert b1 : "não deu pra usar a base de dados !";
+
+        PreparedStatement stmt2 = con.prepareStatement(getCreateTableQuery());
+        b2 = stmt2.executeUpdate() > 0;
+        assert b2 : "não deu pra criar a tabela ";
+
+        return b1 && b2;
+    }
+
+    public String getUseDataBaseQuery() {
+        return this.useDataBaseQuery;
+    }
+
+    private void addCreateTableQuery() {
+        this.createTableQuery = "CREATE TABLE IF NOT EXISTS " + this.modelo.getNome().toLowerCase() + "(";
+
+        int contador = 1;
+
+        for (Atributo atributo : this.modelo.getAtributos()) {
+            if (contador == 2) {
+                this.createTableQuery += ", ";
+                contador = 1;
+            }
+
+            String nome = atributo.getNome().toLowerCase();
+            String tipo = "";
+            if (atributo.getTipo().equals("String")) {
+                tipo = "VARCHAR(255)";
+            } else if (atributo.getTipo().equals("int")) {
+                tipo = "INT";
+            } else if (atributo.getTipo().equals("double")) {
+                tipo = "DOUBLE";
+            } else if (atributo.getTipo().equals("float")) {
+                tipo = "FLOAT";
+            } else if (atributo.getTipo().equals("Calendar")) {
+                tipo = "DATE";
+            } else {
+                throw new RuntimeException("atributo " + nome + " com tipo desconhecido para criar query da tabela!");
+            }
+
+            this.createTableQuery += nome + " " + tipo + " NOT NULL";
+            if (this.modelo.getChave() == atributo) {
+                this.createTableQuery += " PRIMARY KEY";
+            }
+            contador++;
+        }
+
+        this.createTableQuery += ")";
+    }
+
+    public String getCreateTableQuery() {
+        return this.createTableQuery;
+    }
+
+    private void addCreateDataBaseQuery() {
+        this.createDataBaseQuery = "CREATE DATABASE IF NOT EXISTS ? CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+        this.createDataBaseQuery = this.createDataBaseQuery.replace("?", factory.getBaseDeDados().toLowerCase());
+    }
+
+    public String getCreateDataBaseQuery() {
+        return this.createDataBaseQuery;
     }
 
     public boolean addSelectQuery(String nomeAtributo) {
@@ -51,7 +143,7 @@ public class BaseDeDados {
     }
 
     public String getSelectQuery(String nomeAtributo) {
-        return mapSelectQueries.get(nomeAtributo);
+        return mapSelectQueries.get(nomeAtributo.trim().toLowerCase());
     }
 
     private void addUpateQuery() {
@@ -77,6 +169,7 @@ public class BaseDeDados {
     }
 
     private void addDeleteQuery() {
+
         this.deleteQuery = "DELETE  FROM "
                 + this.modelo.getNome().toLowerCase() + " WHERE "
                 + this.modelo.getChave().getNome().toLowerCase() + "=?";
@@ -113,7 +206,7 @@ public class BaseDeDados {
         this.insertQuery += ")";
     }
 
-    public String getInsertString() {
+    public String getInsertQuery() {
         return this.insertQuery;
     }
 

@@ -18,11 +18,20 @@ public class Atributo extends Variavel {
 
     private boolean inicializar = false;
     private boolean estático = false;
+    private String modAcesso = "public";
 
     public Atributo(String tipo, String nome) {
         super(tipo, nome);
         //por padrão
-        addModificador("public");
+        addModificador(modAcesso);
+    }
+
+    public String getModAcesso() {
+        return this.modAcesso;
+    }
+
+    public void setModAcesso(String mod) {
+        this.modAcesso = mod;
     }
 
     public void ativarInicialização(String valor) {
@@ -46,11 +55,11 @@ public class Atributo extends Variavel {
 
     @Override
     public String getReferencia() {
-        if(this.getMods().contains("static")){
-            estático  = true;
-            return getClasse().getNome()+"."+nome;
+        if (this.getMods().contains("static")) {
+            estático = true;
+            return getClasse().getNome() + "." + nome;
         }
-        
+
         return "this." + nome;
     }
 

@@ -70,7 +70,6 @@ public class ProjectMenu extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txtNomeProjeto = new javax.swing.JTextField();
         btnOkInfo = new javax.swing.JButton();
-        checkInterfaceGráfica = new javax.swing.JCheckBox();
         panelBancoDeDados = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtNomeUsuario = new javax.swing.JTextField();
@@ -101,8 +100,6 @@ public class ProjectMenu extends javax.swing.JFrame {
             }
         });
 
-        checkInterfaceGráfica.setText("Iterface Gráfica");
-
         javax.swing.GroupLayout panelInformacoesLayout = new javax.swing.GroupLayout(panelInformacoes);
         panelInformacoes.setLayout(panelInformacoesLayout);
         panelInformacoesLayout.setHorizontalGroup(
@@ -114,24 +111,19 @@ public class ProjectMenu extends javax.swing.JFrame {
                     .addComponent(txtCaminho)
                     .addComponent(jLabel2)
                     .addComponent(txtNomeProjeto, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
-                .addGroup(panelInformacoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnOkInfo, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(checkInterfaceGráfica, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
+                .addComponent(btnOkInfo)
                 .addGap(44, 44, 44))
         );
         panelInformacoesLayout.setVerticalGroup(
             panelInformacoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelInformacoesLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(21, Short.MAX_VALUE)
                 .addGroup(panelInformacoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelInformacoesLayout.createSequentialGroup()
-                        .addComponent(checkInterfaceGráfica)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnOkInfo)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelInformacoesLayout.createSequentialGroup()
-                        .addGap(0, 13, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(6, 6, 6)
                         .addComponent(txtCaminho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -239,7 +231,7 @@ public class ProjectMenu extends javax.swing.JFrame {
         if (!tudoOk) {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos !");
         } else {
-            JOptionPane.showMessageDialog(null, "Tudo Ok!");
+            //JOptionPane.showMessageDialog(null, "Tudo Ok!");
 
             Projeto proj = new Projeto(txtCaminho.getText(), txtNomeProjeto.getText());
 
@@ -257,7 +249,6 @@ public class ProjectMenu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnOkInfo;
-    private javax.swing.JCheckBox checkInterfaceGráfica;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

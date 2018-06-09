@@ -27,6 +27,8 @@ import appbuilder.api.vars.Atributo;
  */
 import appbuilder.api.vars.Objeto;
 import appbuilder.main.AppBuilder;
+import appbuilder.main.Testes;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 
@@ -85,7 +87,7 @@ public class Classe {
 
         handler.setFormatter(new SimpleFormatter());
         logger.addHandler(handler);
-        logger.setFilter(new AppBuilder());
+        logger.setFilter(new Testes());
         logger.log(Level.INFO, "começo: adicionando classes");
         CONTEXTO_ESTÁTICO = true;
         try {
@@ -105,6 +107,9 @@ public class Classe {
             addClasse("ResultSet", "sql", "java");
             addClasse("Date", "sql", "java");
             addClasse("Calendar", "util", "java");
+            addClasse("Runnable", "lang", "java");
+            addClasse("Thread", "lang", "java");
+            addClasse("EventQueue", "awt", "java");
 
         } catch (ClassNotFoundException ex) {
             logger.log(Level.SEVERE, ex.getMessage() + "");
@@ -125,7 +130,11 @@ public class Classe {
         this.pacote = new Pacote(nome.toLowerCase());
 
         if (!CONTEXTO_ESTÁTICO) {
-            addImportação(Classe.getClasseEstática("java.lang.Object"));
+            addImportação("java.lang.Object");
+            addImportação("java.lang.Runnable");
+            addImportação("java.lang.Exception");
+            addImportação("java.lang.RuntimeException");
+            addImportação("java.lang.Thread");
         }
 
     }
@@ -152,7 +161,7 @@ public class Classe {
         return this.usaGenerics;
     }
 
-    public String camelCase(final String line) {
+    public String upperCase(final String line) {
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
@@ -218,8 +227,6 @@ public class Classe {
             }
         }
 
-        
-
     }
 
     public Classe getSuperClasse() {
@@ -263,6 +270,7 @@ public class Classe {
             try {
                 Método metodo = (Método) met.clone();
                 metodo.setDeInterface(false);
+                metodo.removeModNacesso("abstract");
                 addMétodo(metodo);
             } catch (CloneNotSupportedException c) {
                 c.printStackTrace();
@@ -346,6 +354,7 @@ public class Classe {
         return this.métodoMain;
     }
 
+    @Override
     public String toString() {
         String codigo = "";
 
@@ -533,14 +542,14 @@ public class Classe {
     }
 
     public boolean addGetter(Atributo atributo) {
-        Método getter = new Método("public", atributo.getTipo(), "get" + camelCase(atributo.getNome()));
+        Método getter = new Método("public", atributo.getTipo(), "get" + upperCase(atributo.getNome()));
         getter.setRetorno(atributo.getReferencia());
 
         return addMétodo(getter);
     }
 
     public boolean addSetter(Atributo atributo) {
-        Método setter = new Método("public", "void", "set" + camelCase(atributo.getNome()));
+        Método setter = new Método("public", "void", "set" + upperCase(atributo.getNome()));
         setter.addParametro(atributo.getTipo(), atributo.getNome());
         setter.setCorpo(atributo.getInicialização(atributo.getNome()));
 
@@ -556,7 +565,7 @@ public class Classe {
      */
     public Método getGetter(String atributo) {
         Método método = null;
-        String camelCase = "get" + camelCase(atributo);
+        String camelCase = "get" + upperCase(atributo);
         método = getMétodo(camelCase);
 
         return método;
@@ -565,7 +574,7 @@ public class Classe {
     // retorna o setter com base no nome do atributo associado
     public Método getSetter(String atributo) {
         Método método = null;
-        String camelCase = "set" + camelCase(atributo);
+        String camelCase = "set" + upperCase(atributo);
         método = getMétodo(camelCase);
 
         return método;
@@ -733,6 +742,10 @@ public class Classe {
         List<String> modifiers = modifiersFromInt(predefinida.getModifiers());
         Class<?> superClasse = predefinida.getSuperclass();
 
+        if (predefinida.isInterface()) {
+            classe = new Interface(nome, pacote, caminho);
+        }
+
         if (superClasse != null) {
             // defino a superclasse para minha metaclasse
             // infelizmente teve recursividade
@@ -827,8 +840,22 @@ public class Classe {
              */
         }
 
+        //atributos públicos
+        for (Field atributo : predefinida.getDeclaredFields()) {
+            String tipo = atributo.getType().getName();
+            List<String> mods = modifiersFromInt(atributo.getModifiers());
+            String modAcesso = mods.get(0);
+            Atributo atr = new Atributo(modAcesso, tipo, atributo.getName());
+            for (int h = 1; h < mods.size(); h++) {
+                atr.addModificador(mods.get(h));
+            }
+
+            classe.addAtributo(atr);
+        }
+
         int contador = 0;
         // construtores declarados
+
         for (Constructor<?> constructor : predefinida.getDeclaredConstructors()) {
 
             List<String> mods = modifiersFromInt(constructor.getModifiers());
@@ -864,6 +891,11 @@ public class Classe {
     // adicionar uma metaclasse criada pelo usuário
     public static Classe addClasse(Classe classe) {
         logger.log(Level.INFO, "adicionado metaclasse " + classe.getNome());
+
+        if (classes.get(classe.getNomeCompleto()) != null) {
+            return classes.replace(classe.getNomeCompleto(), classe);
+        }
+
         classes.put(classe.getNomeCompleto(), classe);
         return classe;
     }
@@ -881,6 +913,9 @@ public class Classe {
      * @return o caminhoCompleto
      */
     public String addNomeCompleto(String nome, String nomeCompleto) {
+        if(this.nomesCompletos.containsKey(nome)){
+            return "";
+        }
 
         return this.nomesCompletos.put(nome, nomeCompleto);
     }
@@ -913,8 +948,10 @@ public class Classe {
             cl = classes.get(nomesCompletos.get(nome));
         }
 
-        logger.log(Level.INFO, "convertendo nome simples em nome completo: " + nome + "=" + nomesCompletos.get(nome));
-        logger.log(Level.INFO, "classe reconhecida: " + cl.getNomeCompleto());
+        if (cl != null) {
+            logger.log(Level.INFO, "convertendo nome simples em nome completo: " + nome + "=" + nomesCompletos.get(nome));
+            logger.log(Level.INFO, "classe reconhecida: " + cl.getNomeCompleto());
+        }
 
         if (generics) {
             cl.setUsaGenerics(true);
@@ -975,7 +1012,7 @@ public class Classe {
         return this.modsNAcesso;
     }
 
-    List<Construtor> getConstrutores() {
+    public List<Construtor> getConstrutores() {
         List<Construtor> lista = new ArrayList<>();
         for (Método m : getMétodos()) {
             if (m instanceof Construtor) {

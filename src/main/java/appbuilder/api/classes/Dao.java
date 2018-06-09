@@ -6,6 +6,7 @@
 package appbuilder.api.classes;
 
 import appbuilder.api.classes.exceptions.TratamentoDeExceção;
+import appbuilder.api.database.BaseDeDados;
 import appbuilder.api.methods.Método;
 import appbuilder.api.methods.Parametro;
 import appbuilder.api.vars.Atributo;
@@ -25,6 +26,7 @@ public class Dao extends Classe {
 
     private Modelo modelo;
     private ConnectionFactory factory;
+    private BaseDeDados database;
     private Atributo conexão;
     private Método métodoAdd;
     private Método métodoRemove;
@@ -32,10 +34,12 @@ public class Dao extends Classe {
 
     private List<Método> metodosSearch = new ArrayList<>();
 
-    public Dao(Modelo modelo, ConnectionFactory factory) throws FileNotFoundException {
+    public Dao(Modelo modelo, ConnectionFactory factory, BaseDeDados database) throws FileNotFoundException {
         super(modelo.getNome() + "DAO");
         this.modelo = modelo;
         this.factory = factory;
+        this.database = database;
+
         addImportação("java.sql.Connection");
         addImportação("java.sql.SQLException");
         addImportação("java.sql.PreparedStatement");
@@ -54,7 +58,32 @@ public class Dao extends Classe {
         //construtor
         Construtor construtor = new Construtor("public", this.nome);
         TratamentoDeExceção trycatch = tratarExceção("SQLException");
+        Variavel stmt = new Variavel("PreparedStatement", "stmt");
+        Variavel ret1 = new Variavel("boolean", "ret1");
+        Variavel ret2 = new Variavel("boolean", "ret2");
+        Variavel ret3 = new Variavel("boolean", "ret3");
+        ret2.setClasse(this);
+        ret3.setClasse(this);
+        ret1.setClasse(this);
+        stmt.setClasse(this);
+
+        String createDataBaseQuery = database.getCreateDataBaseQuery();
+        String useDataBaseQuery = database.getUseDataBaseQuery();
+        String createTableQuery = database.getCreateTableQuery();
+
         trycatch.addCorpo(conexão.getInicialização(factory.callStatic("getConnection")));
+        String executeCreateDataBaseQuery = conexão.call("prepareStatement", "\"" + createDataBaseQuery + "\"");
+        String executeUseDataBaseQuery = conexão.call("prepareStatement", "\"" + useDataBaseQuery + "\"");
+        String executeCreateTableQuery = conexão.call("prepareStatement", "\"" + createTableQuery + "\"");
+        trycatch.addCorpo(stmt.getDeclaração(executeCreateDataBaseQuery));
+        trycatch.addCorpo(ret1.getDeclaração(stmt.call("executeUpdate") + "> 0 "));
+        trycatch.addCorpo(stmt.getInicialização(executeUseDataBaseQuery));
+        trycatch.addCorpo(ret2.getDeclaração(stmt.call("executeUpdate") + "> 0 "));
+        trycatch.addCorpo(stmt.getInicialização(executeCreateTableQuery));
+        trycatch.addCorpo(ret3.getDeclaração(stmt.call("executeUpdate") + "> 0 "));
+        If cond = new If("!(" + ret1.getReferencia() + " && " + ret2.getReferencia() + " && " + ret3.getReferencia() + ")");
+        trycatch.addCorpo(cond.toString());
+
         construtor.addCorpo(trycatch.toString());
         setConstrutorPrincipal(construtor);
         addConstrutor(construtor);
@@ -83,25 +112,7 @@ public class Dao extends Classe {
         Variavel stmt = new Variavel("PreparedStatement", "stmt");
         stmt.setClasse(this);
 
-        String updateQuery = "UPDATE "
-                + modelo.getNome().toLowerCase() + " SET ";
-        int c = 1;
-        for (Atributo atr : modelo.getAtributos()) {
-            if (atr == chave) {
-                continue;
-            }
-
-            if (c == 2) {
-                updateQuery += ", ";
-                c = 1;
-            }
-
-            updateQuery += atr.getNome().toLowerCase() + "=?";
-
-            c++;
-        }
-
-        updateQuery += " WHERE " + chave.getNome().toLowerCase() + "=?";
+        String updateQuery = database.getUpdateQuery();
 
         String executeUpdateQuery = conexão.call("prepareStatement", "\"" + updateQuery + "\"");
         métodoUpdate.addCorpo(stmt.getDeclaração(executeUpdateQuery));
@@ -192,9 +203,7 @@ public class Dao extends Classe {
         Variavel stmt = new Variavel("PreparedStatement", "stmt");
         stmt.setClasse(this);
 
-        String removeQuery = "DELETE  FROM "
-                + modelo.getNome().toLowerCase() + " WHERE "
-                + chave.getNome().toLowerCase() + "=?";
+        String removeQuery = database.getDeleteQuery();
 
         String executeRemoveQuery = conexão.call("prepareStatement", "\"" + removeQuery + "\"");
         métodoRemove.addCorpo(stmt.getDeclaração(executeRemoveQuery));
@@ -252,34 +261,7 @@ public class Dao extends Classe {
         Variavel stmt = new Variavel("PreparedStatement", "stmt");
         stmt.setClasse(this);
 
-        String addQuery = "INSERT INTO "
-                + modelo.getNome().toLowerCase() + "(";
-        int c = 1;
-        for (Atributo atr : modelo.getAtributos()) {
-
-            if (c == 2) {
-                addQuery += ", ";
-                c = 1;
-            }
-
-            addQuery += atr.getNome().toLowerCase();
-
-            c++;
-        }
-
-        addQuery += ") VALUES (";
-        int qtde = modelo.getAtributos().size();
-        int contador = 1;
-        for (int i = 0; i < qtde; i++) {
-            if (contador == 2) {
-                addQuery += ",";
-                contador = 1;
-            }
-            contador++;
-            addQuery += "?";
-        }
-
-        addQuery += ")";
+        String addQuery = database.getInsertQuery();
 
         String executeInsertQuery = conexão.call("prepareStatement", "\"" + addQuery + "\"");
         métodoAdd.addCorpo(stmt.getDeclaração(executeInsertQuery));
@@ -308,7 +290,8 @@ public class Dao extends Classe {
                 Variavel var = new Variavel("Calendar", "tmp" + pos);
                 var.setClasse(this);
                 métodoAdd.addCorpo(var.getDeclaração(argumento));
-                argumento = getClasse("Date").getInstancia(var.call("getTimeInMillis")).getInstancia();
+                argumento = getClasse("Date").getInstancia(
+                        var.call("getTimeInMillis")).getInstancia();
             }
 
             métodoAdd.addCorpo(stmt.call(metodo, pos + "", argumento));
@@ -334,7 +317,7 @@ public class Dao extends Classe {
             return;
         }
 
-        Método método = new Método("public", "List<" + modelo.getNome() + ">", "searchBy" + camelCase(nomeAtributo));
+        Método método = new Método("public", "List<" + modelo.getNome() + ">", "searchBy" + upperCase(nomeAtributo));
         Parametro param = new Parametro(atributo.getTipo(), nomeAtributo.toLowerCase());
         método.addParametro(param);
         param.setClasse(this);
@@ -344,8 +327,14 @@ public class Dao extends Classe {
         lista.setClasse(this);
         Variavel stmt = new Variavel("PreparedStatement", "stmt");
         stmt.setClasse(this);
-        String searchQuery = "SELECT * FROM "
-                + modelo.getNome().toLowerCase() + " WHERE " + nomeAtributo + "=?";
+        boolean added = database.addSelectQuery(nomeAtributo);
+        assert added == true;
+
+        if (!added) {
+            System.err.println("addMétodoPesquisa: não foi possível adicionar query de pesquisa !");
+        }
+
+        String searchQuery = database.getSelectQuery(nomeAtributo);
 
         String executeSearchQuery = conexão.call("prepareStatement", "\"" + searchQuery + "\"");
         método.addCorpo(lista.getDeclaração(lista.instancia().getInstancia()));
@@ -369,7 +358,8 @@ public class Dao extends Classe {
             Variavel var = new Variavel("Calendar", "tmp" + pos);
             var.setClasse(this);
             método.addCorpo(var.getDeclaração(argumento));
-            argumento = getClasse("Date").getInstancia(var.call("getTimeInMillis")).getInstancia();
+            argumento = getClasse("Date").getInstancia(
+                    var.call("getTimeInMillis")).getInstancia();
         }
 
         método.addCorpo(stmt.call(metodo, pos + "", argumento));
@@ -398,8 +388,6 @@ public class Dao extends Classe {
                         data.getDeclaração(
                                 getClasse("Calendar").
                                         callStatic("getInstance")));
-
-                Método getter = modelo.getGetter(atr.getNome());
 
                 wh.addCorpo(data.call("setTime", tmp));
                 arg = data.getReferencia();

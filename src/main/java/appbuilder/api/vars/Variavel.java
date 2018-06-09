@@ -8,6 +8,8 @@ package appbuilder.api.vars;
 import appbuilder.api.classes.Classe;
 import appbuilder.util.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Deve ficar subentendido que essa variável é local
@@ -203,8 +205,29 @@ public class Variavel {
      * @return objeto da instância da classe ou tipo da variável
      */
     public Objeto instancia(String... args) {
+        Classe cl = this.classe.getClasse(getTipo());
 
-        return this.classe.getClasse(getTipo()).getInstancia(args);
+        if (cl == null) {
+            String nomeCompleto = getTipo();
+            String[] dividido = nomeCompleto.split("\\.");
+            String nome = dividido[dividido.length - 1];
+            String pacoteCompleto = nomeCompleto.substring(0, nomeCompleto.lastIndexOf("."));
+            String pacote = pacoteCompleto.substring(pacoteCompleto.lastIndexOf(".") + 1);
+            String acimaDoPacote = pacoteCompleto.substring(0, pacoteCompleto.lastIndexOf("."));
+            try {
+                cl = Classe.addClasse(nome, pacote, acimaDoPacote);
+                if (cl != null) {
+                    this.classe.addImportação(getTipo());
+                }
+
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Variavel.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Problema ao adicionar classe " + getTipo());
+            }
+            return Classe.get(getTipo(), args);
+        }
+
+        return cl.getInstancia(args);
     }
 
     public Classe getClasse() {
@@ -251,6 +274,19 @@ public class Variavel {
         }
 
         codigo = obj.get(atr);
+        return getReferencia() + codigo;
+    }
+
+    public String set(String atr, String valor) {
+        Classe cl = this.classe.getClasse(getTipo());
+        Objeto obj = new Objeto(cl);
+        String codigo = "";
+
+        if (!cl.temAtributo(atr)) {
+            throw new RuntimeException("classe " + cl.getNome() + " não tem atributo " + atr);
+        }
+
+        codigo = obj.get(atr) + " = " + valor + ";\n";
         return getReferencia() + codigo;
     }
 
