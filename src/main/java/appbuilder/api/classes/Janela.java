@@ -28,6 +28,8 @@ public class Janela extends Classe {
     private Variavel panel = null;
     private Variavel gbcPanel = null;
 
+    private Atributo dao = null;
+
     static {
         try {
             Classe.addClasse("JFrame", "swing", "javax");
@@ -117,6 +119,14 @@ public class Janela extends Classe {
     public Janela(String nome, String pacote) {
         this(nome);
         this.pacote = new Pacote(pacote);
+    }
+
+    public void addDao(Dao dao) {
+        addImportação(dao);
+        Construtor cprincipal = getConstrutorPrincipal();
+        this.dao = new Atributo("private", dao.getNome(), "dao");
+        this.dao.ativarInicialização(dao.getInstancia().getInstancia());
+        addAtributo(this.dao);
     }
 
     /**

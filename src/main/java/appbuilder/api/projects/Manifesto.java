@@ -24,7 +24,7 @@ public class Manifesto {
     private List<String> classPath = new ArrayList<String>();
 
     public Manifesto() {
-        classPath.add("libs/*.jar");
+        classPath.add("libs/mysql-connector-java-5.1.46.jar");
     }
 
     public void write(String caminho) throws IOException {

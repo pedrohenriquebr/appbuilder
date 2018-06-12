@@ -671,6 +671,8 @@ public class BuildingMenu extends javax.swing.JFrame {
         obj.setClasse(principal);
         main.addCorpo(obj.getDeclaração(obj.instancia().getInstancia()));
         main.addCorpo(obj.call("setVisible", "true"));
+        
+        principal.addDao(dao);
 
         List<Classe> classes = new ArrayList<>();
         classes.add(principal);
