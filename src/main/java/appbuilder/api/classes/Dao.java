@@ -82,10 +82,7 @@ public class Dao extends Classe {
         trycatch.addCorpo(ret2.getDeclaração(stmt.call("executeUpdate") + "> 0 "));
         trycatch.addCorpo(stmt.getInicialização(executeCreateTableQuery));
         trycatch.addCorpo(ret3.getDeclaração(stmt.call("executeUpdate") + "> 0 "));
-        If cond = new If("!(" + ret1.getReferencia() + " && " + ret2.getReferencia() + " && " + ret3.getReferencia() + ")");
         
-        trycatch.addCorpo(cond.toString());
-
         construtor.addCorpo(trycatch.toString());
         setConstrutorPrincipal(construtor);
         addConstrutor(construtor);
