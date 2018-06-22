@@ -85,6 +85,8 @@ public class Testes implements Filter {
 
         System.out.println(dao);
         System.exit(0);
+        
+        //eu sou pedro
 
         //Cria o manifesto
         List<File> codigoFonte = null;
