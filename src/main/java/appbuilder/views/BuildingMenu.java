@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appbuilder.menus;
+package appbuilder.views;
 
 import appbuilder.api.classes.Classe;
 import appbuilder.api.classes.ConnectionFactory;
@@ -13,8 +13,8 @@ import appbuilder.api.classes.Modelo;
 import appbuilder.api.database.BaseDeDados;
 import appbuilder.api.methods.Método;
 import appbuilder.api.packages.Pacote;
-import appbuilder.api.projects.Manifesto;
-import appbuilder.api.projects.Projeto;
+import appbuilder.models.Manifesto;
+import appbuilder.models.Projeto;
 import appbuilder.api.vars.Atributo;
 import appbuilder.api.vars.Variavel;
 import appbuilder.util.ClassBuilder;

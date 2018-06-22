@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appbuilder.main;
+package appbuilder.index;
 
 import appbuilder.api.classes.Classe;
 import appbuilder.api.classes.ConnectionFactory;
@@ -17,11 +17,11 @@ import appbuilder.api.database.MyConnectionFactory;
 import appbuilder.api.methods.Método;
 import appbuilder.api.methods.Parametro;
 import appbuilder.api.packages.Pacote;
-import appbuilder.api.projects.Manifesto;
-import appbuilder.api.projects.Projeto;
+import appbuilder.models.Manifesto;
+import appbuilder.models.Projeto;
 import appbuilder.api.vars.Atributo;
 import appbuilder.api.vars.Variavel;
-import appbuilder.menus.BuildingMenu;
+import appbuilder.views.BuildingMenu;
 import appbuilder.util.ClassBuilder;
 import java.awt.EventQueue;
 import java.io.File;

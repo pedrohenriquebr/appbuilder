@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appbuilder.main;
+package appbuilder.index;
 
 import java.io.IOException;
 
@@ -11,11 +11,11 @@ import appbuilder.api.annotations.Anotação;
 import appbuilder.api.classes.*;
 import appbuilder.api.classes.exceptions.*;
 import appbuilder.api.methods.Método;
-import appbuilder.api.projects.Manifesto;
+import appbuilder.models.Manifesto;
 import appbuilder.api.templates.Template;
 import appbuilder.api.vars.Atributo;
 import appbuilder.api.vars.Variavel;
-import appbuilder.menus.MainMenu;
+import appbuilder.views.MainMenu;
 import appbuilder.util.ClassBuilder;
 import java.awt.Button;
 import java.io.File;

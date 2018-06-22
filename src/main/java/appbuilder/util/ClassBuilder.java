@@ -6,7 +6,7 @@ package appbuilder.util;
  * and open the template in the editor.
  */
 import appbuilder.api.classes.Classe;
-import appbuilder.api.projects.Manifesto;
+import appbuilder.models.Manifesto;
 import java.io.*;
 import java.util.*;
 

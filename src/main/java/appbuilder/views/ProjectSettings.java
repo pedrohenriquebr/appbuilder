@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appbuilder.menus;
+package appbuilder.views;
 
-import appbuilder.api.projects.*;
+import appbuilder.models.Projeto;
 
 /**
  *

@@ -26,8 +26,8 @@ import appbuilder.api.vars.Atributo;
  * and open the template in the editor.
  */
 import appbuilder.api.vars.Objeto;
-import appbuilder.main.AppBuilder;
-import appbuilder.main.Testes;
+import appbuilder.index.AppBuilder;
+import appbuilder.index.Testes;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;

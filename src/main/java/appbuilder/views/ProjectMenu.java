@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package appbuilder.menus;
+package appbuilder.views;
 
 import appbuilder.api.packages.Pacote;
-import appbuilder.api.projects.Projeto;
+import appbuilder.models.Projeto;
 import java.awt.Component;
 import javax.swing.*;
 
