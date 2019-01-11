@@ -588,6 +588,7 @@ public class BuildingMenu extends javax.swing.JFrame {
         Pacote pacotePrincipal = proj.getPacotePrincipal();
         Pacote pacoteDeModelos = new Pacote("models", pacotePrincipal.getCaminho());
         Pacote pacoteMain = new Pacote("main", pacotePrincipal.getCaminho());
+        Pacote pacoteControladores = new Pacote("controllers", pacotePrincipal.getCaminho());
         Pacote pacoteDao = new Pacote("dao", pacotePrincipal.getCaminho());
 
         Modelo modelo = new Modelo(txtNomeModelo.getText(), pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
@@ -612,7 +613,7 @@ public class BuildingMenu extends javax.swing.JFrame {
         //adiciona campos de entrada na Janela principal
         int atributosAdicionados = 0;
         for (Atributo atributo : this.atributos) {
-            
+
             boolean retorno = modelo.addAtributo(atributo.getTipo(), atributo.getNome());
             //se adicionou com sucesso, então incrementa o contador
             if (retorno) {
@@ -629,7 +630,7 @@ public class BuildingMenu extends javax.swing.JFrame {
         assert atributosAdicionados == this.atributos.size() :
                 "Quantidade de atributos adicionados ao modelo é diferente "
                 + "dos solicitados!";
-        
+
         //após a confirmação dos atributos terem sidos adicionados
         //criar um JLabel e JTextField para cada atributo do modelo
         principal.loadModelo(modelo);
@@ -655,8 +656,7 @@ public class BuildingMenu extends javax.swing.JFrame {
                 dao.addMétodoPesquisa(atributo.getNome());
             }
         }
-        
-        
+
         //agora que todas as outras classes estiverem prontas, eu posso criar
         //o método main
         //Constroi a classe Principal
@@ -671,7 +671,7 @@ public class BuildingMenu extends javax.swing.JFrame {
         obj.setClasse(principal);
         main.addCorpo(obj.getDeclaração(obj.instancia().getInstancia()));
         main.addCorpo(obj.call("setVisible", "true"));
-        
+
         principal.addDao(dao);
 
         List<Classe> classes = new ArrayList<>();

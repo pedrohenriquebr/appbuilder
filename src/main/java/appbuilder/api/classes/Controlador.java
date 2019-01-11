@@ -11,13 +11,17 @@ import appbuilder.api.vars.Atributo;
  *
  * @author psilva
  */
-public class Controlador extends Classe{
+public class Controlador extends Classe {
+
+    private Atributo daoVar;
     
-    private Atributo dao;
     public Controlador(Dao dao, Modelo modelo) {
-        super(modelo.getNome()+"Controller");
-        
-        
+        super(modelo.getNome() + "Controller");
+
+        addImportação(dao);
+
+        this.daoVar = new Atributo("private", dao.getNome(), "dao");
+        addAtributo(this.daoVar);
     }
-    
+
 }
