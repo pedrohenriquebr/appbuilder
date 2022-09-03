@@ -5,9 +5,6 @@
  */
 package appbuilder.api.templates;
 
-import appbuilder.api.classes.Classe;
-import java.util.*;
-
 /**
  *
  * @author psilva

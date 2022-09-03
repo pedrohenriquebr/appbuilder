@@ -13,7 +13,7 @@ import java.sql.SQLException;
  *
  * @author psilva
  */
-public class MyConnectionFactory {
+public class ConnectionBuilder {
 
     private static String user = "root";
     private static String password = "root";

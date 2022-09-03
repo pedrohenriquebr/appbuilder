@@ -5,32 +5,29 @@
  */
 package appbuilder.api.vars;
 
-import appbuilder.api.classes.Classe;
-import appbuilder.api.methods.*;
-import appbuilder.api.vars.*;
-import java.util.*;
+import appbuilder.api.classes.ClassBuilder;
 
 /**
  * Define a classe Objeto como se fosse uma variável local
  *
  * @author psilva
  */
-public class Objeto {
+public class ObjectBuilder {
 
-    private Classe classe;
+    private ClassBuilder classBuilder;
     private String instancia;
 
-    public Objeto(Classe classe) {
-        setClasse(classe);
+    public ObjectBuilder(ClassBuilder classBuilder) {
+        setClasse(classBuilder);
         instancia = "";
     }
 
-    public void setClasse(Classe classe) {
-        this.classe = classe;
+    public void setClasse(ClassBuilder classBuilder) {
+        this.classBuilder = classBuilder;
     }
 
-    public Classe getClasse() {
-        return this.classe;
+    public ClassBuilder getClasse() {
+        return this.classBuilder;
     }
 
     /**
@@ -42,17 +39,17 @@ public class Objeto {
      */
     public String call(String nome, String... args) {
 
-        if (classe.getSuperClasse() != null) {
-            if (!classe.getSuperClasse().temMétodo(nome) && !classe.temMétodo(nome)) {
-                throw new RuntimeException("classe " + classe.getNome() + " não tem método " + nome);
+        if (classBuilder.getSuperClasse() != null) {
+            if (!classBuilder.getSuperClasse().hasMethod(nome) && !classBuilder.hasMethod(nome)) {
+                throw new RuntimeException("classe " + classBuilder.getName() + " não tem método " + nome);
             }
         } else {
-            if (!classe.temMétodo(nome)) {
-                throw new RuntimeException("classe " + classe.getNome() + " não tem método " + nome);
+            if (!classBuilder.hasMethod(nome)) {
+                throw new RuntimeException("classe " + classBuilder.getName() + " não tem método " + nome);
             }
         }
 
-        return "." + classe.getMétodo(nome).getChamada(args);
+        return "." + classBuilder.getMethodBuilder(nome).getCall(args);
     }
 
     /**
@@ -62,7 +59,7 @@ public class Objeto {
      * @return
      */
     public String get(String nome) {
-        return "." + classe.getAtributo(nome).getNome();
+        return "." + classBuilder.getAttribute(nome).getName();
     }
 
     /**
@@ -73,10 +70,10 @@ public class Objeto {
     public void setInstancia(String... args) {
         String codigo = "";
 
-        if (classe.isUsaGenerics()) {
-            codigo += "new " + classe.getNome() + "<>(";
+        if (classBuilder.isHasGenerics()) {
+            codigo += "new " + classBuilder.getName() + "<>(";
         } else {
-            codigo += "new " + classe.getNome() + "(";
+            codigo += "new " + classBuilder.getName() + "(";
 
         }
 
@@ -101,11 +98,11 @@ public class Objeto {
     }
 
     public String getTipo() {
-        return this.classe.getNome();
+        return this.classBuilder.getName();
     }
 
-    public static Objeto instancia(String nome, String... args) {
-        return Classe.get(nome, args);
+    public static ObjectBuilder instancia(String nome, String... args) {
+        return ClassBuilder.get(nome, args);
     }
 
     @Override

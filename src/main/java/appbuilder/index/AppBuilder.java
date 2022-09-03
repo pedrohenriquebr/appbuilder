@@ -7,28 +7,7 @@ package appbuilder.index;
 
 import java.io.IOException;
 
-import appbuilder.api.annotations.Anotação;
-import appbuilder.api.classes.*;
-import appbuilder.api.classes.exceptions.*;
-import appbuilder.api.methods.Método;
-import appbuilder.models.Manifesto;
-import appbuilder.api.templates.Template;
-import appbuilder.api.vars.Atributo;
-import appbuilder.api.vars.Variavel;
 import appbuilder.views.MainMenu;
-import appbuilder.util.ClassBuilder;
-import java.awt.Button;
-import java.io.File;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Filter;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 /**
  *

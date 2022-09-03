@@ -5,42 +5,39 @@
  */
 package appbuilder.api.classes;
 
-import appbuilder.api.methods.Método;
-import appbuilder.api.methods.Parametro;
-import appbuilder.api.packages.Pacote;
-import appbuilder.api.vars.Atributo;
-import appbuilder.api.vars.Objeto;
-import appbuilder.api.vars.Variavel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import appbuilder.api.methods.MethodBuilder;
+import appbuilder.api.methods.ParameterBuilder;
+import appbuilder.api.packages.PackageBuilder;
+import appbuilder.api.vars.AttributeBuilder;
+import appbuilder.api.vars.VarBuilder;
 
 /**
  *
  * @author aluno
  */
-public class Janela extends Classe {
+public class Janela extends ClassBuilder {
 
-    private Método initComponents;
-    private Variavel layout = null;
-    private Variavel container = null;
+    private MethodBuilder initComponents;
+    private VarBuilder layout = null;
+    private VarBuilder container = null;
     private String titulo = "JanelaPrincipal";
-    private Variavel gbc = null;
-    private Variavel panel = null;
-    private Variavel gbcPanel = null;
+    private VarBuilder gbc = null;
+    private VarBuilder panel = null;
+    private VarBuilder gbcPanel = null;
 
-    private Atributo dao = null;
+    private AttributeBuilder dao = null;
 
     static {
         try {
-            Classe.addClasse("JFrame", "swing", "javax");
-            Classe.addClasse("JButton", "swing", "javax");
-            Classe.addClasse("JLabel", "swing", "javax");
-            Classe.addClasse("JTextField", "swing", "javax");
-            Classe.addClasse("Insets", "awt", "java");
-            Classe.addClasse("JPanel", "swing", "javax");
-            Classe.addClasse("GridBagLayout", "awt", "java");
-            Classe.addClasse("GridBagConstraints", "awt", "java");
-            Classe.addClasse("Container", "awt", "java");
+            ClassBuilder.addClassBuilder("JFrame", "swing", "javax");
+            ClassBuilder.addClassBuilder("JButton", "swing", "javax");
+            ClassBuilder.addClassBuilder("JLabel", "swing", "javax");
+            ClassBuilder.addClassBuilder("JTextField", "swing", "javax");
+            ClassBuilder.addClassBuilder("Insets", "awt", "java");
+            ClassBuilder.addClassBuilder("JPanel", "swing", "javax");
+            ClassBuilder.addClassBuilder("GridBagLayout", "awt", "java");
+            ClassBuilder.addClassBuilder("GridBagConstraints", "awt", "java");
+            ClassBuilder.addClassBuilder("Container", "awt", "java");
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();;
         }
@@ -49,84 +46,84 @@ public class Janela extends Classe {
     public Janela(String nome) {
         super(nome);
         if (!nome.endsWith("JFrame")) {
-            setNome(nome + "JFrame");
+            setName(nome + "JFrame");
         }
 
-        addImportação("javax.swing.JFrame");
-        addImportação("javax.swing.JButton");
-        addImportação("javax.swing.JLabel");
-        addImportação("javax.swing.JTextField");
-        addImportação("java.awt.Insets");
-        addImportação("java.awt.GridBagLayout");
-        addImportação("java.awt.GridBagConstraints");
-        addImportação("java.awt.Container");
-        addImportação("javax.swing.JPanel");
+        addImport("javax.swing.JFrame");
+        addImport("javax.swing.JButton");
+        addImport("javax.swing.JLabel");
+        addImport("javax.swing.JTextField");
+        addImport("java.awt.Insets");
+        addImport("java.awt.GridBagLayout");
+        addImport("java.awt.GridBagConstraints");
+        addImport("java.awt.Container");
+        addImport("javax.swing.JPanel");
 
-        setSuperClasse("JFrame");
-        setConstrutorPrincipal(getConstrutores().get(0));
+        setSuperClass("JFrame");
+        setPrincipalConstructor(getConstructors().get(0));
         //só vou usar o primeiro construtor
-        for (Construtor c : getConstrutores()) {
-            if (!(c == getConstrutorPrincipal())) {
+        for (ConstructorBuilder c : getConstructors()) {
+            if (!(c == getPrincipalConstructor())) {
                 removeConstrutor(c);
             }
         }
 
         delegarConstrutores();
 
-        initComponents = new Método("public", "void", "initComponents");
-        addMétodo(this.initComponents);
+        initComponents = new MethodBuilder("public", "void", "initComponents");
+        addMethod(this.initComponents);
         //configurações gerais da janela 
-        initComponents.addCorpo(getMétodo("setDefaultCloseOperation")
-                .getChamada("javax.swing.WindowConstants.EXIT_ON_CLOSE"));
-        initComponents.addCorpo(getMétodo("setSize").getChamada("500", "400"));
-        container = new Variavel("Container", "container");
+        initComponents.addCorpo(getMethodBuilder("setDefaultCloseOperation")
+                .getCall("javax.swing.WindowConstants.EXIT_ON_CLOSE"));
+        initComponents.addCorpo(getMethodBuilder("setSize").getCall("500", "400"));
+        container = new VarBuilder("Container", "container");
         container.setClasse(this);
-        layout = new Variavel("GridBagLayout", "layout");
+        layout = new VarBuilder("GridBagLayout", "layout");
         layout.setClasse(this);
-        gbc = new Variavel("GridBagConstraints", "gbc");
+        gbc = new VarBuilder("GridBagConstraints", "gbc");
         gbc.setClasse(this);
-        panel = new Variavel("JPanel", "panel");
+        panel = new VarBuilder("JPanel", "panel");
         panel.setClasse(this);
-        gbcPanel = new Variavel("GridBagConstraints", "gbcPanel");
+        gbcPanel = new VarBuilder("GridBagConstraints", "gbcPanel");
         gbcPanel.setClasse(this);
 
-        initComponents.addCorpo(container.getDeclaração(getMétodo("getContentPane").getChamada()));
+        initComponents.addCorpo(container.getDeclaração(getMethodBuilder("getContentPane").getCall()));
         initComponents.addCorpo(layout.getDeclaração(layout.instancia().getInstancia()));
         initComponents.addCorpo(container.call("setLayout", layout.getReferencia()));
-        initComponents.addCorpo(getMétodo("setLocationRelativeTo").getChamada("null"));
-        initComponents.addCorpo(getMétodo("setTitle").getChamada("\"" + this.titulo + "\""));
+        initComponents.addCorpo(getMethodBuilder("setLocationRelativeTo").getCall("null"));
+        initComponents.addCorpo(getMethodBuilder("setTitle").getCall("\"" + this.titulo + "\""));
 
         initComponents.addCorpo(gbc.getDeclaração(gbc.instancia().getInstancia()));
-        initComponents.addCorpo(gbc.set("insets", Classe.get("java.awt.Insets", "5", "5", "5", "5").getInstancia()));
+        initComponents.addCorpo(gbc.set("insets", ClassBuilder.get("java.awt.Insets", "5", "5", "5", "5").getInstancia()));
         initComponents.addCorpo(gbc.set("gridx", "0"));
 
         initComponents.addCorpo(panel.getDeclaração(panel.instancia().getInstancia()));
         initComponents.addCorpo(gbcPanel.getDeclaração(gbcPanel.instancia().getInstancia()));
-        initComponents.addCorpo(panel.call("setLayout", Classe.get("java.awt.GridBagLayout").getInstancia()));
-        initComponents.addCorpo(gbcPanel.set("insets", Classe.get("java.awt.Insets", "5", "5", "5", "5").getInstancia()));
+        initComponents.addCorpo(panel.call("setLayout", ClassBuilder.get("java.awt.GridBagLayout").getInstancia()));
+        initComponents.addCorpo(gbcPanel.set("insets", ClassBuilder.get("java.awt.Insets", "5", "5", "5", "5").getInstancia()));
         initComponents.addCorpo(gbcPanel.set("anchor", "GridBagConstraints.CENTER"));
 
-        Construtor c = getConstrutorPrincipal();
-        c.addCorpo(initComponents.getChamada());
+        ConstructorBuilder c = getPrincipalConstructor();
+        c.addCorpo(initComponents.getCall());
 
     }
 
     public Janela(String nome, String pacote, String caminho) {
         this(nome);
-        this.pacote = new Pacote(pacote, caminho);
+        this.packageBuilder = new PackageBuilder(pacote, caminho);
     }
 
     public Janela(String nome, String pacote) {
         this(nome);
-        this.pacote = new Pacote(pacote);
+        this.packageBuilder = new PackageBuilder(pacote);
     }
 
-    public void addDao(Dao dao) {
-        addImportação(dao);
-        Construtor cprincipal = getConstrutorPrincipal();
-        this.dao = new Atributo("private", dao.getNome(), "dao");
+    public void addDao(DaoBuilder dao) {
+        addImport(dao);
+        ConstructorBuilder cprincipal = getPrincipalConstructor();
+        this.dao = new AttributeBuilder("private", dao.getName(), "dao");
         this.dao.ativarInicialização(dao.getInstancia().getInstancia());
-        addAtributo(this.dao);
+        addAttribute(this.dao);
     }
 
     /**
@@ -138,9 +135,9 @@ public class Janela extends Classe {
      * @param texto
      * @return
      */
-    public Atributo addComponent(String tipo, String nome, String texto) {
-        Atributo component = new Atributo(tipo, nome);
-        addAtributo(component);
+    public AttributeBuilder addComponent(String tipo, String nome, String texto) {
+        AttributeBuilder component = new AttributeBuilder(tipo, nome);
+        addAttribute(component);
         component.ativarInicialização(
                 component.instancia("\"" + texto + "\"").
                         getInstancia());
@@ -149,12 +146,12 @@ public class Janela extends Classe {
     }
 
     public void delegarConstrutores() {
-        for (Construtor construtor : super.getConstrutores()) {
+        for (ConstructorBuilder constructorBuilder : super.getConstructors()) {
             String codigo = "";
             // indica a posição do parâmetro
             int contador = 1;
 
-            for (Parametro param : construtor.getParametros()) {
+            for (ParameterBuilder param : constructorBuilder.getParameters()) {
                 // toda vez que chegar no próximo parâmetro, colocar uma vírgula
                 if (contador % 2 == 0) {
                     codigo += ",";
@@ -165,7 +162,7 @@ public class Janela extends Classe {
                 contador++;
             }
 
-            construtor.addCorpo("super(" + codigo + ")");
+            constructorBuilder.addCorpo("super(" + codigo + ")");
 
         }
     }
@@ -179,17 +176,17 @@ public class Janela extends Classe {
     }
 
     public void addCampoEntrada(String nomeCampo) {
-        Atributo jlabel = addComponent("JLabel", "lb" + upperCase(nomeCampo), upperCase(nomeCampo) + ":");
-        Atributo jtext = addComponent("JTextField", "txt" + upperCase(nomeCampo), "");
+        AttributeBuilder jlabel = addComponent("JLabel", "lb" + upperCase(nomeCampo), upperCase(nomeCampo) + ":");
+        AttributeBuilder jtext = addComponent("JTextField", "txt" + upperCase(nomeCampo), "");
 
-        Variavel tmpPanel = new Variavel("JPanel", "tmpPanel" + getAtributos().size());
-        Variavel tmpGbc = new Variavel("GridBagConstraints", "tmpGbc" + getAtributos().size());
+        VarBuilder tmpPanel = new VarBuilder("JPanel", "tmpPanel" + getAttributes().size());
+        VarBuilder tmpGbc = new VarBuilder("GridBagConstraints", "tmpGbc" + getAttributes().size());
 
         tmpPanel.setClasse(this);
         tmpGbc.setClasse(this);
         initComponents.addCorpo(tmpPanel.getDeclaração(tmpPanel.instancia().getInstancia()));
         initComponents.addCorpo(tmpGbc.getDeclaração(tmpGbc.instancia().getInstancia()));
-        initComponents.addCorpo(tmpPanel.call("setLayout", Classe.get("java.awt.GridBagLayout").getInstancia()));
+        initComponents.addCorpo(tmpPanel.call("setLayout", ClassBuilder.get("java.awt.GridBagLayout").getInstancia()));
         initComponents.addCorpo(tmpGbc.set("anchor", "GridBagConstraints.WEST"));
         initComponents.addCorpo(tmpGbc.set("gridx", "0"));
         initComponents.addCorpo(tmpPanel.call("add", jlabel.getReferencia(), tmpGbc.getReferencia()));
@@ -201,10 +198,10 @@ public class Janela extends Classe {
     }
 
     public void loadButtons() {
-        Atributo btnAdd = addComponent("JButton", "btnAdd", "Adicionar");
-        Atributo btnUpdate = addComponent("JButton", "btnUpdate", "Atualizar");
-        Atributo btnDelete = addComponent("JButton", "btnDelete", "Deletar");
-        Atributo btnSearch = addComponent("JButton", "btnSearch", "Pesquisar");
+        AttributeBuilder btnAdd = addComponent("JButton", "btnAdd", "Adicionar");
+        AttributeBuilder btnUpdate = addComponent("JButton", "btnUpdate", "Atualizar");
+        AttributeBuilder btnDelete = addComponent("JButton", "btnDelete", "Deletar");
+        AttributeBuilder btnSearch = addComponent("JButton", "btnSearch", "Pesquisar");
         initComponents.addCorpo(gbcPanel.set("gridx", "0"));
         initComponents.addCorpo(panel.call("add", btnAdd.getReferencia(), gbcPanel.getReferencia()));
         initComponents.addCorpo(gbcPanel.set("gridx", "1"));
@@ -216,13 +213,13 @@ public class Janela extends Classe {
         initComponents.addCorpo(container.call("add", panel.getReferencia(), gbc.getReferencia()));
     }
 
-    public void loadModelo(Modelo modelo) {
-        for (Atributo atr : modelo.getAtributos()) {
-            addCampoEntrada(atr.getNome());
+    public void loadModelo(ModelBuilder modelBuilder) {
+        for (AttributeBuilder atr : modelBuilder.getAttributes()) {
+            addCampoEntrada(atr.getName());
         }
 
         loadButtons();
-        initComponents.addCorpo(getMétodo("pack").getChamada());
+        initComponents.addCorpo(getMethodBuilder("pack").getCall());
     }
 
 }

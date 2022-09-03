@@ -5,7 +5,7 @@
  */
 package appbuilder.api.classes;
 
-import appbuilder.api.methods.Método;
+import appbuilder.api.methods.MethodBuilder;
 
 /**
  *
@@ -28,7 +28,7 @@ public class While {
     }
     
     public void addCorpo(String corpo ){
-        this.corpo += Método.formatar(corpo);
+        this.corpo += MethodBuilder.formatCode(corpo);
     }
 
     public String getCorpo() {
@@ -36,7 +36,7 @@ public class While {
     }
 
     public void setCorpo(String corpo) {
-        this.corpo = Método.formatar(corpo);
+        this.corpo = MethodBuilder.formatCode(corpo);
     }
     
     

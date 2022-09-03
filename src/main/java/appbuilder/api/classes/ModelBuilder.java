@@ -5,8 +5,8 @@
  */
 package appbuilder.api.classes;
 
-import appbuilder.api.methods.Método;
-import appbuilder.api.vars.Atributo;
+import appbuilder.api.methods.MethodBuilder;
+import appbuilder.api.vars.AttributeBuilder;
 
 /**
  *
@@ -17,27 +17,27 @@ import appbuilder.api.vars.Atributo;
  *
  * @author psilva
  */
-public class Modelo extends Classe {
+public class ModelBuilder extends ClassBuilder {
 
-    private Atributo chave;
+    private AttributeBuilder chave;
     
-    public Modelo(String nome) {
+    public ModelBuilder(String nome) {
         super(nome);
     }
 
-    public Modelo(String nome, String pacote) {
+    public ModelBuilder(String nome, String pacote) {
         super(nome, pacote);
     }
 
-    public Modelo(String nome, String pacote, String caminho) {
+    public ModelBuilder(String nome, String pacote, String caminho) {
         super(nome, pacote, caminho);
     }
 
-    public void setChave(String nome) {
-        chave = getAtributo(nome);
+    public void setKey(String nome) {
+        chave = getAttribute(nome);
     }
 
-    public Atributo getChave() {
+    public AttributeBuilder getChave() {
         return this.chave;
     }
 
@@ -54,8 +54,8 @@ public class Modelo extends Classe {
             return false;
         }
 
-        Atributo atr = new Atributo("private", tipo, nome);
-        boolean b = super.addAtributo(atr);
+        AttributeBuilder atr = new AttributeBuilder("private", tipo, nome);
+        boolean b = super.addAttribute(atr);
 
         if (b) {
 
@@ -200,32 +200,32 @@ public class Modelo extends Classe {
      * @return
      */
     public boolean addConstrutorPara(String... atributos) {
-        Construtor construtor = new Construtor("public", getNome());
+        ConstructorBuilder constructorBuilder = new ConstructorBuilder("public", getName());
         /**
          * Para cada nome de atributo passado, eu pego o objeto Atributo
          * associado a ele. Em seguida, pego um setter associado ao atributo e
          * coloco dentro o corpo do construtor
          */
         for (String atr : atributos) {
-            Atributo at = getAtributo(atr);
-            construtor.addParametro(at.getTipo(), at.getNome());
-            Método setter = getSetter(atr);
+            AttributeBuilder at = getAttribute(atr);
+            constructorBuilder.addParameters(at.getTipo(), at.getName());
+            MethodBuilder setter = getSetter(atr);
 
-            construtor.addCorpo(setter.getChamada(atr));
+            constructorBuilder.addCorpo(setter.getCall(atr));
         }
 
-        return super.addConstrutor(construtor);
+        return super.addConstrutor(constructorBuilder);
     }
 
-    public static Modelo addModelo(Modelo modelo) {
-        return (Modelo) Classe.addClasse(modelo);
+    public static ModelBuilder addModelo(ModelBuilder modelBuilder) {
+        return (ModelBuilder) ClassBuilder.addClassBuilder(modelBuilder);
     }
 
-    public static Modelo getModelo(String nome) {
-        Classe c = Classe.getClasseEstática(nome);
+    public static ModelBuilder getModelo(String nome) {
+        ClassBuilder c = ClassBuilder.getStaticCall(nome);
 
-        if (c instanceof Modelo) {
-            return (Modelo) c;
+        if (c instanceof ModelBuilder) {
+            return (ModelBuilder) c;
         } else {
             return null;
         }

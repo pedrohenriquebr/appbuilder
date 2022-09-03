@@ -5,24 +5,23 @@
  */
 package appbuilder.api.classes.exceptions;
 
-import appbuilder.api.classes.Classe;
-import appbuilder.api.classes.Exceção;
-import appbuilder.api.vars.Objeto;
-import appbuilder.api.vars.Variavel;
+import appbuilder.api.classes.ClassBuilder;
+import appbuilder.api.classes.ExceptionBuilder;
+import appbuilder.api.vars.VarBuilder;
 import java.util.*;
 
 /**
  *
  * @author psilva
  */
-public class TratamentoDeExceção {
+public class ExceptionTreatmentBuilder {
 
-    private List<Exceção> exceções = new ArrayList<>();
+    private List<ExceptionBuilder> exceptions = new ArrayList<ExceptionBuilder>();
     private String corpo = "";
-    private Classe classe;
+    private ClassBuilder classBuilder;
 
-    public TratamentoDeExceção(Classe classe) {
-        this.classe = classe;
+    public ExceptionTreatmentBuilder(ClassBuilder classBuilder) {
+        this.classBuilder = classBuilder;
     }
 
     public void addCorpo(String codigo) {
@@ -38,9 +37,9 @@ public class TratamentoDeExceção {
     }
 
     public boolean addExceção(String nome) {
-        Classe cl = Classe.getClasseEstática(classe.getNomeCompleto(nome));
-        if (cl instanceof Exceção) {
-            return exceções.add((Exceção) cl);
+        ClassBuilder cl = ClassBuilder.getStaticCall(classBuilder.getNomeCompleto(nome));
+        if (cl instanceof ExceptionBuilder) {
+            return exceptions.add((ExceptionBuilder) cl);
         }
         return false;
     }
@@ -54,10 +53,10 @@ public class TratamentoDeExceção {
 
         codigo += "\n\t}";
 
-        for (Exceção e : exceções) {
-            Variavel var = new Variavel(e.getNome(), "exp");
-            var.setClasse(this.classe);
-            codigo += "catch(" + var.getTipo() + " " + var.getNome() + "){\n\n";
+        for (ExceptionBuilder e : exceptions) {
+            VarBuilder var = new VarBuilder(e.getName(), "exp");
+            var.setClasse(this.classBuilder);
+            codigo += "catch(" + var.getTipo() + " " + var.getName() + "){\n\n";
             codigo += "\t" + var.call("printStackTrace") + ";";
 
             codigo += "\n}";

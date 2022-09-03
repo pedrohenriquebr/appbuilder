@@ -5,19 +5,19 @@
  */
 package appbuilder.api.classes;
 
-import appbuilder.api.vars.Variavel;
+import appbuilder.api.vars.VarBuilder;
 
 /**
  *
  * @author psilva
  */
-public class ForEach {
+public class ForEachBuilder {
 
     private String corpo= "" ;
-    private Variavel elemento;
-    private Variavel lista;
+    private VarBuilder elemento;
+    private VarBuilder lista;
 
-    public ForEach(Variavel elemento, Variavel lista) {
+    public ForEachBuilder(VarBuilder elemento, VarBuilder lista) {
         this.elemento = elemento;
         this.lista = lista;
     }
@@ -25,7 +25,7 @@ public class ForEach {
     public String toString() {
         String codigo = "";
 
-        codigo += "for(" + elemento.getTipo() + " " + elemento.getNome();
+        codigo += "for(" + elemento.getTipo() + " " + elemento.getName();
         codigo += " : " + lista.getReferencia() + "){\n";
 
         codigo += corpo;
@@ -41,19 +41,19 @@ public class ForEach {
         this.corpo = corpo;
     }
 
-    public Variavel getElemento() {
+    public VarBuilder getElemento() {
         return elemento;
     }
 
-    public void setElemento(Variavel elemento) {
+    public void setElemento(VarBuilder elemento) {
         this.elemento = elemento;
     }
 
-    public Variavel getLista() {
+    public VarBuilder getLista() {
         return lista;
     }
 
-    public void setLista(Variavel lista) {
+    public void setLista(VarBuilder lista) {
         this.lista = lista;
     }
     

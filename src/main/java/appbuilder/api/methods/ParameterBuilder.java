@@ -1,6 +1,6 @@
 package appbuilder.api.methods;
 
-import appbuilder.api.vars.Variavel;
+import appbuilder.api.vars.VarBuilder;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -11,9 +11,9 @@ import appbuilder.api.vars.Variavel;
  *
  * @author Pedro Henrique Braga da Silva
  */
-public class Parametro extends Variavel {
+public class ParameterBuilder extends VarBuilder {
 
-    public Parametro(String tipo, String nome) {
+    public ParameterBuilder(String tipo, String nome) {
         super(tipo, nome);
     }
 

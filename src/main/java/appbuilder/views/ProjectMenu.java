@@ -5,7 +5,7 @@
  */
 package appbuilder.views;
 
-import appbuilder.api.packages.Pacote;
+import appbuilder.api.packages.PackageBuilder;
 import appbuilder.models.Projeto;
 import java.awt.Component;
 import javax.swing.*;
@@ -240,7 +240,7 @@ public class ProjectMenu extends javax.swing.JFrame {
             proj.setSenha(new String(txtSenha.getPassword()).trim());
             proj.setServidor(txtServidor.getText().trim());
 
-            proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome().trim()));
+            proj.setPacotePrincipal(new PackageBuilder("br.com." + proj.getNome().trim()));
             new BuildingMenu(proj).setVisible(true);
             this.dispose();
         }

@@ -5,8 +5,8 @@ package appbuilder.api.vars;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import appbuilder.api.classes.Classe;
-import appbuilder.util.*;
+import appbuilder.api.classes.ClassBuilder;
+
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @author psilva
  */
-public class Variavel {
+public class VarBuilder {
 
     /**
      *
@@ -41,7 +41,7 @@ public class Variavel {
     /**
      * A classe em que a variável está sendo usada
      */
-    protected Classe classe;
+    protected ClassBuilder classBuilder;
 
     /**
      * Constrói a variável com seu atributos básicos, o mínimo para ter uma
@@ -50,7 +50,7 @@ public class Variavel {
      * @param tipo String, int, Integer, double, boolean, etc.
      * @param nome qualquer nome a princípio
      */
-    public Variavel(String tipo, String nome) {
+    public VarBuilder(String tipo, String nome) {
         this.nome = nome;
         this.tipo = tipo;
         this.valor = "null";
@@ -63,7 +63,7 @@ public class Variavel {
      * @param nome qualquer nome a princípio
      * @param valor autoexplicativo
      */
-    public Variavel(String tipo, String nome, String valor) {
+    public VarBuilder(String tipo, String nome, String valor) {
         this(tipo, nome);
         setValor(valor);
     }
@@ -77,7 +77,7 @@ public class Variavel {
      * @param nome autoexplicativo
      * @param valor autoexplicativo
      */
-    public Variavel(String modificador, String tipo, String nome, String valor) {
+    public VarBuilder(String modificador, String tipo, String nome, String valor) {
         this(tipo, nome, valor);
         addModificador(modificador);
     }
@@ -128,7 +128,7 @@ public class Variavel {
      *
      * @return
      */
-    public String getNome() {
+    public String getName() {
         return nome;
     }
 
@@ -204,8 +204,8 @@ public class Variavel {
      * @param args argumentos passados para o construtor
      * @return objeto da instância da classe ou tipo da variável
      */
-    public Objeto instancia(String... args) {
-        Classe cl = this.classe.getClasse(getTipo());
+    public ObjectBuilder instancia(String... args) {
+        ClassBuilder cl = this.classBuilder.getClasse(getTipo());
 
         if (cl == null) {
             String nomeCompleto = getTipo();
@@ -215,27 +215,27 @@ public class Variavel {
             String pacote = pacoteCompleto.substring(pacoteCompleto.lastIndexOf(".") + 1);
             String acimaDoPacote = pacoteCompleto.substring(0, pacoteCompleto.lastIndexOf("."));
             try {
-                cl = Classe.addClasse(nome, pacote, acimaDoPacote);
+                cl = ClassBuilder.addClassBuilder(nome, pacote, acimaDoPacote);
                 if (cl != null) {
-                    this.classe.addImportação(getTipo());
+                    this.classBuilder.addImport(getTipo());
                 }
 
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Variavel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(VarBuilder.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Problema ao adicionar classe " + getTipo());
             }
-            return Classe.get(getTipo(), args);
+            return ClassBuilder.get(getTipo(), args);
         }
 
         return cl.getInstancia(args);
     }
 
-    public Classe getClasse() {
-        return classe;
+    public ClassBuilder getClasse() {
+        return classBuilder;
     }
 
-    public void setClasse(Classe classe) {
-        this.classe = classe;
+    public void setClasse(ClassBuilder classBuilder) {
+        this.classBuilder = classBuilder;
     }
 
     /**
@@ -248,9 +248,9 @@ public class Variavel {
      */
     public String call(String método, String... args) {
         //no caso aqui é como se fosse acessar uma classe que foi importada
-        Classe cl = this.classe.getClasse(getTipo());
+        ClassBuilder cl = this.classBuilder.getClasse(getTipo());
         //instância dela 
-        Objeto obj = new Objeto(cl);
+        ObjectBuilder obj = new ObjectBuilder(cl);
         String codigo = "";
         codigo = obj.call(método, args);
 
@@ -265,12 +265,12 @@ public class Variavel {
      * @return
      */
     public String get(String atr) {
-        Classe cl = this.classe.getClasse(getTipo());
-        Objeto obj = new Objeto(cl);
+        ClassBuilder cl = this.classBuilder.getClasse(getTipo());
+        ObjectBuilder obj = new ObjectBuilder(cl);
         String codigo = "";
 
-        if (!cl.temAtributo(atr)) {
-            throw new RuntimeException("classe " + cl.getNome() + " não tem atributo " + atr);
+        if (!cl.hasAttribute(atr)) {
+            throw new RuntimeException("classe " + cl.getName() + " não tem atributo " + atr);
         }
 
         codigo = obj.get(atr);
@@ -278,12 +278,12 @@ public class Variavel {
     }
 
     public String set(String atr, String valor) {
-        Classe cl = this.classe.getClasse(getTipo());
-        Objeto obj = new Objeto(cl);
+        ClassBuilder cl = this.classBuilder.getClasse(getTipo());
+        ObjectBuilder obj = new ObjectBuilder(cl);
         String codigo = "";
 
-        if (!cl.temAtributo(atr)) {
-            throw new RuntimeException("classe " + cl.getNome() + " não tem atributo " + atr);
+        if (!cl.hasAttribute(atr)) {
+            throw new RuntimeException("classe " + cl.getName() + " não tem atributo " + atr);
         }
 
         codigo = obj.get(atr) + " = " + valor + ";\n";

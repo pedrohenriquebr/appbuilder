@@ -5,14 +5,13 @@
  */
 package appbuilder.api.templates;
 
-import appbuilder.api.classes.Modelo;
+import appbuilder.api.classes.ModelBuilder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Date;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.logging.Level;
@@ -35,7 +34,7 @@ public class Dao {
     }
     
     
-    public boolean adicionou(Modelo m) throws SQLException{
+    public boolean adicionou(ModelBuilder m) throws SQLException{
         PreparedStatement stmt = this.con.prepareCall("INSER INTO ");
         stmt.setDate(0, new Date((Calendar.getInstance().getTimeInMillis())));
         
@@ -43,13 +42,13 @@ public class Dao {
     }
     
     
-    public Modelo pesquisarPorNome(String nome) throws SQLException{
+    public ModelBuilder pesquisarPorNome(String nome) throws SQLException{
         PreparedStatement stmt = this.con.prepareStatement("SELECT * FROM tabela WHERE nome=?");
         stmt.setString(1,nome);
         Calendar c = Calendar.getInstance();
        
         ResultSet rs  = stmt.executeQuery();
-        ArrayList<Modelo> m = new ArrayList<>();
+        ArrayList<ModelBuilder> m = new ArrayList<>();
         while(rs.next()){
             String g = rs.getString("");
             

@@ -5,41 +5,32 @@
  */
 package appbuilder.views;
 
-import appbuilder.api.classes.Classe;
-import appbuilder.api.classes.ConnectionFactory;
-import appbuilder.api.classes.Dao;
-import appbuilder.api.classes.Janela;
-import appbuilder.api.classes.Modelo;
-import appbuilder.api.database.BaseDeDados;
-import appbuilder.api.methods.Método;
-import appbuilder.api.packages.Pacote;
+import appbuilder.api.classes.*;
+import appbuilder.api.classes.ClassBuilder;
+import appbuilder.api.database.DatabaseBuilder;
+import appbuilder.api.methods.MethodBuilder;
+import appbuilder.api.packages.PackageBuilder;
 import appbuilder.models.Manifesto;
 import appbuilder.models.Projeto;
-import appbuilder.api.vars.Atributo;
-import appbuilder.api.vars.Variavel;
-import appbuilder.util.ClassBuilder;
+import appbuilder.api.vars.AttributeBuilder;
+import appbuilder.api.vars.VarBuilder;
+
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 
 /**
  *
@@ -48,13 +39,13 @@ import javax.swing.ListModel;
 public class BuildingMenu extends javax.swing.JFrame {
 
     private Projeto proj;
-    private List<Atributo> atributos = new ArrayList<>();
-    private Atributo chave = null;
+    private List<AttributeBuilder> atributos = new ArrayList<>();
+    private AttributeBuilder chave = null;
     private boolean chaveDefinida = false;
-    private Map<Atributo, Boolean> mapa = new HashMap<Atributo, Boolean>();
+    private Map<AttributeBuilder, Boolean> mapa = new HashMap<AttributeBuilder, Boolean>();
     private DefaultListModel<String> lista = new DefaultListModel<>();
 
-    private ClassBuilder builder;
+    private appbuilder.util.ClassBuilder builder;
 
     private boolean selecionouAtributo = false;
     private int ultimoIndiceSelecionado = -1;
@@ -63,7 +54,7 @@ public class BuildingMenu extends javax.swing.JFrame {
     public BuildingMenu(Projeto proj) {
         initComponents();
         this.proj = proj;
-        builder = new ClassBuilder(proj.getCaminho());
+        builder = new appbuilder.util.ClassBuilder(proj.getCaminho());
 
         this.listAtributos.setModel(lista);
 
@@ -85,7 +76,7 @@ public class BuildingMenu extends javax.swing.JFrame {
      * @param atributo
      * @param filtrador
      */
-    public void adicionarAtributo(Atributo atributo, boolean filtrador) {
+    public void adicionarAtributo(AttributeBuilder atributo, boolean filtrador) {
 
         System.out.println("adicionando atributo : " + atributo.getDeclaração());
         atributos.add(atributo);
@@ -95,12 +86,12 @@ public class BuildingMenu extends javax.swing.JFrame {
 
     public boolean carregarAtributo(int indice) {
 
-        Atributo atributo = atributos.get(indice);
+        AttributeBuilder atributo = atributos.get(indice);
         if (atributo == null) {
             return false;
         }
 
-        this.txtNomeAtributo.setText(atributo.getNome());
+        this.txtNomeAtributo.setText(atributo.getName());
 
         int i = 0;
         if (atributo.getTipo().equals("String")) {
@@ -164,7 +155,7 @@ public class BuildingMenu extends javax.swing.JFrame {
         return true;
     }
 
-    public void definirChave(Atributo atr) {
+    public void definirChave(AttributeBuilder atr) {
         this.chave = atr;
         chaveDefinida = true;
     }
@@ -421,7 +412,7 @@ public class BuildingMenu extends javax.swing.JFrame {
         String tipo = (String) comboTipos.getSelectedItem();
         boolean filtrador = checkFiltrador.isSelected();
 
-        Atributo atributo;
+        AttributeBuilder atributo;
         String tipoAtributo = "";
 
         if (tipo.equals("Texto")) {
@@ -434,7 +425,7 @@ public class BuildingMenu extends javax.swing.JFrame {
             tipoAtributo = "Calendar";
         }
 
-        atributo = new Atributo(tipoAtributo, nomeAtributo);
+        atributo = new AttributeBuilder(tipoAtributo, nomeAtributo);
 
         boolean podeSerChave = checkChave.isSelected() && !chaveDefinida;
         //só pode definir uma chave por modelo
@@ -506,7 +497,7 @@ public class BuildingMenu extends javax.swing.JFrame {
         }
 
         int indice = listAtributos.getSelectedIndex();
-        Atributo atributo = atributos.get(indice);
+        AttributeBuilder atributo = atributos.get(indice);
 
         String nome = txtNomeAtributo.getText().trim();
         String tipo = ((String) comboTipos.getSelectedItem()).trim();
@@ -557,7 +548,7 @@ public class BuildingMenu extends javax.swing.JFrame {
         // TODO addComponent your handling code here:
 
         int indice = listAtributos.getSelectedIndex();
-        Atributo atr = atributos.get(indice);
+        AttributeBuilder atr = atributos.get(indice);
 
         if (atr == chave) {
             resetarChave();
@@ -585,21 +576,21 @@ public class BuildingMenu extends javax.swing.JFrame {
         }
 
         //pacote do modelo terá o seguinte formato : br.com.<nome_do_projeto>.models
-        Pacote pacotePrincipal = proj.getPacotePrincipal();
-        Pacote pacoteDeModelos = new Pacote("models", pacotePrincipal.getCaminho());
-        Pacote pacoteMain = new Pacote("main", pacotePrincipal.getCaminho());
-        Pacote pacoteControladores = new Pacote("controllers", pacotePrincipal.getCaminho());
-        Pacote pacoteDao = new Pacote("dao", pacotePrincipal.getCaminho());
+        PackageBuilder packageBuilderPrincipal = proj.getPacotePrincipal();
+        PackageBuilder packageBuilderDeModelos = new PackageBuilder("models", packageBuilderPrincipal.getCaminho());
+        PackageBuilder packageBuilderMain = new PackageBuilder("main", packageBuilderPrincipal.getCaminho());
+        PackageBuilder packageBuilderControladores = new PackageBuilder("controllers", packageBuilderPrincipal.getCaminho());
+        PackageBuilder packageBuilderDao = new PackageBuilder("dao", packageBuilderPrincipal.getCaminho());
 
-        Modelo modelo = new Modelo(txtNomeModelo.getText(), pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
-        ConnectionFactory factory = new ConnectionFactory(pacoteDeModelos.getNome(), pacotePrincipal.getCaminho());
-        BaseDeDados database = null;
-        Classe.addClasse(modelo);
-        Janela principal = new Janela("Principal", pacoteMain.getNome(), proj.getPacotePrincipal().getCaminho());
-        principal.addImportação(modelo.getNomeCompleto());
-        Dao dao = null;
+        ModelBuilder modelBuilder = new ModelBuilder(txtNomeModelo.getText(), packageBuilderDeModelos.getNome(), packageBuilderPrincipal.getCaminho());
+        ConnectionFactory factory = new ConnectionFactory(packageBuilderDeModelos.getNome(), packageBuilderPrincipal.getCaminho());
+        DatabaseBuilder database = null;
+        ClassBuilder.addClassBuilder(modelBuilder);
+        Janela principal = new Janela("Principal", packageBuilderMain.getNome(), proj.getPacotePrincipal().getCaminho());
+        principal.addImport(modelBuilder.getNomeCompleto());
+        DaoBuilder dao = null;
 
-        modelo.addImportação("java.util.Calendar");
+        modelBuilder.addImport("java.util.Calendar");
 
         //Verifica se usa base de dados
         if (proj.isUsaBaseDeDados()) {
@@ -612,16 +603,16 @@ public class BuildingMenu extends javax.swing.JFrame {
         //adiciona os atributos ao modelo 
         //adiciona campos de entrada na Janela principal
         int atributosAdicionados = 0;
-        for (Atributo atributo : this.atributos) {
+        for (AttributeBuilder atributo : this.atributos) {
 
-            boolean retorno = modelo.addAtributo(atributo.getTipo(), atributo.getNome());
+            boolean retorno = modelBuilder.addAtributo(atributo.getTipo(), atributo.getName());
             //se adicionou com sucesso, então incrementa o contador
             if (retorno) {
                 atributosAdicionados++;
             }
 
             if (chave == atributo) {
-                modelo.setChave(atributo.getNome());
+                modelBuilder.setKey(atributo.getName());
             }
 
             System.out.println("encontrado atributo :" + atributo.getDeclaração() + ": " + (retorno == true ? "sucesso" : "falha"));
@@ -633,27 +624,27 @@ public class BuildingMenu extends javax.swing.JFrame {
 
         //após a confirmação dos atributos terem sidos adicionados
         //criar um JLabel e JTextField para cada atributo do modelo
-        principal.loadModelo(modelo);
+        principal.loadModelo(modelBuilder);
 
         //Metaclasse Dao e base de dados
         try {
-            database = new BaseDeDados(modelo, factory);
-            dao = new Dao(modelo, factory, database);
-            dao.setPacote(pacoteDao);
+            database = new DatabaseBuilder(modelBuilder, factory);
+            dao = new DaoBuilder(modelBuilder, factory, database);
+            dao.setPacote(packageBuilderDao);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Erro ao criar a metaclasse Dao!");
         }
 
         //pegar os atributos que têm filtrador setado
-        for (Atributo atributo : this.atributos) {
+        for (AttributeBuilder atributo : this.atributos) {
             Boolean filtrador = mapa.get(atributo);
             if (filtrador == null) {
                 continue;
             }
 
             if (filtrador.booleanValue() == true) {
-                dao.addMétodoPesquisa(atributo.getNome());
+                dao.addMétodoPesquisa(atributo.getName());
             }
         }
 
@@ -662,23 +653,23 @@ public class BuildingMenu extends javax.swing.JFrame {
         //Constroi a classe Principal
         principal.setPrincipal(true);
 
-        Método main = principal.getMain();
-        Variavel var = new Variavel(modelo.getNome(), "modelo");
+        MethodBuilder main = principal.getMain();
+        VarBuilder var = new VarBuilder(modelBuilder.getName(), "modelo");
 
         var.setClasse(principal);
         main.addCorpo(var.getDeclaração(var.instancia().getInstancia()));
-        Variavel obj = new Variavel(principal.getNome(), "janela");
+        VarBuilder obj = new VarBuilder(principal.getName(), "janela");
         obj.setClasse(principal);
         main.addCorpo(obj.getDeclaração(obj.instancia().getInstancia()));
         main.addCorpo(obj.call("setVisible", "true"));
 
         principal.addDao(dao);
 
-        List<Classe> classes = new ArrayList<>();
-        classes.add(principal);
-        classes.add(modelo);
-        classes.add(dao);
-        classes.add(factory);
+        List<ClassBuilder> aClasses = new ArrayList<>();
+        aClasses.add(principal);
+        aClasses.add(modelBuilder);
+        aClasses.add(dao);
+        aClasses.add(factory);
 
         //Cria o manifesto
         Manifesto manifesto = new Manifesto();
@@ -693,10 +684,10 @@ public class BuildingMenu extends javax.swing.JFrame {
             System.err.println("Erro ao escrever manifesto do projeto !");
         }
         //Constrói as classes
-        builder = new ClassBuilder(proj.getCaminho());
+        builder = new appbuilder.util.ClassBuilder(proj.getCaminho());
 
         try {
-            codigoFonte = builder.build(classes);
+            codigoFonte = builder.build(aClasses);
         } catch (IOException ex) {
             Logger.getLogger(BuildingMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Erro ao construir projeto !");
@@ -743,7 +734,7 @@ public class BuildingMenu extends javax.swing.JFrame {
             @Override
             public void run() {
                 Projeto proj = new Projeto(System.getProperty("user.home") + "/Documentos/meuProjeto", "MeuApp");
-                proj.setPacotePrincipal(new Pacote("br.com." + proj.getNome()));
+                proj.setPacotePrincipal(new PackageBuilder("br.com." + proj.getNome()));
                 new BuildingMenu(proj).setVisible(true);
             }
         });

@@ -19,10 +19,10 @@ public class Projeto {
     private boolean usaGui = false;
     private boolean usaBaseDeDados = false;
 
-    private Pacote pacotePrincipal;
-    private Modelo modelo;
+    private PackageBuilder packageBuilderPrincipal;
+    private ModelBuilder modelBuilder;
 
-    private Classe principal;
+    private ClassBuilder principal;
 
     //caso use base de dados
     private String usuario;
@@ -35,27 +35,27 @@ public class Projeto {
         this.nome = nome;
     }
 
-    public Pacote getPacotePrincipal() {
-        return pacotePrincipal;
+    public PackageBuilder getPacotePrincipal() {
+        return packageBuilderPrincipal;
     }
 
-    public void setPacotePrincipal(Pacote pacote) {
-        this.pacotePrincipal = pacote;
+    public void setPacotePrincipal(PackageBuilder packageBuilder) {
+        this.packageBuilderPrincipal = packageBuilder;
     }
 
-    public Modelo getModelo() {
-        return modelo;
+    public ModelBuilder getModelo() {
+        return modelBuilder;
     }
 
-    public void setModelo(Modelo modelo) {
-        this.modelo = modelo;
+    public void setModelo(ModelBuilder modelBuilder) {
+        this.modelBuilder = modelBuilder;
     }
 
-    public Classe getPrincipal() {
+    public ClassBuilder getPrincipal() {
         return principal;
     }
 
-    public void setPrincipal(Classe principal) {
+    public void setPrincipal(ClassBuilder principal) {
         this.principal = principal;
     }
 

@@ -1,6 +1,6 @@
 package appbuilder.api.classes;
 
-import appbuilder.api.methods.Método;
+import appbuilder.api.methods.MethodBuilder;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -11,10 +11,10 @@ import appbuilder.api.methods.Método;
  *
  * @author Pedro Henrique Braga da Silva
  */
-public class Construtor extends Método {
+public class ConstructorBuilder extends MethodBuilder {
 
-    public Construtor(String modAcesso, String nome) {
-        super(modAcesso, "", "", nome);
+    public ConstructorBuilder(String accessMod, String name) {
+        super(accessMod, "", "", name);
     }
 
 }

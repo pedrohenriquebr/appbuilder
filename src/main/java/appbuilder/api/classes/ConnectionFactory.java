@@ -5,34 +5,34 @@
  */
 package appbuilder.api.classes;
 
-import appbuilder.api.methods.Método;
-import appbuilder.api.vars.Atributo;
+import appbuilder.api.methods.MethodBuilder;
+import appbuilder.api.vars.AttributeBuilder;
 
 /**
  *
  * @author psilva
  */
-public class ConnectionFactory extends Classe {
+public class ConnectionFactory extends ClassBuilder {
 
     public ConnectionFactory(String pacote, String caminho) {
         super("ConnectionFactory", pacote, caminho);
-        addImportação("java.sql.SQLException");
-        addImportação("java.sql.DriverManager");
-        addImportação("java.sql.Connection");
+        addImport("java.sql.SQLException");
+        addImport("java.sql.DriverManager");
+        addImport("java.sql.Connection");
 
-        Atributo user = new Atributo("private", "String", "user");
-        Atributo password = new Atributo("private", "String", "password");
-        Atributo database = new Atributo("private", "String", "database");
-        Atributo host = new Atributo("private", "String", "host");
+        AttributeBuilder user = new AttributeBuilder("private", "String", "user");
+        AttributeBuilder password = new AttributeBuilder("private", "String", "password");
+        AttributeBuilder database = new AttributeBuilder("private", "String", "database");
+        AttributeBuilder host = new AttributeBuilder("private", "String", "host");
 
         user.addModificador("static");
         password.addModificador("static");
         database.addModificador("static");
         host.addModificador("static");
-        addAtributo(user);
-        addAtributo(password);
-        addAtributo(database);
-        addAtributo(host);
+        addAttribute(user);
+        addAttribute(password);
+        addAttribute(database);
+        addAttribute(host);
 
         //inicializar
         //os atributos com seus devidos valores padrões
@@ -41,46 +41,46 @@ public class ConnectionFactory extends Classe {
         database.ativarInicialização("\"project\"");
         host.ativarInicialização("\"localhost\"");
 
-        Método getConnection = new Método("public", "static", "Connection", "getConnection");
-        getConnection.addExceção((Exceção) getClasse("SQLException"));
-        getConnection.setRetorno(getClasse("DriverManager").
+        MethodBuilder getConnection = new MethodBuilder("public", "static", "Connection", "getConnection");
+        getConnection.addException((ExceptionBuilder) getClasse("SQLException"));
+        getConnection.setReturn(getClasse("DriverManager").
                 callStatic("getConnection",
                         "\"jdbc:mysql://\"+" + host.getReferencia() + "+\"/\"+" + database.getReferencia() + "",
                         user.getReferencia(), password.getReferencia()));
 
-        addMétodo(getConnection);
+        addMethod(getConnection);
     }
 
     public void setServidor(String servidor) {
-        getAtributo("host").setValor("\"" + servidor + "\"");
+        getAttribute("host").setValor("\"" + servidor + "\"");
     }
 
     public String getServidor() {
-        return getAtributo("host").getValor().replace("\"", "");
+        return getAttribute("host").getValor().replace("\"", "");
     }
 
     public void setSenha(String senha) {
-        getAtributo("password").setValor("\"" + senha + "\"");
+        getAttribute("password").setValor("\"" + senha + "\"");
     }
 
     public String getSenha() {
-        return getAtributo("password").getValor().replace("\"", "");
+        return getAttribute("password").getValor().replace("\"", "");
     }
 
     public void setBaseDeDados(String base) {
-        getAtributo("database").setValor("\"" + base + "\"");
+        getAttribute("database").setValor("\"" + base + "\"");
     }
 
     public String getBaseDeDados() {
-        return getAtributo("database").getValor().replace("\"", "");
+        return getAttribute("database").getValor().replace("\"", "");
     }
 
     public void setUsuário(String usuario) {
-        getAtributo("user").setValor("\"" + usuario + "\"");
+        getAttribute("user").setValor("\"" + usuario + "\"");
     }
 
     public String getUsuário() {
-        return getAtributo("user").getValor().replace("\"", "");
+        return getAttribute("user").getValor().replace("\"", "");
     }
 
 }

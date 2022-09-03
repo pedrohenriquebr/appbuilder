@@ -5,7 +5,6 @@ package appbuilder.util;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import appbuilder.api.classes.Classe;
 import appbuilder.models.Manifesto;
 import java.io.*;
 import java.util.*;
@@ -23,29 +22,29 @@ public class ClassBuilder {
         this.caminho = caminho;
     }
 
-    public List build(List<Classe> classes) throws IOException {
+    public List build(List<appbuilder.api.classes.ClassBuilder> aClasses) throws IOException {
         List<File> files = new ArrayList<>();
-        for (Classe classe : classes) {
-            files.add(build(classe));
+        for (appbuilder.api.classes.ClassBuilder classBuilder : aClasses) {
+            files.add(build(classBuilder));
         }
 
         return files;
     }
 
-    public File build(Classe classe) throws FileNotFoundException, IOException {
+    public File build(appbuilder.api.classes.ClassBuilder classBuilder) throws FileNotFoundException, IOException {
         String path = "";
-        String pathPrincipal = classe.getPacote().getCaminho().replace(".", "/");
+        String pathPrincipal = classBuilder.getPacote().getCaminho().replace(".", "/");
         if (caminho.endsWith("/")) {
             path = this.caminho + pathPrincipal;
         } else {
             path = this.caminho + "/" + pathPrincipal;
         }
 
-        File arquivo = new File(path + "/" + classe.getNome() + ".java");
+        File arquivo = new File(path + "/" + classBuilder.getName() + ".java");
         diretórioArvore = new File(caminho);
         new File(path).mkdirs();
         FileWriter fw = new FileWriter(arquivo);
-        fw.write(classe.toString());
+        fw.write(classBuilder.toString());
 
         fw.close();
 
@@ -128,11 +127,11 @@ public class ClassBuilder {
         return executavel;
     }
 
-    public void execute(Classe classe) throws IOException {
+    public void execute(appbuilder.api.classes.ClassBuilder classBuilder) throws IOException {
         System.out.println("Executando: " + "java -cp "
-                + this.caminho+"/classes" + " " + classe.getNomeCompleto());
+                + this.caminho+"/classes" + " " + classBuilder.getNomeCompleto());
         Process process = Runtime.getRuntime().exec("java -cp "
-                + this.caminho+"/classes" + " " + classe.getNomeCompleto());
+                + this.caminho+"/classes" + " " + classBuilder.getNomeCompleto());
 
         Scanner scan = new Scanner(process.getInputStream());
 
