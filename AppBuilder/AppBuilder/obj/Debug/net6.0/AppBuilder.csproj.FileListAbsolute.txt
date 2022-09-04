@@ -1,0 +1,12 @@
+D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder\obj\Debug\net6.0\AppBuilder.csproj.AssemblyReference.cache
+D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder\obj\Debug\net6.0\AppBuilder.GeneratedMSBuildEditorConfig.editorconfig
+D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder\obj\Debug\net6.0\AppBuilder.AssemblyInfoInputs.cache
+D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder\obj\Debug\net6.0\AppBuilder.AssemblyInfo.cs
+D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder\obj\Debug\net6.0\AppBuilder.csproj.CoreCompileInputs.cache
+D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder\bin\Debug\net6.0\AppBuilder.deps.json
+D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder\bin\Debug\net6.0\AppBuilder.dll
+D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder\bin\Debug\net6.0\AppBuilder.pdb
+D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder\obj\Debug\net6.0\AppBuilder.dll
+D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder\obj\Debug\net6.0\refint\AppBuilder.dll
+D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder\obj\Debug\net6.0\AppBuilder.pdb
+D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder\obj\Debug\net6.0\ref\AppBuilder.dll

@@ -1,0 +1,75 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Api</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Class1.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Old" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Old\Classes\InterfaceBuilder.cs" />
+      <None Include="Old\Classes\InterfaceBuilder.cs" />
+      <Compile Remove="Old\Classes\ExceptionBuilder.cs" />
+      <None Include="Old\Classes\ExceptionBuilder.cs" />
+      <Compile Remove="Old\Classes\DaoBuilder.cs" />
+      <None Include="Old\Classes\DaoBuilder.cs" />
+      <Compile Remove="Old\Classes\ClassBuilder.cs" />
+      <None Include="Old\Classes\ClassBuilder.cs" />
+      <Compile Remove="Old\Attributes\Attributes.cs" />
+      <None Include="Old\Attributes\Attributes.cs" />
+      <Compile Remove="Old\Classes\ForEachBuilder.cs" />
+      <None Include="Old\Classes\ForEachBuilder.cs" />
+      <Compile Remove="Old\Classes\Exceptions\ExceptionTreatmentBuilder.cs" />
+      <None Include="Old\Classes\Exceptions\ExceptionTreatmentBuilder.cs" />
+      <Compile Remove="Old\Classes\ConstructorBuilder.cs" />
+      <None Include="Old\Classes\ConstructorBuilder.cs" />
+      <Compile Remove="Old\Classes\IfBuilder.cs" />
+      <None Include="Old\Classes\IfBuilder.cs" />
+      <Compile Remove="Old\Classes\ConnectionFactory.cs" />
+      <None Include="Old\Classes\ConnectionFactory.cs" />
+      <Compile Remove="Old\Classes\Janela.cs" />
+      <None Include="Old\Classes\Janela.cs" />
+      <Compile Remove="Old\Classes\ControllerBuilder.cs" />
+      <None Include="Old\Classes\ControllerBuilder.cs" />
+      <Compile Remove="Old\Classes\ModelBuilder.cs" />
+      <None Include="Old\Classes\ModelBuilder.cs" />
+      <Compile Remove="Old\Classes\While.cs" />
+      <None Include="Old\Classes\While.cs" />
+      <Compile Remove="Old\database\ConnectionBuilder.cs" />
+      <None Include="Old\database\ConnectionBuilder.cs" />
+      <Compile Remove="Old\database\DatabaseBuilder.cs" />
+      <None Include="Old\database\DatabaseBuilder.cs" />
+      <Compile Remove="Old\methods\MethodBuilder.cs" />
+      <None Include="Old\methods\MethodBuilder.cs" />
+      <Compile Remove="Old\methods\ParameterBuilder.cs" />
+      <None Include="Old\methods\ParameterBuilder.cs" />
+      <Compile Remove="Old\packages\ImportBuilder.cs" />
+      <None Include="Old\packages\ImportBuilder.cs" />
+      <Compile Remove="Old\packages\PackageBuilder.cs" />
+      <None Include="Old\packages\PackageBuilder.cs" />
+      <Compile Remove="Old\templates\Dao.cs" />
+      <None Include="Old\templates\Dao.cs" />
+      <Compile Remove="Old\templates\JanelaTestes.cs" />
+      <None Include="Old\templates\JanelaTestes.cs" />
+      <Compile Remove="Old\templates\SuperTemplate.cs" />
+      <None Include="Old\templates\SuperTemplate.cs" />
+      <Compile Remove="Old\templates\Template.cs" />
+      <None Include="Old\templates\Template.cs" />
+      <Compile Remove="Old\vars\MemberBuilder.cs" />
+      <None Include="Old\vars\MemberBuilder.cs" />
+      <Compile Remove="Old\vars\ObjectBuilder.cs" />
+      <None Include="Old\vars\ObjectBuilder.cs" />
+      <Compile Remove="Old\vars\VarBuilder.cs" />
+      <None Include="Old\vars\VarBuilder.cs" />
+    </ItemGroup>
+
+</Project>

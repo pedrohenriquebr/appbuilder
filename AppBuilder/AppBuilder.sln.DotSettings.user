@@ -1,0 +1,21 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=FFB8D587_002D9FDA_002D40A5_002DABF4_002DA2AAA9A822C4_002Fd_003AOld_002Fd_003Avars_002Ff_003AMemberBuilder_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=FFB8D587_002D9FDA_002D40A5_002DABF4_002DA2AAA9A822C4_002Fd_003AOld_002Fd_003Avars_002Ff_003AVarBuilder_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=6dae1b38_002Dead4_002D45ea_002D8382_002D8d6c5a488e30/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Session #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::2D15E8FD-2638-4729-AC11-6787D0E5B0BA::net6.0::AppBuilder.Tests.Java.SourceGeneratorTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::2D15E8FD-2638-4729-AC11-6787D0E5B0BA::net6.0::AppBuilder.Tests.TokenProviderTests.Should_Returns_The_Right_Modifier_Token&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::2D15E8FD-2638-4729-AC11-6787D0E5B0BA::net6.0::AppBuilder.Tests.Java.TokenProviderTests.Should_Returns_The_Right_Modifier_Token&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::2D15E8FD-2638-4729-AC11-6787D0E5B0BA::net6.0::AppBuilder.Tests.Csharp.SourceGeneratorTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::2D15E8FD-2638-4729-AC11-6787D0E5B0BA::net6.0::AppBuilder.Tests.Csharp.TokenProviderTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d8003fb6_002D3a0e_002D4488_002D89db_002D999edf5914b0/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;And&gt;&#xD;
+    &lt;TestAncestor&gt;&#xD;
+      &lt;TestId&gt;xUnit::2D15E8FD-2638-4729-AC11-6787D0E5B0BA::net6.0::AppBuilder.Tests.VarBuilderTests.Should_Generate_Var_Declaration&lt;/TestId&gt;&#xD;
+    &lt;/TestAncestor&gt;&#xD;
+    &lt;Project Location="D:\Program Files\repos\appbuilder\AppBuilder\AppBuilder.Tests" Presentation="&amp;lt;AppBuilder.Tests&amp;gt;" /&gt;&#xD;
+    &lt;Namespace&gt;AppBuilder.Tests&lt;/Namespace&gt;&#xD;
+  &lt;/And&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
