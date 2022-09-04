@@ -1,6 +1,6 @@
 using Api.Migration.Core;
 
-namespace AppBuilder.Tests.Java;
+namespace Api.Migration.Languages.Java;
 
 public class Java18SourceGeneratorVisitorVisitor : BaseSourceGeneratorVisitor
 {

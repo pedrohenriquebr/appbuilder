@@ -1,6 +1,4 @@
-using Api.Migration.Core;
-
-namespace AppBuilder.Tests.Java;
+namespace Api.Migration.Core;
 
 public abstract class BaseSourceGeneratorVisitor : ISyntaxVisitor
 {
