@@ -52,7 +52,7 @@ public class SourceGeneratorTests : IClassFixture<Java18TokenProvider>
         var data = new TheoryData<VarDeclaration, string>();
 
         data.Add(
-            new VarBuilder()
+            new VarBuilder(new JavaTypeNameProvider())
                 .New("opa")
                 .AddModifier(mod switch
                 {
@@ -74,7 +74,7 @@ public class SourceGeneratorTests : IClassFixture<Java18TokenProvider>
         var data = new TheoryData<VarDeclaration, string>();
 
         data.Add(
-            new VarBuilder()
+            new VarBuilder(new JavaTypeNameProvider())
                 .New("opa")
                 .WithType(type)
                 .Build(),
@@ -87,7 +87,7 @@ public class SourceGeneratorTests : IClassFixture<Java18TokenProvider>
     {
         return new TheoryData<VarDeclaration>()
         {
-            new VarBuilder().New(name)
+            new VarBuilder(new JavaTypeNameProvider()).New(name)
                 .Var()
                 .Build()
         };
