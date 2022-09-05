@@ -1,4 +1,5 @@
 using Api.Migration.Core;
+using Api.Migration.Languages.Csharp;
 
 namespace AppBuilder.Tests.Csharp;
 
@@ -7,7 +8,7 @@ public static class SourceGeneratorFaker
     public static TheoryData<VarDeclaration, string> GenerateVarWithModifiers()
     {
         var data = new TheoryData<VarDeclaration, string>();
-        var builder = new VarBuilder();
+        var builder = new VarBuilder(new CsharpTypeNameProvider());
         data.Add(
             builder
                 .New("number")
@@ -36,6 +37,15 @@ public static class SourceGeneratorFaker
                 .Build(),
             "DateTime time;"
             );
+
+        data.Add(
+            builder
+                .New("time")
+                .Const()
+                .WithType<string>()
+                .Build(),
+            "const string time;"
+            );
         
         
         return data;
@@ -46,7 +56,7 @@ public static class SourceGeneratorFaker
         var data = new TheoryData<VarDeclaration, string>();
 
         data.Add(
-            new VarBuilder()
+            new VarBuilder(new CsharpTypeNameProvider())
                 .New("opa")
                 .AddModifier(mod switch
                 {
@@ -69,7 +79,7 @@ public static class SourceGeneratorFaker
         var data = new TheoryData<VarDeclaration, string>();
 
         data.Add(
-            new VarBuilder()
+            new VarBuilder(new CsharpTypeNameProvider())
                 .New("opa")
                 .WithType(type)
                 .Build(),
@@ -82,7 +92,7 @@ public static class SourceGeneratorFaker
     {
         return new TheoryData<VarDeclaration>()
         {
-            new VarBuilder().New(name)
+            new VarBuilder(new CsharpTypeNameProvider()).New(name)
                 .Var()
                 .Build()
         };
