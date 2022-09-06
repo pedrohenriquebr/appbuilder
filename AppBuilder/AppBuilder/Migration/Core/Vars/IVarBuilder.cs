@@ -1,8 +1,9 @@
-namespace Api.Migration.Core;
+namespace Api.Migration.Core.Vars;
 
 public interface IVarBuilder
 {
     public IVarBuilder New();
+    public IVarBuilder New<T>(string name);
     public IVarBuilder New(string name);
     public IVarBuilder WithType<T>();
     public IVarBuilder WithType(Type type);
@@ -13,5 +14,9 @@ public interface IVarBuilder
     public IVarBuilder Const();
     public IVarBuilder Var();
     public IVarBuilder ReadOnly();
+    public IVarBuilder Public();
+    public IVarBuilder Private();
+    public IVarBuilder Static();
+    public IVarBuilder Protected();
     public VarDeclaration Build();
 }

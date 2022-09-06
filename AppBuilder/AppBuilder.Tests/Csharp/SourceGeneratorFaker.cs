@@ -1,4 +1,5 @@
 using Api.Migration.Core;
+using Api.Migration.Core.Vars;
 using Api.Migration.Languages.Csharp;
 
 namespace AppBuilder.Tests.Csharp;
@@ -47,6 +48,14 @@ public static class SourceGeneratorFaker
             "const string time;"
             );
         
+
+        data.Add(
+            builder
+                .New<int>("number_static")
+                .Static()
+                .Build(),
+            "static int number_static;"
+            );
         
         return data;
     }

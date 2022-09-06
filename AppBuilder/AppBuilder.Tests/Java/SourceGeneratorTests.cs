@@ -1,4 +1,5 @@
 using Api.Migration.Core;
+using Api.Migration.Core.Vars;
 using Api.Migration.Languages.Java;
 
 namespace AppBuilder.Tests.Java;
@@ -17,9 +18,7 @@ public class SourceGeneratorTests : IClassFixture<Java18TokenProvider>
     public void Should_Generate_Var_Declaration(VarDeclaration input)
     {
         string expect = "var myVar;";
-        input.Accept(_visitor);
-
-        Assert.Equal(expect, _visitor.GenerateSource());
+        Assert.Equal(expect, input.Accept(_visitor));
     }
 
 
@@ -31,8 +30,7 @@ public class SourceGeneratorTests : IClassFixture<Java18TokenProvider>
     [MemberData(nameof(GenerateVarWithType), parameters: new object[] { "decimal" })]
     public void Should_Generate_Var_With_Type(VarDeclaration input, string expected)
     {
-        input.Accept(_visitor);
-        Assert.Equal(expected, _visitor.GenerateSource());
+        Assert.Equal(expected, input.Accept(_visitor));
     }
 
 
@@ -43,8 +41,7 @@ public class SourceGeneratorTests : IClassFixture<Java18TokenProvider>
     [MemberData(nameof(GenerateVarWithModifier), parameters: new object[] { "final", "string" })]
     public void Should_Generate_Var_With_Modifier(VarDeclaration input, string expected)
     {
-        input.Accept(_visitor);
-        Assert.Equal(expected, _visitor.GenerateSource());
+        Assert.Equal(expected, input.Accept(_visitor));
     }
 
     public static TheoryData<VarDeclaration, string> GenerateVarWithModifier(string mod, string type)

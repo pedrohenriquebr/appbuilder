@@ -1,17 +1,18 @@
 using Api.Migration.Core;
 
-namespace Api.Migration.Languages.Csharp;
+namespace Api.Migration.Languages.Java;
 
-public class CsharpTypeNameProvider : ITypeNameProvider
+public class JavaTypeNameProvider : ITypeNameProvider
 {
     private readonly Dictionary<string, string> _names;
 
-    public CsharpTypeNameProvider()
+    public JavaTypeNameProvider()
     {
         _names = new Dictionary<string, string>()
         {
             ["System.Int32"] = "int",
-            ["System.String"] = "string"
+            ["System.String"] = "string",
+            ["System.DateTime"] = "LocalDateTime"
         };
     }
 

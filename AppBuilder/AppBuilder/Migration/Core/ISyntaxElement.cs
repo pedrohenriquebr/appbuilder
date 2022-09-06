@@ -2,5 +2,5 @@ namespace Api.Migration.Core;
 
 public interface ISyntaxElement
 {
-    public void Accept(in ISyntaxVisitor visitor);
+    public R Accept<R>(in ISyntaxVisitor<R> visitor);
 }

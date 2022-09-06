@@ -1,13 +1,15 @@
-namespace Api.Migration.Core;
+namespace Api.Migration.Core.Vars;
 
 public class VarBuilder : IVarBuilder
 {
-    private VarDeclaration _varDeclaration ;
-
-    public VarBuilder()
+    private VarDeclaration _varDeclaration;
+    private ITypeNameProvider _typeNameProvider;
+    public VarBuilder(ITypeNameProvider typeNameProvider)
     {
+        _typeNameProvider = typeNameProvider;
+        _varDeclaration = new VarDeclaration();
     }
-    
+
     public IVarBuilder New()
     {
         _varDeclaration = new VarDeclaration();
@@ -27,6 +29,8 @@ public class VarBuilder : IVarBuilder
 
     public IVarBuilder WithType(Type type)
     {
+        if (type.FullName != null && _typeNameProvider.Has(type.FullName))
+            return WithType(_typeNameProvider.Get(type.FullName));
         return WithType(type.Name);
     }
 
@@ -75,5 +79,31 @@ public class VarBuilder : IVarBuilder
     public VarDeclaration Build()
     {
         return _varDeclaration;
+    }
+
+    public IVarBuilder New<T>(string name)
+    {
+        return New(name)
+            .WithType<T>();
+    }
+
+    public IVarBuilder Public()
+    {
+        return AddModifier(Modifier.Public);
+    }
+
+    public IVarBuilder Private()
+    {
+        return AddModifier(Modifier.Private);
+    }
+
+    public IVarBuilder Static()
+    {
+        return AddModifier(Modifier.Static);
+    }
+
+    public IVarBuilder Protected()
+    {
+        return AddModifier(Modifier.Protected);
     }
 }

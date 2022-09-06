@@ -5,7 +5,19 @@ public class VarDeclaration : ISyntaxElement
     public string Name { get; set; }
     public string Value { get; set; }
     public bool HasTypeInference { get; set; }
-    public string Type { get; set; }
+
+    private string _typename = "";
+
+    public string Type
+    {
+        get => _typename;
+        set
+        {
+            _typename = value;
+            HasTypeInference = false;
+        }
+    }
+
     public List<Modifier> Modifiers { get; set; }
 
     public VarDeclaration()
@@ -14,22 +26,14 @@ public class VarDeclaration : ISyntaxElement
         HasTypeInference = true;
     }
 
-    public VarDeclaration(string name)
+    public VarDeclaration(string name) : this()
     {
         this.Name = name;
-        Modifiers = new List<Modifier>();
     }
 
-    public void Accept(in ISyntaxVisitor visitor)
+    public R Accept<R>(in ISyntaxVisitor<R> visitor)
     {
-        if (Modifiers.Any())
-        {
-            foreach (var mod in Modifiers)
-            {
-                mod.Accept(visitor);
-            }
-        }
-
-        visitor.VisitVarDeclaration(this);
+        return visitor.Visit(this);
     }
+
 }

@@ -1,4 +1,6 @@
-namespace Api.Migration.Core;
+using Api.Migration.Core;
+
+namespace Api.Migration.Languages.Csharp;
 
 public class CsharpTypeNameProvider : ITypeNameProvider
 {
@@ -9,7 +11,8 @@ public class CsharpTypeNameProvider : ITypeNameProvider
         _names = new Dictionary<string, string>()
         {
             ["System.Int32"] = "int",
-            ["System.String"] = "string"
+            ["System.String"] = "string",
+            ["System.DateTime"] = "DateTime"
         };
     }
 

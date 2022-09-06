@@ -17,9 +17,7 @@ public class SourceGeneratorTests : IClassFixture<CsharpTokenProvider>
     public void Should_Generate_Var_Declaration(VarDeclaration input)
     {
         string expect = "var myVar;";
-        input.Accept(_visitor);
-
-        Assert.Equal(expect, _visitor.GenerateSource());
+        Assert.Equal(expect, input.Accept(_visitor));
     }
 
 
@@ -31,8 +29,7 @@ public class SourceGeneratorTests : IClassFixture<CsharpTokenProvider>
     [MemberData(nameof(SourceGeneratorFaker.GenerateVarWithType), parameters: new object[] { "decimal" }, MemberType = typeof(SourceGeneratorFaker))]
     public void Should_Generate_Var_With_Type(VarDeclaration input, string expected)
     {
-        input.Accept(_visitor);
-        Assert.Equal(expected, _visitor.GenerateSource());
+        Assert.Equal(expected, input.Accept(_visitor));
     }
 
 
@@ -44,8 +41,7 @@ public class SourceGeneratorTests : IClassFixture<CsharpTokenProvider>
     [MemberData(nameof(SourceGeneratorFaker.GenerateVarWithModifier), parameters: new object[] { "const", "decimal" }, MemberType = typeof(SourceGeneratorFaker))]
     public void Should_Generate_Var_With_Modifier(VarDeclaration input, string expected)
     {
-        input.Accept(_visitor);
-        Assert.Equal(expected, _visitor.GenerateSource());
+        Assert.Equal(expected, input.Accept(_visitor));
     }
     
     
@@ -53,7 +49,6 @@ public class SourceGeneratorTests : IClassFixture<CsharpTokenProvider>
     [MemberData(nameof(SourceGeneratorFaker.GenerateVarWithModifiers), MemberType = typeof(SourceGeneratorFaker))]
     public void Should_Generate_Var_With_Modifiers(VarDeclaration input, string expected)
     {
-        input.Accept(_visitor);
-        Assert.Equal(expected, _visitor.GenerateSource());
+        Assert.Equal(expected, input.Accept(_visitor));
     }
 }

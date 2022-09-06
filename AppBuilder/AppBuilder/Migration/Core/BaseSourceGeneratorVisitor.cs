@@ -1,56 +1,67 @@
+using System.Text;
+
 namespace Api.Migration.Core;
 
-public abstract class BaseSourceGeneratorVisitor : ISyntaxVisitor
+public abstract class BaseSourceGeneratorVisitor: ISyntaxVisitor<string>
 {
-    protected string SourceCode { get; set; }
     protected readonly ISyntaxTokenProvider TokenProvider;
 
     protected BaseSourceGeneratorVisitor(ISyntaxTokenProvider tokenProvider)
     {
         TokenProvider = tokenProvider;
-        SourceCode = "";
     }
 
     #region Var
 
-    public virtual void VisitVarDeclaration(in VarDeclaration varDeclaration)
+    public virtual string Visit(in VarDeclaration varDeclaration)
     {
-        SourceCode += GenerateVarDeclaration(varDeclaration);
+        var builder  = new StringBuilder();
+        if (varDeclaration.Modifiers.Any())
+        {
+            foreach (var mod in varDeclaration.Modifiers)
+            {
+                builder.Append(mod.Accept(this));
+            }
+        }
+
+        builder.Append(GenerateVarDeclaration(varDeclaration));
+
+        return builder.ToString();
     }
 
-    public virtual void VisitConstModifier(ConstModifier constModifier)
+    public virtual string Visit(ConstModifier constModifier)
     {
-        SourceCode += TokenProvider.GetModifierToken(constModifier) + " ";
-    }
-
-
-    public virtual void VisitReadonlyModifier(ReadonlyModifier readonlyModifier)
-    {
-        SourceCode += TokenProvider.GetModifierToken(readonlyModifier) + " ";
-    }
-
-
-    public virtual void VisitProtectedModifier(ProtectedModifier protectedModifier)
-    {
-        SourceCode += TokenProvider.GetModifierToken(protectedModifier) + " ";
-    }
-
-
-    public virtual void VisitStaticModifier(in StaticModifier staticModifier)
-    {
-        SourceCode += TokenProvider.GetModifierToken(staticModifier) + " ";
+        return TokenProvider.GetModifierToken(constModifier) + " ";
     }
 
 
-    public virtual void VisitPublicModifier(PublicModifier publicModifier)
+    public virtual string Visit(ReadonlyModifier readonlyModifier)
     {
-        SourceCode += TokenProvider.GetModifierToken(publicModifier) + " ";
+        return TokenProvider.GetModifierToken(readonlyModifier) + " ";
     }
 
 
-    public virtual void VisitPrivateModifier(PrivateModifier privateModifier)
+    public virtual string Visit(ProtectedModifier protectedModifier)
     {
-        SourceCode += TokenProvider.GetModifierToken(privateModifier) + " ";
+        return TokenProvider.GetModifierToken(protectedModifier) + " ";
+    }
+
+
+    public virtual string Visit(in StaticModifier staticModifier)
+    {
+        return TokenProvider.GetModifierToken(staticModifier) + " ";
+    }
+
+
+    public virtual string Visit(PublicModifier publicModifier)
+    {
+        return TokenProvider.GetModifierToken(publicModifier) + " ";
+    }
+
+
+    public virtual string Visit(PrivateModifier privateModifier)
+    {
+        return TokenProvider.GetModifierToken(privateModifier) + " ";
     }
 
 
@@ -64,5 +75,4 @@ public abstract class BaseSourceGeneratorVisitor : ISyntaxVisitor
     #endregion
 
 
-    public virtual string GenerateSource() => SourceCode;
 }

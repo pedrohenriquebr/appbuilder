@@ -3,6 +3,7 @@ using Api.Common;
 namespace Api.Migration.Core;
 
 public abstract class Modifier : Enumeration, ISyntaxElement
+
 {
     public static readonly Modifier Public = new PublicModifier();
     public static readonly Modifier Private = new PrivateModifier();
@@ -16,7 +17,7 @@ public abstract class Modifier : Enumeration, ISyntaxElement
     }
 
 
-    public abstract void Accept(in ISyntaxVisitor visitor);
+    public abstract R Accept<R>(in ISyntaxVisitor<R> visitor);
 }
 
 public class ConstModifier : Modifier
@@ -25,9 +26,9 @@ public class ConstModifier : Modifier
     {
     }
 
-    public override void Accept(in ISyntaxVisitor visitor)
+    public override R Accept<R>(in ISyntaxVisitor<R> visitor)
     {
-        visitor.VisitConstModifier(this);
+        return visitor.Visit(this);
     }
 }
 
@@ -37,9 +38,9 @@ public class ReadonlyModifier : Modifier
     {
     }
 
-    public override void Accept(in ISyntaxVisitor visitor)
+    public override R Accept<R>(in ISyntaxVisitor<R> visitor)
     {
-        visitor.VisitReadonlyModifier(this);
+        return visitor.Visit(this);
     }
 }
 
@@ -50,9 +51,9 @@ public class ProtectedModifier : Modifier
         
     }
 
-    public override void Accept(in ISyntaxVisitor visitor)
+    public override R Accept<R>(in ISyntaxVisitor<R> visitor)
     {
-        visitor.VisitProtectedModifier(this);
+        return visitor.Visit(this);
     }
 }
 
@@ -62,9 +63,9 @@ public class StaticModifier : Modifier
     {
     }
 
-    public override void Accept(in ISyntaxVisitor visitor)
+    public override R Accept<R>(in ISyntaxVisitor<R> visitor)
     {
-        visitor.VisitStaticModifier(this);
+        return visitor.Visit(this);
     }
 }
 
@@ -74,9 +75,9 @@ public class PublicModifier : Modifier
     {
     }
 
-    public override void Accept(in ISyntaxVisitor visitor)
+    public override R Accept<R>(in ISyntaxVisitor<R> visitor)
     {
-        visitor.VisitPublicModifier(this);
+        return visitor.Visit(this);
     }
 }
 
@@ -86,8 +87,8 @@ public class PrivateModifier : Modifier
     {
     }
 
-    public override void Accept(in ISyntaxVisitor visitor)
+    public override R Accept<R>(in ISyntaxVisitor<R> visitor)
     {
-        visitor.VisitPrivateModifier(this);
+        return visitor.Visit(this);
     }
 }

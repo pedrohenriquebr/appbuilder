@@ -1,21 +1,23 @@
+using System.Linq.Expressions;
+
 namespace Api.Migration.Core;
 
-public interface ISyntaxVisitor
+public interface ISyntaxVisitor<out TReturn>
 {
     #region Var
 
-    public void VisitVarDeclaration(in VarDeclaration varDeclaration);
+    public TReturn Visit(in VarDeclaration varDeclaration);
 
     #endregion
 
     #region Modifiers
 
-    public void VisitConstModifier(ConstModifier constModifier);
-    public void VisitReadonlyModifier(ReadonlyModifier readonlyModifier);
-    public void VisitProtectedModifier(ProtectedModifier protectedModifier);
-    public void VisitStaticModifier(in StaticModifier visitor);
-    public void VisitPublicModifier(PublicModifier publicModifier);
-    public void VisitPrivateModifier(PrivateModifier privateModifier);
+    public TReturn Visit(ConstModifier constModifier);
+    public TReturn Visit(ReadonlyModifier readonlyModifier);
+    public TReturn Visit(ProtectedModifier protectedModifier);
+    public TReturn Visit(in StaticModifier visitor);
+    public TReturn Visit(PublicModifier publicModifier);
+    public TReturn Visit(PrivateModifier privateModifier);
 
     #endregion
 }
